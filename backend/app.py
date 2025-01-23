@@ -1,5 +1,7 @@
 import fastapi
 import asyncio
+from backend import query
+from backend import data_models
 import os
 
 app = fastapi.FastAPI()
@@ -13,3 +15,8 @@ async def connection():
 async def deploy():
     await asyncio.create_subprocess_shell("git pull origin main")
     return "deployed"
+
+@app.post("/query/classroom")
+async def query_classroom(cond: data_models.ClassroomQuery):
+    res = await asyncio.to_thread(query.query_classroom, cond.cond)
+    return res
