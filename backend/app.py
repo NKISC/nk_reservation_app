@@ -11,5 +11,5 @@ async def connection():
 
 @app.get("/deploy")
 async def deploy():
-    await asyncio.create_subprocess_shell("git pull origin master")
+    await asyncio.create_subprocess_shell("git pull origin main")
     return "deployed"
