@@ -1,4 +1,5 @@
 import fastapi
+import asyncio
 import os
 
 app = fastapi.FastAPI()
@@ -10,5 +11,5 @@ async def connection():
 
 @app.get("/deploy")
 async def deploy():
-    os.system("git pull origin main")
+    await asyncio.create_subprocess_shell("git pull origin master")
     return "deployed"
