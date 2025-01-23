@@ -40,5 +40,6 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
         for i in range(len(heads)):
             p[heads[i][1]] = row[i]
         ret.append(p)
+    db.close()
 
     return ret
