@@ -5,10 +5,10 @@ app = fastapi.FastAPI()
 
 
 @app.get("/connection")
-def connection():
+async def connection():
     return {"status": "ok"}
 
 @app.get("/deploy")
-def deploy():
+async def deploy():
     os.system("git pull origin main")
     return "deployed"
