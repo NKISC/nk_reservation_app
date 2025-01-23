@@ -8,7 +8,7 @@ def construct_condition(cond: dict[str, Any]) -> str:
     for i in range(len(cond_keys)):
         ret += f"{cond_keys[i]}=:{cond_keys[i]}"
         if i != len(cond_keys) - 1:
-            ret += ","
+            ret += " and "
 
     return ret
 
