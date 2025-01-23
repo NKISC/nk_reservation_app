@@ -14,7 +14,18 @@ def construct_condition(cond: dict[str, Any]) -> str:
 
 
 
-def query_classroom(cond: dict[str, Any]) -> list[dict[str, tuple]]:
+def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
+    """
+    Query the classroom information.
+    :param cond: A dictionary containing the filters that select the classrooms to return.
+        id (int): The classroom id.
+        display (str): The display name of the classroom.
+        place (str): The place of the classroom.
+        pic_url (str): UNSUPPORTED, DO NOT USE.
+        func_tag (str): UNSUPPORTED, DO NOT USE.
+    :return: A list of classroom information.
+    """
+    # TODO: function tag support
     db = sqlite3.connect("database.db")
     cursor = db.cursor()
     if len(cond) != 0:
