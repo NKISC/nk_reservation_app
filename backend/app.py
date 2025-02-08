@@ -19,6 +19,6 @@ async def deploy():
 
 
 @app.post("/query/classroom")
-async def query_classroom(cond: data_models.ClassroomQuery):
+async def query_classroom(cond: data_models.BasePostQuery):
     res = await asyncio.to_thread(query.query_classroom, cond.cond)
     return res
