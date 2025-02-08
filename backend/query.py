@@ -87,6 +87,6 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
         cursor.execute("select * from record where " + construct_condition(cond), cond)
     else:
         cursor.execute("select * from record")
-    ret = construct_respond(cursor, "table")
+    ret = construct_respond(cursor, "record")
     db.close()
     return ret
