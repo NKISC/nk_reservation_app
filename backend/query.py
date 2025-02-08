@@ -49,12 +49,13 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Query the classroom information.
     :param cond: A dictionary containing the filters that select the classrooms to return.
-        id (int): The classroom id.
-        display (str): The display name of the classroom.
-        place (str): The place of the classroom.
-        pic_url (list[str]): The pic_url(s) of the classroom.
-        func_tag (list[str]): The function tag(s) of the classroom.
-    :return: A list of classroom information.
+        Possible keys:
+            id (int): The classroom id.
+            display (str): The display name of the classroom.
+            place (str): The place of the classroom.
+            pic_url (list[str]): The pic_url(s) of the classroom.
+            func_tag (list[str]): The function tag(s) of the classroom.
+        :return: A list of classroom information.
     """
     db = sqlite3.connect("database.db")
     cursor = db.cursor()
