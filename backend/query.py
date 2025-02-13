@@ -91,3 +91,22 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
     ret = construct_respond(cursor, "record")
     db.close()
     return ret
+
+
+def query_display(q: dict[str, Any]) -> list[str]:
+    special_query_keys = ["tag", "place"]
+    db = sqlite3.connect("database.db")
+    cursor = db.cursor()
+    ret = []
+    for query in q["query"]:
+        key_name = "id"
+        if query[1] in special_query_keys:
+            key_name = query[1]
+        cursor.execute(f"select * from :table where {key_name}=:key",
+                       {"key": query[0], "table": query[1]})
+        res = cursor.fetchall()
+        for item in res:
+            ret.append(item["display"])
+
+    db.close()
+    return ret

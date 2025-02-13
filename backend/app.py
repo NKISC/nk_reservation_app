@@ -28,3 +28,9 @@ async def query_classroom(cond: data_models.BasePostQuery):
 async def query_record(cond: data_models.BasePostQuery):
     res = await asyncio.to_thread(query.query_record, cond.cond)
     return res
+
+
+@app.post("/query/display")
+async def query_display(q: data_models.BasePostQuery):
+    res = await asyncio.to_thread(query.query_display, q.cond)
+    return res
