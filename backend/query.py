@@ -33,7 +33,7 @@ def construct_params(cond: dict[str, Any]) -> dict[str, Any]:
     return param
 
 
-def construct_respond(cursor: sqlite3.Cursor, table: str) -> list[dict[str, Any]]:
+def construct_response(cursor: sqlite3.Cursor, table: str) -> list[dict[str, Any]]:
     rows = cursor.fetchall()
     heads = cursor.execute(f"pragma table_info({table})").fetchall()
     ret = []
@@ -64,7 +64,7 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
         cursor.execute("select * from classroom where " + construct_condition(cond), param)
     else:
         cursor.execute("select * from classroom")
-    ret = construct_respond(cursor, "classroom")
+    ret = construct_response(cursor, "classroom")
     db.close()
     return ret
 
@@ -88,7 +88,7 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
         cursor.execute("select * from record where " + construct_condition(cond), cond)
     else:
         cursor.execute("select * from record")
-    ret = construct_respond(cursor, "record")
+    ret = construct_response(cursor, "record")
     db.close()
     return ret
 
