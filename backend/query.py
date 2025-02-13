@@ -102,11 +102,19 @@ def query_display(q: dict[str, Any]) -> list[str]:
         key_name = "id"
         if query[1] in special_query_keys:
             key_name = query[1]
-        cursor.execute(f"select * from :table where {key_name}=:key",
-                       {"key": query[0], "table": query[1]})
+        cursor.execute("select * from " + query[1] + f" where {key_name}=:key",
+                       {"key": query[0]})
         res = cursor.fetchall()
-        for item in res:
-            ret.append(item["display"])
+        for i in range(len(res)):
+            item = res[i]
+            query = q["query"][i]
+            heads = cursor.execute(f"pragma table_info({query[1]})").fetchall()
+            idx = -1
+            for head in heads:
+                if head[1] == "display":
+                    idx = head[0]
+                    break
+            ret.append(item[idx] if idx != -1 else "N/A")
 
     db.close()
     return ret
