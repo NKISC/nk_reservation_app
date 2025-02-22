@@ -1,0 +1,11 @@
+name: Deploy to server
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: wget https://nkapi.ememememem.space/deploy
