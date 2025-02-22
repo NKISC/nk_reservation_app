@@ -105,6 +105,8 @@ def query_display(q: dict[str, Any]) -> list[str]:
         cursor.execute("select * from " + query[1] + f" where {key_name}=:key",
                        {"key": query[0]})
         res = cursor.fetchall()
+        if len(res) == 0:
+            ret.append("N/A")
         for i in range(len(res)):
             item = res[i]
             query = q["query"][i]
