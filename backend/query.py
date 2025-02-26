@@ -94,6 +94,19 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def query_display(q: dict[str, Any]) -> list[str]:
+    """
+    Query the display name for a given key.
+    :param q: A dictionary containing the queries.
+        Possible key:
+            query (list[list[str, str]]): The queries.
+                Each item in the list should be a list with exactly 2 elements, where the first element is the key
+                and the second is the table in which the query should be made.
+                Example:
+                    {
+                      "cond": {"query": [["example_tag", "tag"], ["science207", "classroom"]]}
+                    }
+    :return: A list of display names. Invalid queries return N/A.
+    """
     special_query_keys = ["tag", "place"]
     db = sqlite3.connect("database.db")
     cursor = db.cursor()
