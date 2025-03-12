@@ -34,3 +34,9 @@ async def query_record(cond: data_models.BasePostQuery):
 async def query_display(q: data_models.BasePostQuery):
     res = await asyncio.to_thread(query.query_display, q.cond)
     return res
+
+
+@app.post("/query/permission")
+async def query_permission(q: data_models.PermissionCheckQuery):
+    res = await asyncio.to_thread(query.check_permission, q.permissions, q.classrooms)
+    return res
