@@ -133,3 +133,26 @@ def query_display(q: dict[str, Any]) -> list[str]:
 
     db.close()
     return ret
+
+
+def check_permission(permissions: list[str], classrooms: list[str]) -> list[str]:
+    allowed_classrooms = []
+
+    db = sqlite3.connect("database.db")
+    cursor = db.cursor()
+    for permission in permissions:
+        cursor.execute("select * from permission where id=:id", {"id": permission})
+        res = cursor.fetchall()
+        if len(res) == 0:
+            continue
+        allowed_classrooms.extend(res[0][2].split(",")[:-1])
+    allowed_classrooms = list(set(allowed_classrooms))
+    if "*" in allowed_classrooms:
+        return []
+
+    no_permissions = []
+    for classroom in classrooms:
+        if classroom not in allowed_classrooms:
+            no_permissions.append(classroom)
+
+    return no_permissions
