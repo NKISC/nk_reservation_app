@@ -136,6 +136,12 @@ def query_display(q: dict[str, Any]) -> list[str]:
 
 
 def check_permission(permissions: list[str], classrooms: list[str]) -> list[str]:
+    """
+    Check if the given classrooms can be reserved with presented permissions.
+    :param permissions: Permission IDs
+    :param classrooms: Classroom IDs
+    :return: A list containing the classrooms that CANNOT be reserved with the given permissions.
+    """
     allowed_classrooms = []
 
     db = sqlite3.connect("database.db")
