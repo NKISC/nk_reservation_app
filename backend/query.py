@@ -1,4 +1,5 @@
 import sqlite3
+import utils
 from typing import *
 
 
@@ -45,9 +46,10 @@ def construct_response(cursor: sqlite3.Cursor, table: str) -> list[dict[str, Any
     return ret
 
 
-def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
+def query_classroom(db: sqlite3.Connection, cond: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Query the classroom information.
+    :param db: The database.
     :param cond: A dictionary containing the filters that select the classrooms to return.
         Possible keys:
             id (int): The classroom id.
@@ -57,7 +59,7 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
             func_tag (list[str]): The function tag(s) of the classroom.
         :return: A list of classroom information.
     """
-    db = sqlite3.connect("database.db")
+    utils.update_record(db)
     cursor = db.cursor()
     param = construct_params(cond)
     if len(cond) != 0:
@@ -69,9 +71,10 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
     return ret
 
 
-def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
+def query_record(db: sqlite3.Connection, cond: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Query the reservation records.
+    :param db: The database.
     :param cond: A dictionary containing the filters that select the reservation records to return.
         Possible keys:
             id (int): The record id.
@@ -82,7 +85,7 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
                               For instance, if the reservation is on Feb. 1, 2025, the time_stamp will be 1738339200).
     :return: A list of reservation information.
     """
-    db = sqlite3.connect("database.db")
+    utils.update_record(db)
     cursor = db.cursor()
     if len(cond) != 0:
         cursor.execute("select * from record where " + construct_condition(cond), cond)
@@ -93,9 +96,10 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
     return ret
 
 
-def query_display(q: dict[str, Any]) -> list[str]:
+def query_display(db: sqlite3.Connection, q: dict[str, Any]) -> list[str]:
     """
     Query the display name for a given key.
+    :param db: The database.
     :param q: A dictionary containing the queries.
         Possible key:
             query (list[list[str, str]]): The queries.
@@ -107,8 +111,8 @@ def query_display(q: dict[str, Any]) -> list[str]:
                     }
     :return: A list of display names. Invalid queries return N/A.
     """
+    utils.update_record(db)
     special_query_keys = ["tag", "place"]
-    db = sqlite3.connect("database.db")
     cursor = db.cursor()
     ret = []
     for query in q["query"]:
@@ -135,16 +139,17 @@ def query_display(q: dict[str, Any]) -> list[str]:
     return ret
 
 
-def check_permission(permissions: list[str], classrooms: list[str]) -> list[str]:
+def check_permission(db: sqlite3.Connection, permissions: list[str], classrooms: list[str]) -> list[str]:
     """
     Check if the given classrooms can be reserved with presented permissions.
+    :param db: The database.
     :param permissions: Permission IDs
     :param classrooms: Classroom IDs
     :return: A list containing the classrooms that CANNOT be reserved with the given permissions.
     """
+    utils.update_record(db)
     allowed_classrooms = []
 
-    db = sqlite3.connect("database.db")
     cursor = db.cursor()
     for permission in permissions:
         cursor.execute("select * from permission where id=:id", {"id": permission})
