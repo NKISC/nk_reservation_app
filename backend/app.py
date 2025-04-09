@@ -3,6 +3,7 @@ import asyncio
 import sqlite3
 from backend import query
 from backend import data_models
+from backend import addition
 
 app = fastapi.FastAPI()
 db = sqlite3.connect('database.db')
@@ -47,3 +48,9 @@ async def query_permission(q: data_models.PermissionCheckQuery):
 async def query_img(url: str):
     res = await asyncio.to_thread(query.query_img, url)
     return fastapi.Response(content=res, media_type="image/jpeg")
+
+
+@app.post("/addition/record")
+async def addition_record(q: data_models.AdditionModel):
+    res = await asyncio.to_thread(addition.addition, db, q.classroom, q.noon, q.applicant_id, q.time_stamp)
+    return res

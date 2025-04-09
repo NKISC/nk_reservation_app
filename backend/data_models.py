@@ -9,3 +9,10 @@ class BasePostQuery(BaseModel):
 class PermissionCheckQuery(BaseModel):
     permissions: list[str]
     classrooms: list[str]
+
+
+class AdditionModel(BaseModel):
+    classrooms: str
+    noon: bool
+    applicant_id: str
+    time_stamp: int
