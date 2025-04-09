@@ -167,3 +167,9 @@ def check_permission(db: sqlite3.Connection, permissions: list[str], classrooms:
             no_permissions.append(classroom)
 
     return no_permissions
+
+
+def query_img(url: str) -> bytes:
+    with open(f"img/{url}.jpg", "rb") as img_file:
+        img_data = img_file.read()
+    return img_data

@@ -41,3 +41,9 @@ async def query_display(q: data_models.BasePostQuery):
 async def query_permission(q: data_models.PermissionCheckQuery):
     res = await asyncio.to_thread(query.check_permission, db, q.permissions, q.classrooms)
     return res
+
+
+@app.get("/img/{url}")
+async def query_img(url: str):
+    res = await asyncio.to_thread(query.query_img, url)
+    return fastapi.Response(content=res, media_type="image/jpeg")
