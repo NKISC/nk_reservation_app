@@ -12,7 +12,7 @@ class PermissionCheckQuery(BaseModel):
 
 
 class AdditionModel(BaseModel):
-    classrooms: str
+    classroom: str
     noon: bool
     applicant_id: str
     time_stamp: int
