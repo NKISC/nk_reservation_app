@@ -2,7 +2,8 @@ import sqlite3
 from backend import utils
 from typing import *
 
-def addition(db: sqlite3.Connection, classroom: str, noon: bool, applicant_id: str, time_stamp: int):
+def addition(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
+    db = sqlite3.connect('database.db')
     cursor = db.cursor()
     # cursor.execute("SELECT id FROM record")
     # id_rows = cursor.fetchall()

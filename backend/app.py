@@ -6,7 +6,6 @@ from backend import data_models
 from backend import addition
 
 app = fastapi.FastAPI()
-db = sqlite3.connect('database.db')
 
 
 @app.get("/connection")
@@ -22,25 +21,25 @@ async def deploy():
 
 @app.post("/query/classroom")
 async def query_classroom(cond: data_models.BasePostQuery):
-    res = await asyncio.to_thread(query.query_classroom, db, cond.cond)
+    res = await asyncio.to_thread(query.query_classroom, cond.cond)
     return res
 
 
 @app.post("/query/record")
 async def query_record(cond: data_models.BasePostQuery):
-    res = await asyncio.to_thread(query.query_record, db, cond.cond)
+    res = await asyncio.to_thread(query.query_record, cond.cond)
     return res
 
 
 @app.post("/query/display")
 async def query_display(q: data_models.BasePostQuery):
-    res = await asyncio.to_thread(query.query_display, db, q.cond)
+    res = await asyncio.to_thread(query.query_display, q.cond)
     return res
 
 
 @app.post("/query/permission")
 async def query_permission(q: data_models.PermissionCheckQuery):
-    res = await asyncio.to_thread(query.check_permission, db, q.permissions, q.classrooms)
+    res = await asyncio.to_thread(query.check_permission, q.permissions, q.classrooms)
     return res
 
 
@@ -52,5 +51,5 @@ async def query_img(url: str):
 
 @app.post("/addition/record")
 async def addition_record(q: data_models.AdditionModel):
-    res = await asyncio.to_thread(addition.addition, db, q.classroom, q.noon, q.applicant_id, q.time_stamp)
+    res = await asyncio.to_thread(addition.addition, q.classroom, q.noon, q.applicant_id, q.time_stamp)
     return res
