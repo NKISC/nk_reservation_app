@@ -10,4 +10,5 @@ def update_record(db: sqlite3.Connection):
     cursor = db.cursor()
     cursor.execute('delete from record where time_stamp > :threshold',
                    {"threshold": time.time() + 24 * 60 * 60})
+    db.commit()
     return {"success": True}

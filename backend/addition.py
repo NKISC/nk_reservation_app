@@ -10,6 +10,7 @@ def addition(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
         cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
                        {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                         "applicant_id": applicant_id, "time_stamp": time_stamp})
+        db.commit()
     except BaseException as e:
         return {"success": False, "error": str(e)}
     return {"success": True}
