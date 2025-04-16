@@ -8,6 +8,6 @@ def update_record(db: sqlite3.Connection):
     :return:
     """
     cursor = db.cursor()
-    cursor.execute('delete from record where timestamp > :threshold',
+    cursor.execute('delete from record where time_stamp > :threshold',
                    {"threshold": time.time() + 24 * 60 * 60})
     return {"success": True}
