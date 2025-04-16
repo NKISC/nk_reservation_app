@@ -1,5 +1,5 @@
 import sqlite3
-import utils
+from backend import utils
 from typing import *
 
 def addition(db: sqlite3.Connection, classroom: str, noon: bool, applicant_id: str, time_stamp: int):
