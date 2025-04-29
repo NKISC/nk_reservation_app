@@ -2,6 +2,15 @@ import sqlite3
 
 
 def addition(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
+    """
+    Creating a new record.
+    :param classroom: The classroom id.
+    :param noon: Whether the reservation is at noon.
+    :param applicant_id: The user id of the applicant.
+    :param time_stamp: The date of the reservation (h, m, s, f are set to zero.
+                       For instance, if the reservation is on Feb. 1, 2025, the time_stamp will be 1738339200).
+    :return:
+    """
     db = sqlite3.connect('database.db')
     cursor = db.cursor()
     with open("recent_id") as id_file:
