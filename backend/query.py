@@ -58,17 +58,15 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
             func_tag (list[str]): The function tag(s) of the classroom.
         :return: A list of classroom information.
     """
-    db = sqlite3.connect('database.db')
-    utils.update_record()
-    cursor = db.cursor()
-    param = construct_params(cond)
-    if len(cond) != 0:
-        cursor.execute("select * from classroom where " + construct_condition(cond), param)
-    else:
-        cursor.execute("select * from classroom")
-    ret = construct_response(cursor, "classroom")
-    db.close()
-    return ret
+    with sqlite3.connect('classroom.db') as db:
+        cursor = db.cursor()
+        param = construct_params(cond)
+        if len(cond) != 0:
+            cursor.execute("select * from classroom where " + construct_condition(cond), param)
+        else:
+            cursor.execute("select * from classroom")
+        ret = construct_response(cursor, "classroom")
+        return ret
 
 
 def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
@@ -84,18 +82,17 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
                               For instance, if the reservation is on Feb. 1, 2025, the time_stamp will be 1738339200).
     :return: A list of reservation information.
     """
-    db = sqlite3.connect('database.db')
-    utils.update_record()
-    cursor = db.cursor()
-    if len(cond) != 0:
-        cursor.execute("select * from record where " + construct_condition(cond), cond)
-    else:
-        cursor.execute("select * from record")
-    ret = construct_response(cursor, "record")
-    db.close()
-    return ret
+    with sqlite3.connect('database.db') as db:
+        utils.update_record()
+        cursor = db.cursor()
+        if len(cond) != 0:
+            cursor.execute("select * from record where " + construct_condition(cond), cond)
+        else:
+            cursor.execute("select * from record")
+        ret = construct_response(cursor, "record")
+        return ret
 
-
+      
 def query_display(q: dict[str, Any]) -> list[str]:
     """
     Query the display name for a given key.
@@ -110,33 +107,30 @@ def query_display(q: dict[str, Any]) -> list[str]:
                     }
     :return: A list of display names. Invalid queries return N/A.
     """
-    db = sqlite3.connect('database.db')
-    utils.update_record()
-    special_query_keys = ["tag", "place"]
-    cursor = db.cursor()
-    ret = []
-    for query in q["query"]:
-        key_name = "id"
-        if query[1] in special_query_keys:
-            key_name = query[1]
-        cursor.execute("select * from " + query[1] + f" where {key_name}=:key",
-                       {"key": query[0]})
-        res = cursor.fetchall()
-        if len(res) == 0:
-            ret.append("N/A")
-        for i in range(len(res)):
-            item = res[i]
-            query = q["query"][i]
-            heads = cursor.execute(f"pragma table_info({query[1]})").fetchall()
-            idx = -1
-            for head in heads:
-                if head[1] == "display":
-                    idx = head[0]
-                    break
-            ret.append(item[idx] if idx != -1 else "N/A")
-
-    db.close()
-    return ret
+    with sqlite3.connect("database.db") as db:
+        special_query_keys = ["tag", "place"]
+        cursor = db.cursor()
+        ret = []
+        for query in q["query"]:
+            key_name = "id"
+            if query[1] in special_query_keys:
+                key_name = query[1]
+            cursor.execute("select * from " + query[1] + f" where {key_name}=:key",
+                           {"key": query[0]})
+            res = cursor.fetchall()
+            if len(res) == 0:
+                ret.append("N/A")
+            for i in range(len(res)):
+                item = res[i]
+                query = q["query"][i]
+                heads = cursor.execute(f"pragma table_info({query[1]})").fetchall()
+                idx = -1
+                for head in heads:
+                    if head[1] == "display":
+                        idx = head[0]
+                        break
+                ret.append(item[idx] if idx != -1 else "N/A")
+        return ret
 
 
 def check_permission(permissions: list[str], classrooms: list[str]) -> list[str]:
@@ -146,27 +140,25 @@ def check_permission(permissions: list[str], classrooms: list[str]) -> list[str]
     :param classrooms: Classroom IDs
     :return: A list containing the classrooms that CANNOT be reserved with the given permissions.
     """
-    db = sqlite3.connect('database.db')
-    utils.update_record()
-    allowed_classrooms = []
+    with sqlite3.connect("database.db") as db:
+        allowed_classrooms = []
+        cursor = db.cursor()
+        for permission in permissions:
+            cursor.execute("select * from permission where id=:id", {"id": permission})
+            res = cursor.fetchall()
+            if len(res) == 0:
+                continue
+            allowed_classrooms.extend(res[0][2].split(",")[:-1])
+        allowed_classrooms = list(set(allowed_classrooms))
+        if "*" in allowed_classrooms:
+            return []
 
-    cursor = db.cursor()
-    for permission in permissions:
-        cursor.execute("select * from permission where id=:id", {"id": permission})
-        res = cursor.fetchall()
-        if len(res) == 0:
-            continue
-        allowed_classrooms.extend(res[0][2].split(",")[:-1])
-    allowed_classrooms = list(set(allowed_classrooms))
-    if "*" in allowed_classrooms:
-        return []
+        no_permissions = []
+        for classroom in classrooms:
+            if classroom not in allowed_classrooms:
+                no_permissions.append(classroom)
 
-    no_permissions = []
-    for classroom in classrooms:
-        if classroom not in allowed_classrooms:
-            no_permissions.append(classroom)
-
-    return no_permissions
+        return no_permissions
 
 
 def query_img(url: str) -> bytes:
