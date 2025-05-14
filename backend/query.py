@@ -3,7 +3,7 @@ from backend import utils
 from typing import *
 
 
-generic_query_keys = ["func_tag", "pic_url"]
+generic_query_keys = ["func_tag", "pic_url", "permission"]
 
 
 def construct_condition(cond: dict[str, Any]) -> str:
@@ -165,3 +165,15 @@ def query_img(url: str) -> bytes:
     with open(f"img/{url}.jpg", "rb") as img_file:
         img_data = img_file.read()
     return img_data
+
+
+def query_user(cond: dict[str, Any]) -> list[dict[str, Any]]:
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        param = construct_params(cond)
+        if len(cond) != 0:
+            cursor.execute("select * from user_info where " + construct_condition(cond), param)
+        else:
+            cursor.execute("select * from user_info")
+        ret = construct_response(cursor, "user_info")
+        return ret
