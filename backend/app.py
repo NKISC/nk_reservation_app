@@ -53,3 +53,9 @@ async def query_img(url: str):
 async def addition_record(q: data_models.AdditionModel):
     res = await asyncio.to_thread(addition.add_records, q.classroom, q.noon, q.applicant_id, q.time_stamp)
     return res
+
+
+@app.post("/query/user")
+async def query_user(q: data_models.BasePostQuery):
+    res = await asyncio.to_thread(query.query_user, q.cond)
+    return res
