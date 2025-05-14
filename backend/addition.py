@@ -18,6 +18,8 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int):
             recent_id = int(id_file.read().strip())
         with open("recent_id", "w") as id_file:
             id_file.write(str(recent_id + 1))
+
+        #judge permission
         cursor.execute("SELECT permission FROM user_info WHERE id = :applicant_id", {'applicant_id': applicant_id})
         res = cursor.fetchone()
         perm = res[0].split(",")
@@ -27,6 +29,17 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int):
         for i in no_perm:
             if i == classroom:
                 return {"success": False, "error": "no_permission"}
+
+        #judge reservation conflict
+        cursor.execute("SELECT classroom_id FROM record")
+        rooms = cursor.fetchone()
+        cursor.execute("SELECT noon FROM record")
+        noons = cursor.fetchone()
+        cursor.execute("SELECT time_stamp FROM record")
+        times = cursor.fetchone()
+        for i in range(0, len(rooms)):
+            if rooms[i] == classroom and noons[i] == noon and times[i] == time_stamp:
+                return {"success": False, "error": "classroom_already_reserved"}
 
         try:
             cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
