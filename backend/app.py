@@ -49,8 +49,8 @@ async def query_img(url: str):
     return fastapi.Response(content=res, media_type="image/jpeg")
 
 
-@app.post("/addition/record")
-async def addition_record(q: data_models.AdditionModel):
+@app.post("/addition/add_record")
+async def addition_record(q: data_models.RecordAdditionModel):
     res = await asyncio.to_thread(addition.add_records, q.classroom, q.noon, q.applicant_id, q.time_stamp)
     return res
 
@@ -58,4 +58,10 @@ async def addition_record(q: data_models.AdditionModel):
 @app.post("/query/user")
 async def query_user(q: data_models.BasePostQuery):
     res = await asyncio.to_thread(query.query_user, q.cond)
+    return res
+
+  
+@app.post("/addition/add_user")
+async def addition_user(q: data_models.UserAdditionModel):
+    res = await asyncio.to_thread(addition.add_user, q.display_name, q.permissions)
     return res
