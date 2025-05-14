@@ -82,7 +82,7 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
                               For instance, if the reservation is on Feb. 1, 2025, the time_stamp will be 1738339200).
     :return: A list of reservation information.
     """
-    with sqlite3.connect('reservation.db') as db:
+    with sqlite3.connect('database.db') as db:
         utils.update_record()
         cursor = db.cursor()
         if len(cond) != 0:
