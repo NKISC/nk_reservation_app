@@ -44,5 +44,16 @@ def add_user(display_name: str, permission: str):
             user_id = int(id_file.read().strip())
         with open("user_id", "w") as id_file:
             id_file.write(str(user_id + 1))
-        cursor.execute("INSERT INTO user_info VALUES (:id, :display_name, :permission)",
+        try:
+            cursor.execute("INSERT INTO user_info VALUES (:id, :display_name, :permission)",
                        {'id': user_id + 1, 'display_name': display_name, 'permission': permission})
+            return {"success": True}
+        except sqlite3.IntegrityError as e:
+            return {"success": False, "error": f"Integrity error: {e}"}
+        except sqlite3.OperationalError as e:
+            return {"success": False, "error": f"Operational error: {e}"}
+        except sqlite3.DatabaseError as e:
+            return {"success": False, "error": f"Database error: {e}"}
+        except Exception as e:
+            return {"success": False, "error": f"Unknown error: {e}"}
+
