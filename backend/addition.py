@@ -27,6 +27,7 @@ def addition(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
     no_perm = check_permission(perm, clas)
     for i in no_perm:
         if i == classroom:
+            db.close()
             return {"success": False, "error": "no_permission"}
 
     try:
