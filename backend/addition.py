@@ -2,7 +2,7 @@ import sqlite3
 from backend.query import check_permission
 
 
-def add_records(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
+def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int):
     """
     Creating a new record.
     :param classroom: The classroom id.

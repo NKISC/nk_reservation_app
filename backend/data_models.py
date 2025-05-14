@@ -14,7 +14,7 @@ class PermissionCheckQuery(BaseModel):
 class RecordAdditionModel(BaseModel):
     classroom: str
     noon: bool
-    applicant_id: str
+    applicant_id: int
     time_stamp: int
 
 class UserAdditionModel(BaseModel):
