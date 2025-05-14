@@ -11,8 +11,12 @@ class PermissionCheckQuery(BaseModel):
     classrooms: list[str]
 
 
-class AdditionModel(BaseModel):
+class RecordAdditionModel(BaseModel):
     classroom: str
     noon: bool
     applicant_id: str
     time_stamp: int
+
+class UserAdditionModel(BaseModel):
+    display_name: str
+    permissions: str
