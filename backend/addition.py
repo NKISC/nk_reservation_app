@@ -1,5 +1,4 @@
 import sqlite3
-from backend import query
 from backend.query import check_permission
 
 
