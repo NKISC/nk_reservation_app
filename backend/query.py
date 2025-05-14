@@ -92,7 +92,7 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
         ret = construct_response(cursor, "record")
         return ret
 
-
+      
 def query_display(q: dict[str, Any]) -> list[str]:
     """
     Query the display name for a given key.
