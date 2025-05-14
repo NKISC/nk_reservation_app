@@ -59,7 +59,6 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
         :return: A list of classroom information.
     """
     with sqlite3.connect('classroom.db') as db:
-        utils.update_record()
         cursor = db.cursor()
         param = construct_params(cond)
         if len(cond) != 0:
@@ -109,7 +108,6 @@ def query_display(q: dict[str, Any]) -> list[str]:
     :return: A list of display names. Invalid queries return N/A.
     """
     with sqlite3.connect("database.db") as db:
-        utils.update_record()
         special_query_keys = ["tag", "place"]
         cursor = db.cursor()
         ret = []
@@ -143,9 +141,7 @@ def check_permission(permissions: list[str], classrooms: list[str]) -> list[str]
     :return: A list containing the classrooms that CANNOT be reserved with the given permissions.
     """
     with sqlite3.connect("database.db") as db:
-        utils.update_record()
         allowed_classrooms = []
-
         cursor = db.cursor()
         for permission in permissions:
             cursor.execute("select * from permission where id=:id", {"id": permission})
