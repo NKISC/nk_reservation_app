@@ -1,8 +1,9 @@
 import sqlite3
 from backend.query import check_permission
+from typing import *
 
 
-def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int):
+def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) -> {str, Union[bool, str]}:
     """
     Creating a new record.
     :param classroom: The classroom id.
@@ -51,6 +52,7 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int):
 
 
 def add_user(display_name: str, permission: str):
+def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
         with open("user_id") as id_file:
