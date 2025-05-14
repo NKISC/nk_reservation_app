@@ -3,7 +3,7 @@ from backend import query
 from backend.query import check_permission
 
 
-def addition(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
+def add_records(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
     """
     Creating a new record.
     :param classroom: The classroom id.
@@ -40,3 +40,14 @@ def addition(classroom: str, noon: bool, applicant_id: str, time_stamp: int):
         return {"success": False, "error": str(e)}
     db.close()
     return {"success": True}
+
+
+def add_user(display_name: str, permission: str):
+    with sqlite3.connect('database.db') as db:
+        cursor = db.cursor()
+        with open("user_id") as id_file:
+            user_id = int(id_file.read().strip())
+        with open("user_id", "w") as id_file:
+            id_file.write(str(user_id + 1))
+        cursor.execute("INSERT INTO user_info VALUES (:id, :display_name, :permission)",
+                       {'id': user_id + 1, 'display_name': display_name, 'permission': permission})
