@@ -177,3 +177,17 @@ def query_user(cond: dict[str, Any]) -> list[dict[str, Any]]:
             cursor.execute("select * from user_info")
         ret = construct_response(cursor, "user_info")
         return ret
+
+      
+def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT classroom_id FROM record")
+        rooms = cursor.fetchone()
+        cursor.execute("SELECT noon FROM record")
+        noons = cursor.fetchone()
+        cursor.execute("SELECT time_stamp FROM record")
+        times = cursor.fetchone()
+        for i in range(0, len(rooms)):
+            if rooms[i] == classroom and noons[i] == noon and times[i] == time_stamp:
+                return True

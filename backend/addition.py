@@ -1,5 +1,5 @@
 import sqlite3
-from backend.query import check_permission
+from backend.query import check_permission, judge_conflict
 from typing import *
 
 
@@ -32,15 +32,8 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
                 return {"success": False, "error": "no_permission"}
 
         #judge reservation conflict
-        cursor.execute("SELECT classroom_id FROM record")
-        rooms = cursor.fetchone()
-        cursor.execute("SELECT noon FROM record")
-        noons = cursor.fetchone()
-        cursor.execute("SELECT time_stamp FROM record")
-        times = cursor.fetchone()
-        for i in range(0, len(rooms)):
-            if rooms[i] == classroom and noons[i] == noon and times[i] == time_stamp:
-                return {"success": False, "error": "classroom_already_reserved"}
+        if judge_conflict(classroom, noon, time_stamp):
+            return {"success": False, "error": "classroom_already_reserved"}
 
         try:
             cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
