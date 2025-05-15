@@ -165,3 +165,17 @@ def query_img(url: str) -> bytes:
     with open(f"img/{url}.jpg", "rb") as img_file:
         img_data = img_file.read()
     return img_data
+
+
+def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT classroom_id FROM record")
+        rooms = cursor.fetchone()
+        cursor.execute("SELECT noon FROM record")
+        noons = cursor.fetchone()
+        cursor.execute("SELECT time_stamp FROM record")
+        times = cursor.fetchone()
+        for i in range(0, len(rooms)):
+            if rooms[i] == classroom and noons[i] == noon and times[i] == time_stamp:
+                return True
