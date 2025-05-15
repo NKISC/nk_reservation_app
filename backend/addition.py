@@ -94,11 +94,11 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             if cnt:
                 with open("recent_id") as id_file:
                     record = int(id_file.read().strip())
-                cursor.execute("""
-                               UPDATE cyclical_record
-                               SET record_id += (',' + "id")
-                               WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
-                               """, {"id": str(record)})
+                    cursor.execute("""
+                                   UPDATE cyclical_record
+                                   SET record_id += (',' + "id")
+                                   WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
+                                   """, {"id": str(record)})
             cnt += 1
             # add timestamp
             gap = 0
