@@ -101,8 +101,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                         cur_day = i
                         break
             cur_timestamp += (gap * 86400)
-
-        return None
+        return {"success": True}
 
 
 def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
