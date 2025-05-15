@@ -44,7 +44,6 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
         return {"success": True}
 
 
-def add_user(display_name: str, permission: str):
 def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
