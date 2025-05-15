@@ -84,9 +84,22 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             cur_timestamp += (gap * 86400)
 
         # add records
+        with open("recent_id") as id_file:
+            record = int(id_file.read().strip())
+        cursor.execute("INSERT INTO cyclical_record VALUES (:id)", {"id": str(record)})
+        cnt = 0
         cur_timestamp = beginning_time_stamp
         while cur_timestamp <= ending_time_stamp:
             add_records(classroom, noon, applicant_id, cur_timestamp)
+            if cnt:
+                with open("recent_id") as id_file:
+                    record = int(id_file.read().strip())
+                cursor.execute("""
+                               UPDATE cyclical_record
+                               SET record_id += (',' + "id")
+                               WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
+                               """, {"id": str(record)})
+            cnt += 1
             # add timestamp
             gap = 0
             for i in range(cur_day, 15):
