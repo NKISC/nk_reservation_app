@@ -44,6 +44,67 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
         return {"success": True}
 
 
+def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginning_time_stamp: int,
+                         ending_time_stamp: int, days: list[bool]) -> {str, Union[bool, str]}:
+    """
+    Creating cyclical records.
+    :param classroom: The classroom id.
+    :param noon: Whether the reservation is at noon.
+    :param applicant_id: The user id of the applicant.
+    :param beginning_time_stamp: The beginning date of the reservation
+    :param ending_time_stamp: The ending date of the reservation
+    :param days: A bool list of days to add (from Monday to Sunday)
+    :return:
+    """
+    with sqlite3.connect('database.db') as db:
+        cursor = db.cursor()
+        cur_timestamp = beginning_time_stamp
+        for i in range(1, 8):
+            if days[i]:
+                cur_day = i
+                break
+
+        # judge conflict
+        while cur_timestamp <= ending_time_stamp:
+            if judge_conflict(classroom, noon, cur_day):
+                return {"success": False, "error": "classroom_already_reserved"}
+            # add timestamp
+            gap = 0
+            for i in range(cur_day, 15):
+                if i >= 8:
+                    if days[i-7]:
+                        gap = i - cur_day
+                        cur_day = i - 7
+                        break
+                else:
+                    if days[i]:
+                        gap = i - cur_day
+                        cur_day = i
+                        break
+            cur_timestamp += (gap * 86400)
+
+        # add records
+        cur_timestamp = beginning_time_stamp
+        while cur_timestamp <= ending_time_stamp:
+            add_records(classroom, noon, applicant_id, cur_timestamp)
+            # add timestamp
+            gap = 0
+            for i in range(cur_day, 15):
+                if i >= 8:
+                    if days[i-7]:
+                        gap = i - cur_day
+                        cur_day = i - 7
+                        break
+                else:
+                    if days[i]:
+                        gap = i - cur_day
+                        cur_day = i
+                        break
+            cur_timestamp += (gap * 86400)
+
+        return None
+
+
 def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
