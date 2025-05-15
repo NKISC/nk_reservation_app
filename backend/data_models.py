@@ -17,6 +17,14 @@ class RecordAdditionModel(BaseModel):
     applicant_id: int
     time_stamp: int
 
+class CyclicalRecordAdditionModel(BaseModel):
+    classroom: str
+    noon: bool
+    applicant_id: int
+    beginning_time_stamp: int
+    ending_time_stamp: int
+    days: list[bool]
+
 class UserAdditionModel(BaseModel):
     display_name: str
     permissions: str
