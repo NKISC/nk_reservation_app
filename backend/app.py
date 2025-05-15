@@ -55,6 +55,13 @@ async def addition_record(q: data_models.RecordAdditionModel):
     return res
 
 
+@app.post("/addition/add_cyclical_record")
+async def add_cyclical_record(q: data_models.CyclicalRecordAdditionModel):
+    res = await asyncio.to_thread(addition.add_cyclical_records, q.classroom, q.noon,
+                                  q.applicant_id, q.beginning_time_stamp, q.ending_time_stamp, q.days)
+    return res
+
+
 @app.post("/query/user")
 async def query_user(q: data_models.BasePostQuery):
     res = await asyncio.to_thread(query.query_user, q.cond)
