@@ -1,0 +1,72 @@
+{
+	// 如果您是通过uni_modules形式引入uView，可以忽略此配置
+	"easycom": {
+		"autoscan": false,
+		"custom": {
+			"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue",
+			"^my-(.*)": "@/components/my-$1/my-$1.vue"
+		}
+
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		// {
+		// 	"path": "pages/login/login",
+		// 	"style": {
+		// 		"navigationBarTitleText": "登录",
+		// 		"navigationStyle": "custom"
+		// 	}
+		// }, 
+		{
+			"path": "pages/subscribe/subscribe",
+			"style": {
+				"navigationBarTitleText": "预约",
+				"navigationStyle": "custom"
+				// "enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/Individual/Individual",
+			"style": {
+				"navigationBarTitleText": "个人",
+				"navigationStyle": "custom"
+				// "enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/Individual/ReservationDetails",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+				// "enablePullDownRefresh": false
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#9E9E9E ",
+		"selectedColor": "#754E73",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"position": "bottom",
+		"fontSize": "14px",
+		"iconWidth": "20px",
+		"height":"70px",
+		"list": [{
+			"pagePath": "pages/subscribe/subscribe",
+			"text": "预约",
+			"iconPath": "./static/yy_active.jpeg",
+			"selectedIconPath": "./static/yy_active.jpeg"
+		}, {
+			"pagePath": "pages/Individual/Individual",
+			"text": "个人",
+			"iconPath": "./static/gr_unactive.jpeg",
+			"selectedIconPath": "./static/gr_unactive.jpeg"
+		}]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}
