@@ -53,13 +53,13 @@
 		"list": [{
 			"pagePath": "pages/subscribe/subscribe",
 			"text": "预约",
-			"iconPath": "./static/yy_active.jpeg",
+			"iconPath": "./static/yy_unactive.jpeg",
 			"selectedIconPath": "./static/yy_active.jpeg"
 		}, {
 			"pagePath": "pages/Individual/Individual",
 			"text": "个人",
 			"iconPath": "./static/gr_unactive.jpeg",
-			"selectedIconPath": "./static/gr_unactive.jpeg"
+			"selectedIconPath": "./static/gr_active.jpeg"
 		}]
 	},
 	"globalStyle": {
