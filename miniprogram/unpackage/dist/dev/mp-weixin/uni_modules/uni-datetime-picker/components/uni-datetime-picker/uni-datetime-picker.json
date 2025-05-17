@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "calendar": "/uni_modules/uni-datetime-picker/components/uni-datetime-picker/calendar",
+    "time-picker": "/uni_modules/uni-datetime-picker/components/uni-datetime-picker/time-picker"
+  }
+}
