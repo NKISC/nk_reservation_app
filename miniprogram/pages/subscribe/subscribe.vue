@@ -40,17 +40,18 @@
 					<view class="navTitle">{{navMode}}</view>
 					<view class="list">
 						<view v-for="item,index in southItem" :key="index" v-if="navMode === '南楼'">
-							<view class="listItem">
+              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode === '' || item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode))">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
-										<view v-for="(i,indexs) in item.nav" :key="indexs">
+										<view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
+                      <!-- It would somehow only work this way... -->
 											<view
-												style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;">
-												{{i}}
+												style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+												{{tag_display[i]}}
 											</view>
 										</view>
 									</view>
@@ -65,19 +66,19 @@
 							</view>
 						</view>
 						<view v-for="item,index in northItem" :key="index" v-if="navMode === '北楼'">
-							<view class="listItem">
+              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
-										<view v-for="(i,indexs) in item.nav" :key="indexs">
-											<view
-												style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;">
-												{{i}}
-											</view>
-										</view>
+                    <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
+                      <view
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+                        {{tag_display[i]}}
+                      </view>
+                    </view>
 									</view>
 									<view
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
@@ -90,19 +91,19 @@
 							</view>
 						</view>
 						<view v-for="item,index in office2Item" :key="index" v-if="navMode === '第二办公楼'">
-							<view class="listItem">
+              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
-										<view v-for="(i,indexs) in item.nav" :key="indexs">
-											<view
-												style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;">
-												{{i}}
-											</view>
-										</view>
+                    <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
+                      <view
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+                        {{tag_display[i]}}
+                      </view>
+                    </view>
 									</view>
 									<view
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
@@ -115,17 +116,17 @@
 							</view>
 						</view>
             <view v-for="item,index in scienceItem" :key="index" v-if="navMode === '科学馆'">
-              <view class="listItem">
+              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
                 <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
                   <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
                   <view style="display: flex;height: 38rpx;">
-                    <view v-for="(i,indexs) in item.nav" :key="indexs">
+                    <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
                       <view
-                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;">
-                        {{i}}
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+                        {{tag_display[i]}}
                       </view>
                     </view>
                   </view>
@@ -140,17 +141,17 @@
               </view>
             </view>
             <view v-for="item,index in bookBarItem" :key="index" v-if="navMode === '书吧'">
-              <view class="listItem">
+              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
                 <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
                   <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
                   <view style="display: flex;height: 38rpx;">
-                    <view v-for="(i,indexs) in item.nav" :key="indexs">
+                    <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
                       <view
-                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;">
-                        {{i}}
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+                        {{tag_display[i]}}
                       </view>
                     </view>
                   </view>
@@ -174,27 +175,6 @@
 <script>
 	export default {
 		data() {
-      let classroomItems = {};
-      let cls;
-      wx.request({
-        url: "https://nkapi.ememememem.space/query/classroom",
-        method: "POST",
-        data: {
-          cond: {}
-        },
-        success: (res) => {
-          cls = res.data;
-          classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": []}
-          let i;
-          for (i = 0; i < cls.length; i++) classroomItems[cls[i]["place"]].push(cls[i]);
-          this.southItem = classroomItems.south;
-          this.office2Item = classroomItems.office2;
-          this.bookBarItem = classroomItems.book_bar;
-          this.scienceItem = classroomItems.science;
-          this.northItem = classroomItems.north;
-        }
-      })
-
 			return {
 				isOpen: false,
 				canShowMore: false,
@@ -212,6 +192,7 @@
         northItem: [],
         bookBarItem: [],
         scienceItem: [],
+        tag_display: {},
 				listItem1: [{
 					name: "AAA舞蹈教室",
 					nav: ['舞蹈', '标签1'],
@@ -263,6 +244,36 @@
 				],
 			}
 		},
+    onLoad() {
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/func_tags",
+        method: "GET",
+        success: (res) => {
+          this.tag_display = res.data;
+          this.ChooseItem = Object.values(res.data);
+          this.ChooseMode = "";
+        }
+      })
+
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/classroom",
+        method: "POST",
+        data: {
+          cond: {}
+        },
+        success: (res) => {
+          let cls = res.data;
+          let classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": []}
+          let i;
+          for (i = 0; i < cls.length; i++) classroomItems[cls[i]["place"]].push(cls[i]);
+          this.southItem = classroomItems.south;
+          this.office2Item = classroomItems.office2;
+          this.bookBarItem = classroomItems.book_bar;
+          this.scienceItem = classroomItems.science;
+          this.northItem = classroomItems.north;
+        }
+      })
+    },
 		mounted() {
 			this.$nextTick(() => {
 				this.checkOverflow();
@@ -279,7 +290,7 @@
 			},
 			//tabs
 			setChooseMode(mode) {
-				this.ChooseMode = mode
+				this.ChooseMode = this.ChooseMode === mode ? "" : mode;
 				this.isOpen = false
 			},
 			toyy() {
