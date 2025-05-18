@@ -41,7 +41,9 @@
 					<view class="list">
 						<view v-for="item,index in southItem" :key="index" v-if="navMode === '南楼'">
 							<view class="listItem">
-								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
@@ -64,7 +66,9 @@
 						</view>
 						<view v-for="item,index in northItem" :key="index" v-if="navMode === '北楼'">
 							<view class="listItem">
-								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
@@ -87,7 +91,9 @@
 						</view>
 						<view v-for="item,index in office2Item" :key="index" v-if="navMode === '第二办公楼'">
 							<view class="listItem">
-								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
@@ -110,7 +116,9 @@
 						</view>
             <view v-for="item,index in scienceItem" :key="index" v-if="navMode === '科学馆'">
               <view class="listItem">
-                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
                 <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
                   <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
                   <view style="display: flex;height: 38rpx;">
@@ -133,7 +141,9 @@
             </view>
             <view v-for="item,index in bookBarItem" :key="index" v-if="navMode === '书吧'">
               <view class="listItem">
-                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
                 <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
                   <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
                   <view style="display: flex;height: 38rpx;">
