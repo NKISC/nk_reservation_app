@@ -58,7 +58,7 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
             func_tag (list[str]): The function tag(s) of the classroom.
         :return: A list of classroom information.
     """
-    with sqlite3.connect('classroom.db') as db:
+    with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
         param = construct_params(cond)
         if len(cond) != 0:
