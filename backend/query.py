@@ -192,3 +192,8 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
             if rooms[i] == classroom and noons[i] == noon and times[i] == time_stamp:
                 return True
         return False
+
+
+def get_all_func_tags() -> list[str]:
+    with open("func_tags") as tag_file:
+        return tag_file.read().split(",")

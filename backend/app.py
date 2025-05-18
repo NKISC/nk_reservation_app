@@ -72,3 +72,9 @@ async def query_user(q: data_models.BasePostQuery):
 async def addition_user(q: data_models.UserAdditionModel):
     res = await asyncio.to_thread(addition.add_user, q.display_name, q.permissions)
     return res
+
+
+@app.get("/query/func_tags")
+async def query_func_tags():
+    res = await asyncio.to_thread(query.get_all_func_tags)
+    return res
