@@ -197,6 +197,7 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
 def get_all_func_tags() -> dict[str, str]:
     with open("func_tags") as tag_file:
         tags = tag_file.read().split("\n")
+        del tags[-1]
     q_list = [[tags[i], "tag"] for i in range(0, len(tags))]
     r = query_display({"query": q_list})
 
