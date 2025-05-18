@@ -196,4 +196,4 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
 
 def get_all_func_tags() -> list[str]:
     with open("func_tags") as tag_file:
-        return tag_file.read().split(",")
+        return tag_file.read().split("\n")
