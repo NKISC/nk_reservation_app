@@ -162,12 +162,27 @@ def check_permission(permissions: list[str], classrooms: list[str]) -> list[str]
 
 
 def query_img(url: str) -> bytes:
+    """
+    Get the image with the specified url.
+    TODO: Format should not be restricted to jpg, but it works for now.
+    :param url: the url of the image
+    :return: the image
+    """
     with open(f"img/{url}.jpg", "rb") as img_file:
         img_data = img_file.read()
     return img_data
 
 
 def query_user(cond: dict[str, Any]) -> list[dict[str, Any]]:
+    """
+    Get the info of the user.
+    :param cond: A dictionary containing the filters that select the users to return.
+        Possible keys:
+            id (int): The user id.
+            display (str): The user's display name.
+            permission (list[str]): The user's permissions.
+    :return: The users that satisfy the conditions of the filter.
+    """
     with sqlite3.connect("database.db") as db:
         cursor = db.cursor()
         param = construct_params(cond)
@@ -195,6 +210,10 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
 
 
 def get_all_func_tags() -> dict[str, str]:
+    """
+    Get all available function tags and their display names.
+    :return: Function tags (keys) and their display names (values).
+    """
     with open("func_tags") as tag_file:
         tags = tag_file.read().split("\n")
         del tags[-1]
