@@ -39,11 +39,13 @@
 					<view :class="{ 'mark': isOpen }"></view>
 					<view class="navTitle">{{navMode}}</view>
 					<view class="list">
-						<view v-for="item,index in listItem" :key="index" v-if="navMode == '科学'">
+						<view v-for="item,index in southItem" :key="index" v-if="navMode === '南楼'">
 							<view class="listItem">
-								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
-									<view style="font-weight: bold;height: 50rpx;">{{item.name}}</view>
+									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
 										<view v-for="(i,indexs) in item.nav" :key="indexs">
 											<view
@@ -56,17 +58,19 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy">
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
-						<view v-for="item,index in listItem1" :key="index" v-if="navMode == '艺术'">
+						<view v-for="item,index in northItem" :key="index" v-if="navMode === '北楼'">
 							<view class="listItem">
-								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
-									<view style="font-weight: bold;height: 50rpx;">{{item.name}}</view>
+									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
 										<view v-for="(i,indexs) in item.nav" :key="indexs">
 											<view
@@ -79,17 +83,19 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy">
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
-						<view v-for="item,index in listItem2" :key="index" v-if="navMode == '书吧'">
+						<view v-for="item,index in office2Item" :key="index" v-if="navMode === '第二办公楼'">
 							<view class="listItem">
-								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;"></view>
+								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
-									<view style="font-weight: bold;height: 50rpx;">{{item.name}}</view>
+									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
 									<view style="display: flex;height: 38rpx;">
 										<view v-for="(i,indexs) in item.nav" :key="indexs">
 											<view
@@ -102,12 +108,62 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy">
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
+            <view v-for="item,index in scienceItem" :key="index" v-if="navMode === '科学馆'">
+              <view class="listItem">
+                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
+                <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
+                  <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
+                  <view style="display: flex;height: 38rpx;">
+                    <view v-for="(i,indexs) in item.nav" :key="indexs">
+                      <view
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;">
+                        {{i}}
+                      </view>
+                    </view>
+                  </view>
+                  <view
+                      style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
+                    <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
+                    <view style="width: 50rpx;height: 50rpx;">
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view v-for="item,index in bookBarItem" :key="index" v-if="navMode === '书吧'">
+              <view class="listItem">
+                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
+                <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
+                  <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
+                  <view style="display: flex;height: 38rpx;">
+                    <view v-for="(i,indexs) in item.nav" :key="indexs">
+                      <view
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;">
+                        {{i}}
+                      </view>
+                    </view>
+                  </view>
+                  <view
+                      style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
+                    <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
+                    <view style="width: 50rpx;height: 50rpx;">
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
 					</view>
 				</view>
 			</view>
@@ -118,18 +174,44 @@
 <script>
 	export default {
 		data() {
+      let classroomItems = {};
+      let cls;
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/classroom",
+        method: "POST",
+        data: {
+          cond: {}
+        },
+        success: (res) => {
+          cls = res.data;
+          classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": []}
+          let i;
+          for (i = 0; i < cls.length; i++) classroomItems[cls[i]["place"]].push(cls[i]);
+          this.southItem = classroomItems.south;
+          this.office2Item = classroomItems.office2;
+          this.bookBarItem = classroomItems.book_bar;
+          this.scienceItem = classroomItems.science;
+          this.northItem = classroomItems.north;
+        }
+      })
+
 			return {
 				isOpen: false,
 				canShowMore: false,
 				wk: null,
 				nk: null,
-				navList: ['科学', '艺术', '书吧'],
-				navMode: '科学',
+				navList: ['南楼', '第二办公楼', '北楼', '书吧', '科学馆'],
+				navMode: '南楼',
 				search: "",
 				ChooseItem: ['舞蹈', '功能1', '功能2', '功能3', '功能4', '功能5', '功能6'],
 				newChooseItem: [],
 				ChooseMode: '舞蹈',
 				ChooseNum: 0,
+        southItem: [],
+        office2Item: [],
+        northItem: [],
+        bookBarItem: [],
+        scienceItem: [],
 				listItem1: [{
 					name: "AAA舞蹈教室",
 					nav: ['舞蹈', '标签1'],
