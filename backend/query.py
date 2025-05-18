@@ -203,6 +203,8 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
         noons = cursor.fetchone()
         cursor.execute("SELECT time_stamp FROM record")
         times = cursor.fetchone()
+        if rooms is None:
+            return False
         for i in range(0, len(rooms)):
             if rooms[i] == classroom and noons[i] == noon and times[i] == time_stamp:
                 return True
