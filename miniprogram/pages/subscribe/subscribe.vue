@@ -174,27 +174,6 @@
 <script>
 	export default {
 		data() {
-      let classroomItems = {};
-      let cls;
-      wx.request({
-        url: "https://nkapi.ememememem.space/query/classroom",
-        method: "POST",
-        data: {
-          cond: {}
-        },
-        success: (res) => {
-          cls = res.data;
-          classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": []}
-          let i;
-          for (i = 0; i < cls.length; i++) classroomItems[cls[i]["place"]].push(cls[i]);
-          this.southItem = classroomItems.south;
-          this.office2Item = classroomItems.office2;
-          this.bookBarItem = classroomItems.book_bar;
-          this.scienceItem = classroomItems.science;
-          this.northItem = classroomItems.north;
-        }
-      })
-
 			return {
 				isOpen: false,
 				canShowMore: false,
@@ -263,6 +242,26 @@
 				],
 			}
 		},
+    onLoad() {
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/classroom",
+        method: "POST",
+        data: {
+          cond: {}
+        },
+        success: (res) => {
+          let cls = res.data;
+          let classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": []}
+          let i;
+          for (i = 0; i < cls.length; i++) classroomItems[cls[i]["place"]].push(cls[i]);
+          this.southItem = classroomItems.south;
+          this.office2Item = classroomItems.office2;
+          this.bookBarItem = classroomItems.book_bar;
+          this.scienceItem = classroomItems.science;
+          this.northItem = classroomItems.north;
+        }
+      })
+    },
 		mounted() {
 			this.$nextTick(() => {
 				this.checkOverflow();
