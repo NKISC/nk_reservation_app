@@ -194,6 +194,10 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
         return False
 
 
-def get_all_func_tags() -> list[str]:
+def get_all_func_tags() -> dict[str, str]:
     with open("func_tags") as tag_file:
-        return tag_file.read().split("\n")
+        tags = tag_file.read().split("\n")
+    q_list = [[tags[i], "tag"] for i in range(0, len(tags))]
+    r = query_display({"query": q_list})
+
+    return {tags[i]: r[i] for i in range(0, len(q_list))}
