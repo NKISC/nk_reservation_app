@@ -2,15 +2,15 @@
 	<view class="indexPage">
 		<view class="header">
 			<view class="content">
-				<view class="title">科技馆</view>
+				<view class="title">{{ reservingClassroom.display }}</view>
 				<view style="height: 200rpx;"></view>
 				<view style="display: flex;margin-top: 20rpx;align-items: center;">
-					<image src="../../static/gr_ditu2.svg" style="width: 30rpx;height: 30rpx;">
-						<view style="margin-left: 10rpx;font-size: 40rpx;color: #9D979D;font-weight: bold;">202教室</view>
+					<image src="../../static/gr_ditu2.svg" style="width: 30rpx;height: 30rpx;" />
+						<view style="margin-left: 10rpx;font-size: 40rpx;color: #9D979D;font-weight: bold;">{{ reservingPlaceDisplay }}</view>
 				</view>
 				<view class="nav">
 					<view v-for="item,index in navList" :key="index">
-						<view class="navItem" :class="{ active: navMode === item }" @click="setNavMode(item)">{{item}}</view>
+						<view class="navItem">{{item}}</view>
 					</view>
 				</view>
 				<view class="main">
@@ -109,7 +109,7 @@
 				<view class="mark_data_sj" style="font-weight: bold;">2024年02月14日</view>
 			</view>
 
-			<image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='qd'>
+			<image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='qd' />
 		</MyDialog>
 	</view>
 </template>
@@ -133,6 +133,9 @@
 			} = formatDate();
 			return {
 				showmark: false,
+        tag_display: {},
+        reservingClassroom: {},
+        reservingPlaceDisplay: "",
 				navList: ['舞蹈', '功能1', '功能2'],
 				navMode: '舞蹈',
 				list: [{
@@ -155,6 +158,23 @@
 				datetimeEnd: tomorrows
 			}
 		},
+    onLoad() {
+      this.tag_display = uni.getStorageSync('tag_display');
+      this.reservingClassroom = uni.getStorageSync('reservingClassroom');
+      this.navList = this.reservingClassroom.func_tag.split(",");
+      this.navList.pop();
+      this.navList = this.navList.map(x => this.tag_display[x]);
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/display",
+        method: "POST",
+        data: {
+          cond: {"query": [[this.reservingClassroom.place, "place"]]}
+        },
+        success: (res) => {
+          this.reservingPlaceDisplay = res.data[0]
+        }
+      })
+    },
 		methods: {
 			transitionData(dateStr) {
 				const [year, month, day] = dateStr.split('-');

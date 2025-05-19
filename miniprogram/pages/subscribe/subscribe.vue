@@ -59,7 +59,7 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
 										</view>
 									</view>
 								</view>
@@ -84,7 +84,7 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
 										</view>
 									</view>
 								</view>
@@ -109,7 +109,7 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
 										</view>
 									</view>
 								</view>
@@ -134,7 +134,7 @@
                       style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
                     <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
                     <view style="width: 50rpx;height: 50rpx;">
-                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
                     </view>
                   </view>
                 </view>
@@ -159,7 +159,7 @@
                       style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
                     <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
                     <view style="width: 50rpx;height: 50rpx;">
-                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
                     </view>
                   </view>
                 </view>
@@ -203,6 +203,7 @@
           this.tag_display = res.data;
           this.ChooseItem = Object.values(res.data);
           this.ChooseMode = "";
+          uni.setStorageSync("tag_display", this.tag_display);
         }
       })
 
@@ -244,7 +245,8 @@
 				this.ChooseMode = this.ChooseMode === mode ? "" : mode;
 				this.isOpen = false
 			},
-			toyy() {
+			toyy(item) {
+        uni.setStorageSync("reservingClassroom", item);
 				uni.navigateTo({
 					url: `/pages/Individual/ReservationDetails`,
 				})
