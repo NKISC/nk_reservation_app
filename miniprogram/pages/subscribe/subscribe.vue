@@ -40,7 +40,7 @@
 					<view class="navTitle">{{navMode}}</view>
 					<view class="list">
 						<view v-for="item,index in southItem" :key="index" v-if="navMode === '南楼'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode === '' || item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode))">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode === '' || item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode))">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -59,14 +59,14 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
 						<view v-for="item,index in northItem" :key="index" v-if="navMode === '北楼'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -84,14 +84,14 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
 						<view v-for="item,index in office2Item" :key="index" v-if="navMode === '第二办公楼'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -109,14 +109,14 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
             <view v-for="item,index in scienceItem" :key="index" v-if="navMode === '科学馆'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -134,14 +134,14 @@
                       style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
                     <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
                     <view style="width: 50rpx;height: 50rpx;">
-                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
                     </view>
                   </view>
                 </view>
               </view>
             </view>
             <view v-for="item,index in bookBarItem" :key="index" v-if="navMode === '书吧'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -159,7 +159,7 @@
                       style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
                     <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
                     <view style="width: 50rpx;height: 50rpx;">
-                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy(item)" />
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
                     </view>
                   </view>
                 </view>
