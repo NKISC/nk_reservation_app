@@ -10,7 +10,7 @@
 				</view>
 				<view class="nav">
 					<view v-for="item,index in navList" :key="index">
-						<view class="navItem">{{item}}</view>
+						<view class="navItem" v-if="item !== null">{{item}}</view>
 					</view>
 				</view>
 				<view class="main">
