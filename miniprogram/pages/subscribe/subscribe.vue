@@ -183,9 +183,9 @@
 				navList: ['南楼', '第二办公楼', '北楼', '书吧', '科学馆'],
 				navMode: '南楼',
 				search: "",
-				ChooseItem: ['舞蹈', '功能1', '功能2', '功能3', '功能4', '功能5', '功能6'],
+				ChooseItem: [],
 				newChooseItem: [],
-				ChooseMode: '舞蹈',
+				ChooseMode: '',
 				ChooseNum: 0,
         southItem: [],
         office2Item: [],
@@ -193,55 +193,6 @@
         bookBarItem: [],
         scienceItem: [],
         tag_display: {},
-				listItem1: [{
-					name: "AAA舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "204",
-				}, {
-					name: "NGA舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "205",
-				}],
-				listItem2: [{
-					name: "AAA舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "204",
-				}, {
-					name: "ANB舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "206",
-				}, ],
-				listItem: [{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "204",
-					},
-					{
-						name: "NGA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "205",
-					},
-					{
-						name: "ANB舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "206",
-					},
-					{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "207",
-					},
-					{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "208",
-					},
-					{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "209",
-					},
-				],
 			}
 		},
     onLoad() {
