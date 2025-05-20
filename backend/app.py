@@ -78,3 +78,9 @@ async def addition_user(q: data_models.UserAdditionModel):
 async def query_func_tags():
     res = await asyncio.to_thread(query.get_all_func_tags)
     return res
+
+
+@app.post("login/")
+async def login(login_model: data_models.LoginModel):
+    res = await asyncio.to_thread(login.login, login_model.code)
+    return res

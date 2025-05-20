@@ -2,48 +2,58 @@
 	<view class="indexPage">
 		<view class="header">
 			<view class="content">
-				<view class="title">科技馆</view>
+				<view class="title">{{ reservingClassroom.display }}</view>
 				<view style="height: 200rpx;"></view>
 				<view style="display: flex;margin-top: 20rpx;align-items: center;">
-					<image src="../../static/gr_ditu2.svg" style="width: 30rpx;height: 30rpx;">
-						<view style="margin-left: 10rpx;font-size: 40rpx;color: #9D979D;font-weight: bold;">202教室</view>
+					<image src="../../static/gr_ditu2.svg" style="width: 30rpx;height: 30rpx;" />
+						<view style="margin-left: 10rpx;font-size: 40rpx;color: #9D979D;font-weight: bold;">{{ reservingPlaceDisplay }}</view>
 				</view>
 				<view class="nav">
 					<view v-for="item,index in navList" :key="index">
-						<view class="navItem" :class="{ active: navMode === item }" @click="setNavMode(item)">{{item}}</view>
+						<view class="navItem" v-if="item !== null">{{item}}</view>
 					</view>
 				</view>
 				<view class="main">
 
-					<view class="main_data">2024年02月14日</view>
+					<view class="main_data">
+            预约日期：
+            <view>
+              <view class="main_qsrq_lable">
+                <uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart"
+                                     @change='changeStart'>
+                  {{transitionData(form.singleStart)}}
+                </uni-datetime-picker>
+              </view>
+            </view>
+          </view>
 
 					<view style="height: 100rpx;margin-top: 20rpx;">
 						<u-radio-group v-model="form.value" style="display: flex;justify-content: space-around;">
 							<u-radio name="zw" :active-color="'#82007E'">
 								<view>
 									<view class="main_label" :class="{ data: form.value === 'zw' }">中午</view>
-									<view class="main_sjd">11：30-1：00</view>
+									<view class="main_sjd">12：20-2：20</view>
 								</view>
 							</u-radio>
 							<u-radio name="xw" style="margin-left: 50rpx;" :active-color="'#82007E'">
 								<view>
 									<view class="main_label" :class="{ data: form.value === 'xw' }">下午</view>
-									<view class="main_sjd">1：30-5： 00</view>
+									<view class="main_sjd">5：00-6： 00</view>
 								</view>
 							</u-radio>
 						</u-radio-group>
 					</view>
 
-					<u-checkbox-group v-model="form.value1" @change="checkboxChange" style="margin-top: 20rpx;">
+					<u-checkbox-group v-model="form.isCyclic" @change="checkboxChange" style="margin-top: 20rpx;">
 						<u-checkbox :customStyle="{marginBottom: '8px'}" shape="circle" :active-color="'#82007E'"
 							label="是否重复"></u-checkbox>
 					</u-checkbox-group>
 
-					<view v-if="form.value1.length > 0" style="margin-top: 20rpx;">
+					<view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx;">
 						<view class="main_cfpl">重复频率：</view>
 						<view style="height: 60rpx;display: flex;flex-direction: column;">
 							<u-line color="#9E9E9E" />
-							<u-radio-group v-model="form.value2" style="display: flex;justify-content: space-around;">
+							<u-radio-group v-model="form.cyclicMethod" style="display: flex;justify-content: space-around;">
 								<u-radio name="mz" shape="square" :active-color="'#82007E'">
 									<view style="color: #7E7E7E;font-size: 28rpx;font-weight: bold;">每周</view>
 								</u-radio>
@@ -55,14 +65,14 @@
 						</view>
 					</view>
 
-					<view v-if="form.value1.length > 0" style="margin-top: 20rpx;">
+					<view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx;">
 						<view class="main_qsrq">起始日期：</view>
 						<view style="display: flex;justify-content: space-around;">
 							<view>
 								<u-line color="#9E9E9E" />
 								<view class="main_qsrq_lable">
-									<uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart"
-										@change='chageStart'>
+									<uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart" end="2025-06-15"
+										@change='changeStart'>
 										{{transitionData(form.singleStart)}}
 									</uni-datetime-picker>
 								</view>
@@ -72,7 +82,7 @@
 							<view>
 								<u-line color="#9E9E9E" />
 								<view class="main_qsrq_lable">
-									<uni-datetime-picker ref="picker" v-model="form.singleEnd" type="date" :start="datetimeEnd">
+									<uni-datetime-picker ref="picker" v-model="form.singleEnd" type="date" :start="form.singleStart" :end="(self.forma)">
 										{{transitionData(form.singleEnd)}}
 									</uni-datetime-picker>
 								</view>
@@ -109,7 +119,7 @@
 				<view class="mark_data_sj" style="font-weight: bold;">2024年02月14日</view>
 			</view>
 
-			<image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='qd'>
+			<image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='qd' />
 		</MyDialog>
 	</view>
 </template>
@@ -133,6 +143,9 @@
 			} = formatDate();
 			return {
 				showmark: false,
+        tag_display: {},
+        reservingClassroom: {},
+        reservingPlaceDisplay: "",
 				navList: ['舞蹈', '功能1', '功能2'],
 				navMode: '舞蹈',
 				list: [{
@@ -146,27 +159,50 @@
 				],
 				form: {
 					value: "",
-					value1: [],
-					value2: "",
+					isCyclic: [],
+					cyclicMethod: "",
 					singleStart: tomorrow,
-					singleEnd: tomorrows,
+					singleEnd: tomorrow,
 				},
-				datetimeStart: tomorrow,
-				datetimeEnd: tomorrows
+				datetimeStart: today,
+				datetimeEnd: tomorrows,
+        limitDate: new Date(),
 			}
 		},
+    onLoad() {
+      this.limitDate.setDate(new Date().getDate() + 60);
+      this.limitDate = this.buildDate(this.limitDate);
+      this.tag_display = uni.getStorageSync('tag_display');
+      this.reservingClassroom = uni.getStorageSync('reservingClassroom');
+      this.navList = this.reservingClassroom.func_tag.split(",");
+      this.navList.pop();
+      this.navList = this.navList.map(x => this.tag_display[x]);
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/display",
+        method: "POST",
+        data: {
+          cond: {"query": [[this.reservingClassroom.place, "place"]]}
+        },
+        success: (res) => {
+          this.reservingPlaceDisplay = res.data[0]
+        }
+      })
+    },
 		methods: {
+      buildDate: (d) =>
+          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
 			transitionData(dateStr) {
 				const [year, month, day] = dateStr.split('-');
 				const formattedDate = `${year}年${month}月${day}日`;
 				return formattedDate
 			},
-			chageStart(e) {
-				this.datetimeEnd = e
-			},
+			changeStart() {
+				if (new Date(this.form.singleEnd) < new Date(this.form.singleStart)) this.form.singleEnd = buildDate(new Date(this.form.singleStart));
+			  formatDate()
+        },
 			checkboxChange(e) {
 				if (!(e > 0)) {
-					this.form.value2 = ""
+					this.form.cyclicMethod = ""
 				}
 			},
 			setNavMode(mode) {
@@ -181,8 +217,8 @@
 				});
 			},
 			openxq() {
-				if (this.form.value1.length > 0) {
-					if (this.form.value && this.form.value2 && this.form.singleStart && this.form.singleEnd) {
+				if (this.form.isCyclic.length > 0) {
+					if (this.form.value && this.form.cyclicMethod && this.form.singleStart && this.form.singleEnd) {
 						this.showmark = true
 					}
 				} else {
@@ -326,7 +362,7 @@
 			.main_qsrq_lable {
 				height: 50rpx;
 				line-height: 50rpx;
-				color: #9E9E9E;
+				color: #4e00a0;
 				font-size: 30rpx;
 			}
 		}

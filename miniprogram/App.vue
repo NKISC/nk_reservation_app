@@ -2,6 +2,20 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+      wx.login({
+        success(code_res) {
+          wx.request({
+            url: "https://nkapi.ememememem.space/login",
+            method: "POST",
+            data: {
+              "code": code_res.code,
+            },
+            success(res) {
+              uni.setStorageSync("openid", res.data.openid);
+            }
+          })
+        }
+      })
 		},
 		onShow: function() {
 			console.log('App Show')

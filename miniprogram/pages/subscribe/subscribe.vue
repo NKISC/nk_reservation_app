@@ -40,7 +40,7 @@
 					<view class="navTitle">{{navMode}}</view>
 					<view class="list">
 						<view v-for="item,index in southItem" :key="index" v-if="navMode === '南楼'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode === '' || item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode))">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode === '' || item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode))">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -59,14 +59,14 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
 						<view v-for="item,index in northItem" :key="index" v-if="navMode === '北楼'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -84,14 +84,14 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
 						<view v-for="item,index in office2Item" :key="index" v-if="navMode === '第二办公楼'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -109,14 +109,14 @@
 										style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
 										<view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
 										<view style="width: 50rpx;height: 50rpx;">
-											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+											<image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
 										</view>
 									</view>
 								</view>
 							</view>
 						</view>
             <view v-for="item,index in scienceItem" :key="index" v-if="navMode === '科学馆'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -134,14 +134,14 @@
                       style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
                     <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
                     <view style="width: 50rpx;height: 50rpx;">
-                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
                     </view>
                   </view>
                 </view>
               </view>
             </view>
             <view v-for="item,index in bookBarItem" :key="index" v-if="navMode === '书吧'">
-              <view class="listItem" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -159,7 +159,7 @@
                       style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
                     <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
                     <view style="width: 50rpx;height: 50rpx;">
-                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" @click="toyy" />
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
                     </view>
                   </view>
                 </view>
@@ -183,9 +183,9 @@
 				navList: ['南楼', '第二办公楼', '北楼', '书吧', '科学馆'],
 				navMode: '南楼',
 				search: "",
-				ChooseItem: ['舞蹈', '功能1', '功能2', '功能3', '功能4', '功能5', '功能6'],
+				ChooseItem: [],
 				newChooseItem: [],
-				ChooseMode: '舞蹈',
+				ChooseMode: '',
 				ChooseNum: 0,
         southItem: [],
         office2Item: [],
@@ -193,55 +193,6 @@
         bookBarItem: [],
         scienceItem: [],
         tag_display: {},
-				listItem1: [{
-					name: "AAA舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "204",
-				}, {
-					name: "NGA舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "205",
-				}],
-				listItem2: [{
-					name: "AAA舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "204",
-				}, {
-					name: "ANB舞蹈教室",
-					nav: ['舞蹈', '标签1'],
-					num: "206",
-				}, ],
-				listItem: [{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "204",
-					},
-					{
-						name: "NGA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "205",
-					},
-					{
-						name: "ANB舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "206",
-					},
-					{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "207",
-					},
-					{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "208",
-					},
-					{
-						name: "AAA舞蹈教室",
-						nav: ['舞蹈', '标签1'],
-						num: "209",
-					},
-				],
 			}
 		},
     onLoad() {
@@ -252,6 +203,7 @@
           this.tag_display = res.data;
           this.ChooseItem = Object.values(res.data);
           this.ChooseMode = "";
+          uni.setStorageSync("tag_display", this.tag_display);
         }
       })
 
@@ -293,7 +245,8 @@
 				this.ChooseMode = this.ChooseMode === mode ? "" : mode;
 				this.isOpen = false
 			},
-			toyy() {
+			toyy(item) {
+        uni.setStorageSync("reservingClassroom", item);
 				uni.navigateTo({
 					url: `/pages/Individual/ReservationDetails`,
 				})
