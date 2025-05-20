@@ -28,3 +28,7 @@ class CyclicalRecordAdditionModel(BaseModel):
 class UserAdditionModel(BaseModel):
     display_name: str
     permissions: str
+
+
+class LoginModel(BaseModel):
+    code: str
