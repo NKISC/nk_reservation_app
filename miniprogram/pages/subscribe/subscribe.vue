@@ -35,6 +35,7 @@
 						</view>
 					</view>
 				</view>
+        <ULine margin="2%" length="96%" color="#82007E" custom-style="borderBottomWidth: 5px" />
 				<view class="w_list">
 					<view :class="{ 'mark': isOpen }"></view>
 					<view class="navTitle">{{navMode}}</view>
@@ -173,7 +174,10 @@
 </template>
 
 <script>
-	export default {
+	import ULine from "../../uni_modules/uview-ui/components/u-line/u-line.vue";
+
+  export default {
+    components: {ULine},
 		data() {
 			return {
 				isOpen: false,
@@ -420,6 +424,7 @@
 					font-size: 36rpx;
 					font-weight: bold;
 					margin-left: 30rpx;
+          margin-bottom: 20rpx;
 				}
 
 				.w_list {
