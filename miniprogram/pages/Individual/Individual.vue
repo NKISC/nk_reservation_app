@@ -2,8 +2,7 @@
 	<view class="indexPage">
 		<view class="header">
 			<view class="tx_bj"></view>
-			<view class="user_title">qwe</view>
-			<view class="class_title">七年级六班</view>
+			<view class="user_title">{{ userDisplayName }}</view>
 		</view>
 		<view class="content">
 			<view class="nav">
@@ -16,14 +15,14 @@
 				</view>
 			</view>
 			<view class="itemList" v-if="navMode === '我的预约'">
-				<view v-for="item,index in list" :key="index" class="itembox">
+				<view v-for="item,index in recordList" :key="index" class="itembox">
 					<view style="display: flex;justify-content: space-between;height: 50rpx;align-items: center;">
-						<view>{{item.name}}</view>
-						<view>{{item.sj}}</view>
+						<view>{{ recordHash[index].display }}</view>
+            <view>{{ buildDate(new Date(item.time_stamp * 1000)) }} {{ item.noon === true ? "中午" : "下午" }}</view>
 					</view>
 					<view style="display: flex;position: relative;">
-						<image src="../../static/gr_ditu3.svg" style="width: 120rpx;height: 50rpx;">
-							<view style="position: absolute;left: 40rpx;top:7rpx;font-size: 25rpx;color: #830080;">{{item.js}}</view>
+						<image src="../../static/gr_ditu3.svg" style="width: 120rpx;height: 50rpx;" />
+							<view style="position: absolute;left: 40rpx;top:7rpx;font-size: 25rpx;color: #830080;">{{ recordPlace[index] }}</view>
 							<view style="display: flex;margin-top: 5rpx;">
 								<view v-for="i,indexs in item.nav" :key="indexs">
 									<view class="tabs">
@@ -47,33 +46,60 @@
 			return {
 				navList: ['个人信息', '我的预约', '设置'],
 				navMode: '我的预约',
-				list: [{
-						name: '科技馆',
-						sj: "2023-09-14 下午",
-						js: "204",
-						nav: ['舞蹈', '标签1'],
-					},
-					{
-						name: '科技馆',
-						sj: "2023-09-15 下午",
-						js: "204",
-						nav: ['舞蹈', '标签1'],
-					},
-					{
-						name: '科技馆',
-						sj: "2023-09-15 下午",
-						js: "204",
-						nav: ['舞蹈', '标签1'],
-					},
-					{
-						name: '科技馆',
-						sj: "2023-09-15 下午",
-						js: "204",
-						nav: ['舞蹈', '标签1'],
-					},
-				],
+        userDisplayName: "",
+        recordList: [],
+        recordHash: [],
+        recordPlace: [],
+        buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 			}
 		},
+    onLoad() {
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/user",
+        method: "POST",
+        data: {
+          cond: {"id": uni.getStorageSync("openid")}
+        },
+        success: (res) => {
+          this.userDisplayName = res.data[0].display;
+        }
+      })
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/record",
+        method: "POST",
+        data: {
+          cond: {"applicant_id": uni.getStorageSync("openid")}
+        },
+        success: (res) => {
+          this.recordList = res.data;
+          wx.request({
+            url: "https://nkapi.ememememem.space/query/classroom",
+            method: "POST",
+            data: {
+              cond: {}
+            },
+            success: (rel) => {
+              for (let i = 0; i < this.recordList.length; i++)
+                for (let j = 0; j < rel.data.length; j++)
+                  if (rel.data[j]["id"] === this.recordList[i]["classroom_id"]) {
+                    this.recordHash.push(rel.data[j]);
+                    break;
+                  }
+              wx.request({
+                url: "https://nkapi.ememememem.space/query/display",
+                method: "POST",
+                data: {
+                  "cond": {"query": this.recordHash.map(x => [x.place, "place"])}
+                },
+                success: (rep) => {
+                  this.recordPlace = rep.data;
+                }
+              })
+            }
+          })
+        }
+      })
+    },
 		methods: {
 			setNavMode(mode) {
 				this.navMode = mode
