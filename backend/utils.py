@@ -42,6 +42,14 @@ def login(code: str):
 
 
 def construct_condition(cond: dict[str, Any]) -> str:
+    """
+    Prepare the condition dict for sql statements. Works with construct_params if generic keys are present
+    in the condition.
+    :param cond: The condition dict
+    :return: A string contains the sql condition.
+            E.g. cursor.execute("select * from user_info where {utils.construct_condition(cond)}",
+                                utils.construct_params(cond))
+    """
     ret = ""
     cond_keys = list(cond.keys())
     for i in range(len(cond_keys)):
@@ -59,6 +67,16 @@ def construct_condition(cond: dict[str, Any]) -> str:
 
 
 def construct_params(cond: dict[str, Any]) -> dict[str, Any]:
+    """
+    Prepare the parameters dict for sql statements. Mainly, it handles lists in condition dict.
+    E.g. permission in user_info
+    Works with construct_condition if generic keys are present.
+    in the condition.
+    :param cond: The condition dict
+    :return: A string contains the param dictionary for sql statement.
+            E.g. cursor.execute("select * from user_info where {utils.construct_condition(cond)}",
+                                utils.construct_params(cond))
+    """
     param = {}
     for k in cond.keys():
         if k in GENERIC_QUERY_KEYS:
