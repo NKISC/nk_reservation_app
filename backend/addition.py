@@ -11,7 +11,13 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
     :param applicant_id: The user id of the applicant.
     :param time_stamp: The date of the reservation (h, m, s, f are set to zero.
                        For instance, if the reservation is on Feb. 1, 2025, the time_stamp will be 1738339200).
-    :return:
+    :return: A dictionary with the following keys:
+                success (bool): Whether the reservation was successful.
+                err_code (int)[optional]: The error code if an error occurs. Possible codes:
+                    600: Permission Denied
+                    601: Classroom Reservation Conflict
+                    100: Python Exception
+                error (str): Error message.
     """
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
