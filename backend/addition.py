@@ -11,7 +11,13 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
     :param applicant_id: The user id of the applicant.
     :param time_stamp: The date of the reservation (h, m, s, f are set to zero.
                        For instance, if the reservation is on Feb. 1, 2025, the time_stamp will be 1738339200).
-    :return:
+    :return: A dictionary with the following keys:
+                success (bool): Whether the reservation was successful.
+                err_code (int)[optional]: The error code if an error occurs. Possible codes:
+                    600: Permission Denied
+                    601: Classroom Reservation Conflict
+                    100: Python Exception
+                error (str): Error message.
     """
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
@@ -29,18 +35,18 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
         no_perm = check_permission(perm, clas)
         for i in no_perm:
             if i == classroom:
-                return {"success": False, "error": "no_permission"}
+                return {"success": False, "err_code": 600, "error": "no_permission"}
 
         #judge reservation conflict
         if judge_conflict(classroom, noon, time_stamp):
-            return {"success": False, "error": "classroom_already_reserved"}
+            return {"success": False, "err_code": 601, "error": "classroom_already_reserved"}
 
         try:
             cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
                            {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                             "applicant_id": applicant_id, "time_stamp": time_stamp})
         except BaseException as e:
-            return {"success": False, "error": str(e)}
+            return {"success": False, "err_code": 100, "error": str(e)}
         return {"success": True}
 
 

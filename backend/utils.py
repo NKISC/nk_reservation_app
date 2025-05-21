@@ -26,4 +26,13 @@ def login(code: str):
         app_secret = f.readline().strip()
     ret = requests.get(f"https://api.weixin.qq.com/sns/jscode2session?appid={appid}&"
                        f"secret={app_secret}&js_code={code}&grant_type=authorization_code").json()
+
+    # Add new user to database if login for the first time
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        cursor.execute("select * from user_info where id=:id", {"id": ret["openid"]})
+        if cursor.fetchone() is None:
+            cursor.execute("insert into user_info (id, display, permission) VALUES (:id, :display, :permission)",
+                           {"id": ret["openid"], "display": ret["openid"], "permission": ","})
+
     return ret
