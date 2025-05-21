@@ -1,6 +1,9 @@
 import sqlite3
 import time
 import requests
+from typing import *
+
+GENERIC_QUERY_KEYS = ["func_tag", "pic_url", "permission"]
 
 
 def update_record():
@@ -33,6 +36,64 @@ def login(code: str):
         cursor.execute("select * from user_info where id=:id", {"id": ret["openid"]})
         if cursor.fetchone() is None:
             cursor.execute("insert into user_info (id, display, permission) VALUES (:id, :display, :permission)",
-                           {"id": ret["openid"], "display": ret["openid"], "permission": ","})
+                           {"id": ret["openid"], "display": ret["openid"][:5], "permission": ","})
 
+    return ret
+
+
+def construct_condition(cond: dict[str, Any]) -> str:
+    """
+    Prepare the condition dict for sql statements. Works with construct_params if generic keys are present
+    in the condition.
+    :param cond: The condition dict
+    :return: A string contains the sql condition.
+            E.g. cursor.execute("select * from user_info where {utils.construct_condition(cond)}",
+                                utils.construct_params(cond))
+    """
+    ret = ""
+    cond_keys = list(cond.keys())
+    for i in range(len(cond_keys)):
+        if cond_keys[i] in GENERIC_QUERY_KEYS:
+            for j in range(len(cond[cond_keys[i]])):
+                ret += f"{cond_keys[i]} like :{cond_keys[i]}{j}"
+                if j != len(cond[cond_keys[i]]) - 1:
+                    ret += " and "
+        else:
+            ret += f"{cond_keys[i]}=:{cond_keys[i]}"
+        if i != len(cond_keys) - 1:
+            ret += " and "
+
+    return ret
+
+
+def construct_params(cond: dict[str, Any]) -> dict[str, Any]:
+    """
+    Prepare the parameters dict for sql statements. Mainly, it handles lists in condition dict.
+    E.g. permission in user_info
+    Works with construct_condition if generic keys are present.
+    in the condition.
+    :param cond: The condition dict
+    :return: A string contains the param dictionary for sql statement.
+            E.g. cursor.execute("select * from user_info where {utils.construct_condition(cond)}",
+                                utils.construct_params(cond))
+    """
+    param = {}
+    for k in cond.keys():
+        if k in GENERIC_QUERY_KEYS:
+            for i in range(len(cond[k])):
+                param[str(k) + str(i)] = "%" + cond[k][i] + ",%"
+        else:
+            param[k] = cond[k]
+    return param
+
+
+def construct_response(cursor: sqlite3.Cursor, table: str) -> list[dict[str, Any]]:
+    rows = cursor.fetchall()
+    heads = cursor.execute(f"pragma table_info({table})").fetchall()
+    ret = []
+    for row in rows:
+        p = {}
+        for i in range(len(heads)):
+            p[heads[i][1]] = row[i]
+        ret.append(p)
     return ret

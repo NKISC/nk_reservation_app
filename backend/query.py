@@ -3,49 +3,6 @@ from backend import utils
 from typing import *
 
 
-generic_query_keys = ["func_tag", "pic_url", "permission"]
-
-
-def construct_condition(cond: dict[str, Any]) -> str:
-    ret = ""
-    cond_keys = list(cond.keys())
-    for i in range(len(cond_keys)):
-        if cond_keys[i] in generic_query_keys:
-            for j in range(len(cond[cond_keys[i]])):
-                ret += f"{cond_keys[i]} like :{cond_keys[i]}{j}"
-                if j != len(cond[cond_keys[i]]) - 1:
-                    ret += " and "
-        else:
-            ret += f"{cond_keys[i]}=:{cond_keys[i]}"
-        if i != len(cond_keys) - 1:
-            ret += " and "
-
-    return ret
-
-
-def construct_params(cond: dict[str, Any]) -> dict[str, Any]:
-    param = {}
-    for k in cond.keys():
-        if k in generic_query_keys:
-            for i in range(len(cond[k])):
-                param[str(k) + str(i)] = "%" + cond[k][i] + ",%"
-        else:
-            param[k] = cond[k]
-    return param
-
-
-def construct_response(cursor: sqlite3.Cursor, table: str) -> list[dict[str, Any]]:
-    rows = cursor.fetchall()
-    heads = cursor.execute(f"pragma table_info({table})").fetchall()
-    ret = []
-    for row in rows:
-        p = {}
-        for i in range(len(heads)):
-            p[heads[i][1]] = row[i]
-        ret.append(p)
-    return ret
-
-
 def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
     """
     Query the classroom information.
@@ -60,12 +17,12 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
     """
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
-        param = construct_params(cond)
+        param = utils.construct_params(cond)
         if len(cond) != 0:
-            cursor.execute("select * from classroom where " + construct_condition(cond), param)
+            cursor.execute("select * from classroom where " + utils.construct_condition(cond), param)
         else:
             cursor.execute("select * from classroom")
-        ret = construct_response(cursor, "classroom")
+        ret = utils.construct_response(cursor, "classroom")
         return ret
 
 
@@ -86,10 +43,10 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
         utils.update_record()
         cursor = db.cursor()
         if len(cond) != 0:
-            cursor.execute("select * from record where " + construct_condition(cond), cond)
+            cursor.execute("select * from record where " + utils.construct_condition(cond), cond)
         else:
             cursor.execute("select * from record")
-        ret = construct_response(cursor, "record")
+        ret = utils.construct_response(cursor, "record")
         return ret
 
       
@@ -185,12 +142,12 @@ def query_user(cond: dict[str, Any]) -> list[dict[str, Any]]:
     """
     with sqlite3.connect("database.db") as db:
         cursor = db.cursor()
-        param = construct_params(cond)
+        param = utils.construct_params(cond)
         if len(cond) != 0:
-            cursor.execute("select * from user_info where " + construct_condition(cond), param)
+            cursor.execute("select * from user_info where " + utils.construct_condition(cond), param)
         else:
             cursor.execute("select * from user_info")
-        ret = construct_response(cursor, "user_info")
+        ret = utils.construct_response(cursor, "user_info")
         return ret
 
       

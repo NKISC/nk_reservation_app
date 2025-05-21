@@ -6,6 +6,7 @@ from backend import data_models
 from backend import addition
 from backend import utils
 from backend import alter
+from backend import deletion
 
 app = fastapi.FastAPI()
 
@@ -91,4 +92,10 @@ async def handle_login(login_model: data_models.LoginModel):
 @app.post("/alter/user/")
 async def alter_user(alter_req: data_models.UserAlterModel):
     res = await asyncio.to_thread(alter.alter_user, alter_req.uid, alter_req.display, alter_req.permission)
+    return res
+
+
+@app.post("/delete/record/")
+async def delete_record(cond: data_models.BasePostQuery):
+    res = await asyncio.to_thread(deletion.delete_record, cond.cond)
     return res
