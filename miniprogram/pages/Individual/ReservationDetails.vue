@@ -28,16 +28,16 @@
           </view>
 
 					<view style="height: 100rpx;margin-top: 20rpx;">
-						<u-radio-group v-model="form.value" style="display: flex;justify-content: space-around;">
+						<u-radio-group v-model="form.timePeriod" style="display: flex;justify-content: space-around;">
 							<u-radio name="zw" :active-color="'#82007E'">
 								<view>
-									<view class="main_label" :class="{ data: form.value === 'zw' }">中午</view>
+									<view class="main_label" :class="{ data: form.timePeriod === 'zw' }">中午</view>
 									<view class="main_sjd">12：20-2：20</view>
 								</view>
 							</u-radio>
 							<u-radio name="xw" style="margin-left: 50rpx;" :active-color="'#82007E'">
 								<view>
-									<view class="main_label" :class="{ data: form.value === 'xw' }">下午</view>
+									<view class="main_label" :class="{ data: form.timePeriod === 'xw' }">下午</view>
 									<view class="main_sjd">5：00-6： 00</view>
 								</view>
 							</u-radio>
@@ -100,23 +100,27 @@
 		</view>
 		<MyDialog v-if="showmark" @close='close'>
 			<view style="margin-bottom: 40rpx;">
-				<view style="font-size: 33rpx;font-weight: bold;">科学馆 202</view>
+				<view style="font-size: 33rpx;font-weight: bold;margin: auto">{{ reservingClassroom.display }}</view>
 				<view style="display: flex;margin-top: 10rpx;">
-					<view class="tag" style="margin-right: 10rpx;">舞蹈</view>
-					<view class="tag"> 标签1</view>
+          <view class="nav">
+            <view v-for="item,index in navList" :key="index">
+              <view style="font-size: 22rpx; width: 90%" class="navItem" v-if="item !== null">{{item}}</view>
+            </view>
+          </view>
 				</view>
 			</view>
 			<view class="mark_data">
-				<view class="mark_data_title" style="">2024年02月14日</view>
-				<view class="mark_data_title">下午</view>
-				<view class="mark_data_sj">1：30-5： 00</view>
+				<view class="mark_data_title" style="">{{ transitionData(form.singleStart) }}</view>
+				<view class="mark_data_title">{{ form.timePeriod === 'zw' ? "中午" : "下午" }}</view>
+				<view class="mark_data_sj">{{ form.timePeriod === 'zw' ? "12：20-2：20" : "5：00-6：00" }}</view>
 			</view>
 
 			<view class="mark_data">
-				<view class="mark_data_title" style="margin-bottom: 10rpx;">每周重复</view>
-				<view class="mark_data_sj" style="font-weight: bold;">2024年02月14日</view>
-				<view class="mark_data_title">--</view>
-				<view class="mark_data_sj" style="font-weight: bold;">2024年02月14日</view>
+				<view class="mark_data_title" style="margin-bottom: 10rpx;">{{ "每" + (form.cyclicMethod === 'mz' ? "周" : "月") + "重复" }}</view>
+				<view class="mark_data_sj" style="font-weight: bold;" v-if="form.isCyclic.length > 0">{{ form.singleStart }}</view>
+				<view class="mark_data_title" v-if="form.isCyclic.length > 0">--</view>
+				<view class="mark_data_sj" style="font-weight: bold;" v-if="form.isCyclic.length > 0">{{ form.singleEnd }}</view>
+        <view class="mark_data_title" style="font-size: 24rpx" v-else>不重复</view>
 			</view>
 
 			<image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='qd' />
@@ -146,8 +150,8 @@
         tag_display: {},
         reservingClassroom: {},
         reservingPlaceDisplay: "",
-				navList: ['舞蹈', '功能1', '功能2'],
-				navMode: '舞蹈',
+				navList: [],
+				navMode: '',
 				list: [{
 						name: 'apple',
 						disabled: false
@@ -158,7 +162,7 @@
 					},
 				],
 				form: {
-					value: "",
+					timePeriod: "",
 					isCyclic: [],
 					cyclicMethod: "",
 					singleStart: tomorrow,
@@ -218,11 +222,11 @@
 			},
 			openxq() {
 				if (this.form.isCyclic.length > 0) {
-					if (this.form.value && this.form.cyclicMethod && this.form.singleStart && this.form.singleEnd) {
+					if (this.form.timePeriod && this.form.cyclicMethod && this.form.singleStart && this.form.singleEnd) {
 						this.showmark = true
 					}
 				} else {
-					if (this.form.value && this.form.singleStart && this.form.singleEnd) {
+					if (this.form.timePeriod && this.form.singleStart && this.form.singleEnd) {
 						this.showmark = true
 					}
 				}
