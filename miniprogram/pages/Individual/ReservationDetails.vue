@@ -231,7 +231,58 @@
 
 			},
 			qd() {
-				this.showmark = false
+        wx.showToast({
+          title: "请求服务器...",
+          icon: "loading",
+          duration: 3000
+        })
+				wx.request({
+          url: "https://nkapi.ememememem.space/addition/add_record",
+          method: "POST",
+          data: {
+            "classroom": this.reservingClassroom.id,
+            "noon": (this.form.timePeriod === 'zw'),
+            "applicant_id": uni.getStorageSync("openid"),
+            "time_stamp": new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime() / 1000,
+          },
+          success: (res) => {
+            let r = res.data;
+            if (r.success) {
+              wx.showToast({
+                title: "预约成功！",
+                icon: "success",
+                duration: 3000
+              })
+              uni.navigateBack({
+                delta: 1
+              });
+            }
+            else {
+              if (r.err_code === 600) {
+                wx.showToast({
+                  title: "无对应权限",
+                  icon: "error",
+                  duration: 3000
+                })
+              }
+              else if (r.err_code === 601) {
+                wx.showToast({
+                  title: "该时段已被预约",
+                  icon: "error",
+                  duration: 3000
+                })
+              }
+              else if (r.err_code === 100) {
+                wx.showToast({
+                  title: "服务器错误",
+                  icon: "error",
+                  duration: 3000
+                })
+              }
+            }
+            this.showmark = false;
+          }
+        })
 			},
 			close() {
 				this.showmark = false
