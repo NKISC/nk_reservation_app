@@ -175,6 +175,8 @@
       this.limitDate = this.buildDate(this.limitDate);
       this.tag_display = uni.getStorageSync('tag_display');
       this.reservingClassroom = uni.getStorageSync('reservingClassroom');
+      uni.removeStorageSync("tag_display");
+      uni.removeStorageSync("reservingClassroom");
       this.navList = this.reservingClassroom.func_tag.split(",");
       this.navList.pop();
       this.navList = this.navList.map(x => this.tag_display[x]);
