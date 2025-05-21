@@ -70,11 +70,8 @@
 						<view style="display: flex;justify-content: space-around;">
 							<view>
 								<u-line color="#9E9E9E" />
-								<view class="main_qsrq_lable">
-									<uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart" end="2025-06-15"
-										@change='changeStart'>
+								<view class="main_qsrq_lable" style="color: #7E7E7E">
 										{{transitionData(form.singleStart)}}
-									</uni-datetime-picker>
 								</view>
 								<u-line color="#9E9E9E" />
 							</view>
