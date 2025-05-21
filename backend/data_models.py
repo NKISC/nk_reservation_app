@@ -32,3 +32,9 @@ class UserAdditionModel(BaseModel):
 
 class LoginModel(BaseModel):
     code: str
+
+
+class UserAlterModel(BaseModel):
+    uid: str
+    display: str
+    permission: list[str]
