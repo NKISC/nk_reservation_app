@@ -85,3 +85,9 @@ async def query_func_tags():
 async def handle_login(login_model: data_models.LoginModel):
     res = await asyncio.to_thread(utils.login, login_model.code)
     return res
+
+
+@app.post("/alter/user/")
+async def alter_user(alter: data_models.UserAlterModel):
+    res = await asyncio.to_thread(alter.alter_user, alter.uid, alter.display, alter.permission)
+    return res
