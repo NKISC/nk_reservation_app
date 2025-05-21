@@ -4,6 +4,7 @@ import sqlite3
 from backend import query
 from backend import data_models
 from backend import addition
+from backend import utils
 
 app = fastapi.FastAPI()
 
@@ -81,6 +82,6 @@ async def query_func_tags():
 
 
 @app.post("/login/")
-async def login(login_model: data_models.LoginModel):
-    res = await asyncio.to_thread(login.login, login_model.code)
+async def handle_login(login_model: data_models.LoginModel):
+    res = await asyncio.to_thread(utils.login, login_model.code)
     return res
