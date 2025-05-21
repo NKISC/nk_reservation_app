@@ -24,10 +24,6 @@ def login(code: str):
         appid = f.readline().strip()
     with open("appSecret") as f:
         app_secret = f.readline().strip()
-    ret = requests.get("https://api.weixin.qq.com/sns/jscode2session", data={
-        "appid": appid,
-        "secret": app_secret,
-        "js_code": code,
-        "grant_type": "authorization_code",
-    }).json()
+    ret = requests.get(f"https://api.weixin.qq.com/sns/jscode2session?appid={appid}&"
+                       f"secret={app_secret}&js_code={code}&grant_type=authorization_code").json()
     return ret
