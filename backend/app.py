@@ -5,6 +5,7 @@ from backend import query
 from backend import data_models
 from backend import addition
 from backend import utils
+from backend import alter
 
 app = fastapi.FastAPI()
 
@@ -88,6 +89,6 @@ async def handle_login(login_model: data_models.LoginModel):
 
 
 @app.post("/alter/user/")
-async def alter_user(alter: data_models.UserAlterModel):
-    res = await asyncio.to_thread(alter.alter_user, alter.uid, alter.display, alter.permission)
+async def alter_user(alter_req: data_models.UserAlterModel):
+    res = await asyncio.to_thread(alter.alter_user, alter_req.uid, alter_req.display, alter_req.permission)
     return res
