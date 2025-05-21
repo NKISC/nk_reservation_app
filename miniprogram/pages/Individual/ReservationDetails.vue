@@ -198,7 +198,7 @@
 				return formattedDate
 			},
 			changeStart() {
-				if (new Date(this.form.singleEnd) < new Date(this.form.singleStart)) this.form.singleEnd = buildDate(new Date(this.form.singleStart));
+				if (new Date(this.form.singleEnd) < new Date(this.form.singleStart)) this.form.singleEnd = this.buildDate(new Date(this.form.singleStart));
 			  formatDate()
         },
 			checkboxChange(e) {
