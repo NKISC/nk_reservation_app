@@ -20,7 +20,7 @@ def alter_record(record_id: int, noon: bool, time_stamp: int):
     with sqlite3.connect("database.db") as db:
         cursor = db.cursor()
         record = query.query_record({"id": record_id})[0]
-        if judge_conflict(record["classroom_id"], record["noon"], record["time_stamp"]):
+        if judge_conflict(record["classroom_id"], noon, time_stamp):
             return {"success": False, "err_code": 601}
         cursor.execute("update record set noon = :noon, time_stamp = :time_stamp where id = :record_id",
                        {"noon": noon, "time_stamp": time_stamp, "record_id": record_id})
