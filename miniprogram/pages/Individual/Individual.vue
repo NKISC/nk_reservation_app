@@ -18,7 +18,7 @@
 				<view v-for="item,index in recordList" :key="index" class="itembox">
 					<view style="display: flex;justify-content: space-between;height: 50rpx;align-items: center;">
 						<view>{{ recordHash[index].display }}</view>
-            <view>{{ buildDate(new Date(item.time_stamp * 1000)) }} {{ item.noon === true ? "中午" : "下午" }}</view>
+            <view>{{ buildDate(new Date(item.time_stamp * 1000)) }} {{ item.noon ? "中午" : "下午" }}</view>
 					</view>
 					<view style="display: flex;position: relative;">
 						<image src="../../static/gr_ditu3.svg" style="width: 120rpx;height: 50rpx;" />

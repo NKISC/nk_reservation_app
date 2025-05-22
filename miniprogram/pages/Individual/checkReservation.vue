@@ -19,7 +19,7 @@
             预约日期：
             <view>
               <view class="main_qsrq_lable" style="color: #7E7E7E">
-                  {{transitionData(form.singleStart)}} {{ this.checkingRecord.noon === true ? "中午" : "下午" }}
+                  {{transitionData(buildDate(new Date(checkingRecord.time_stamp * 1000)))}} {{ checkingRecord.noon ? "中午" : "下午" }}
               </view>
             </view>
           </view>
@@ -88,6 +88,7 @@ export default {
     }
   },
   onShow() {
+    this.limitDate = new Date();
     this.limitDate.setDate(new Date().getDate() + 60);
     this.limitDate = this.buildDate(this.limitDate);
     this.tag_display = uni.getStorageSync('tag_display');
