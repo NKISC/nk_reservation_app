@@ -254,7 +254,7 @@ export default {
           let r = res.data;
           if (r.success) {
             uni.navigateBack({
-              delta: 1
+              delta: 2
             });
             wx.showToast({
               title: "修改成功！",
