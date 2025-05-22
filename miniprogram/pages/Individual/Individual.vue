@@ -32,7 +32,7 @@
 							</view>
 					</view>
 					<view style="display: flex;justify-content: flex-end;height: 80rpx;margin-top: 10rpx;">
-						<view @click="toDetails" class="checkBtn">查看</view>
+						<view @click="toDetails(item)" class="checkBtn">查看</view>
 					</view>
 				</view>
 			</view>
@@ -53,7 +53,7 @@
         buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 			}
 		},
-    onLoad() {
+    onShow() {
       wx.request({
         url: "https://nkapi.ememememem.space/query/user",
         method: "POST",
@@ -104,9 +104,10 @@
 			setNavMode(mode) {
 				this.navMode = mode
 			},
-			toDetails() {
-				uni.navigateTo({
-					url: `/pages/Individual/ReservationDetails`,
+			toDetails(record) {
+        uni.setStorageSync("checkingRecord", record);
+        uni.navigateTo({
+					url: `/pages/Individual/checkReservation`,
 				})
 			},
 		}
