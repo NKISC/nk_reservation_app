@@ -249,14 +249,14 @@
           success: (res) => {
             let r = res.data;
             if (r.success) {
+              uni.navigateBack({
+                delta: 1
+              });
               wx.showToast({
                 title: "预约成功！",
                 icon: "success",
                 duration: 3000
               })
-              uni.navigateBack({
-                delta: 1
-              });
             }
             else {
               if (r.err_code === 600) {
