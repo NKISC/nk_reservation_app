@@ -38,3 +38,9 @@ class UserAlterModel(BaseModel):
     uid: str
     display: str
     permission: list[str]
+
+
+class RecordAlterModel(BaseModel):
+    record_id: int
+    noon: bool
+    time_stamp: int
