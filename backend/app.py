@@ -99,3 +99,9 @@ async def alter_user(alter_req: data_models.UserAlterModel):
 async def delete_record(cond: data_models.BasePostQuery):
     res = await asyncio.to_thread(deletion.delete_record, cond.cond)
     return res
+
+
+@app.post("/alter/record")
+async def alter_record(alter_req: data_models.RecordAlterModel):
+    res = await asyncio.to_thread(alter.alter_record, alter_req.record_id, alter_req.noon, alter_req.time_stamp)
+    return res
