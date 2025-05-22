@@ -28,7 +28,7 @@
     </view>
     <view class="footer">
       <view style="width: 160rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="goBack">返回列表</view>
-      <view style="width: 160rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx">修改预约</view>
+      <view style="width: 160rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="goAlter">修改预约</view>
       <view style="width: 160rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="goConfirmCancel">取消预约</view>
     </view>
     <MyDialog v-if="showCancel" @close='closeCancel'>
@@ -87,7 +87,7 @@ export default {
       limitDate: new Date(),
     }
   },
-  onLoad() {
+  onShow() {
     this.limitDate.setDate(new Date().getDate() + 60);
     this.limitDate = this.buildDate(this.limitDate);
     this.tag_display = uni.getStorageSync('tag_display');
@@ -174,6 +174,13 @@ export default {
             duration: 3000
           });
         }
+      })
+    },
+    goAlter() {
+      uni.setStorageSync("alteringRecord", this.checkingRecord);
+      uni.setStorageSync("alteringClassroom", this.reservingClassroom);
+      uni.navigateTo({
+        url: "/pages/Individual/alterReservationDetails",
       })
     }
   }
