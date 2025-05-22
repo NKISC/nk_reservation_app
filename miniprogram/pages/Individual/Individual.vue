@@ -54,6 +54,7 @@
 			}
 		},
     onShow() {
+      this.recordHash = []
       wx.request({
         url: "https://nkapi.ememememem.space/query/user",
         method: "POST",

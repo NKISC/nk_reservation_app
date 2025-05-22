@@ -244,7 +244,7 @@
             "classroom": this.reservingClassroom.id,
             "noon": (this.form.timePeriod === 'zw'),
             "applicant_id": uni.getStorageSync("openid"),
-            "time_stamp": new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime() / 1000,
+            "time_stamp": new Date(this.form.singleStart).getTime() / 1000,
           },
           success: (res) => {
             let r = res.data;
