@@ -19,7 +19,7 @@
             预约日期：
             <view>
               <view class="main_qsrq_lable">
-                <uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart"
+                <uni-datetime-picker v-model="form.singleStart" type="date" :start="buildDate(new Date(alteringRecord.time_stamp * 1000))"
                                      @change='changeStart'>
                   {{transitionData(form.singleStart)}}
                 </uni-datetime-picker>
@@ -112,15 +112,8 @@
         <view class="mark_data_sj">{{ form.timePeriod === 'zw' ? "12：20-2：20" : "5：00-6：00" }}</view>
       </view>
 
-      <view class="mark_data">
-        <view class="mark_data_title" style="margin-bottom: 10rpx;">{{ "每" + (form.cyclicMethod === 'mz' ? "周" : "月") + "重复" }}</view>
-        <view class="mark_data_sj" style="font-weight: bold;" v-if="form.isCyclic.length > 0">{{ form.singleStart }}</view>
-        <view class="mark_data_title" v-if="form.isCyclic.length > 0">--</view>
-        <view class="mark_data_sj" style="font-weight: bold;" v-if="form.isCyclic.length > 0">{{ form.singleEnd }}</view>
-        <view class="mark_data_title" style="font-size: 24rpx" v-else>不重复</view>
-      </view>
 
-      <image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='qd' />
+      <view style="width: 160rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="qd">修改预约</view>
     </MyDialog>
   </view>
 </template>
@@ -177,8 +170,6 @@ export default {
     this.tag_display = uni.getStorageSync('tag_display');
     this.alteringClassroom = uni.getStorageSync('alteringClassroom');
     this.alteringRecord = uni.getStorageSync("alteringRecord");
-    console.log(this.alteringClassroom);
-    console.log(this.alteringRecord);
     uni.removeStorageSync("alteringClassroom");
     uni.removeStorageSync("alteringRecord");
     this.navList = this.alteringClassroom.func_tag.split(",");
