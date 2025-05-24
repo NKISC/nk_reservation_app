@@ -92,7 +92,16 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         # add records
         with open("recent_id") as id_file:
             record = int(id_file.read().strip())
-        cursor.execute("INSERT INTO cyclical_record VALUES (:id)", {"id": str(record)})
+        try:
+            cursor.execute("INSERT INTO cyclical_record VALUES (:id)", {"id": str(record)})
+        except sqlite3.IntegrityError as e:
+            return {"success": False, "error": f"Integrity error: {e}"}
+        except sqlite3.OperationalError as e:
+            return {"success": False, "error": f"Operational error: {e}"}
+        except sqlite3.DatabaseError as e:
+            return {"success": False, "error": f"Database error: {e}"}
+        except Exception as e:
+            return {"success": False, "error": f"Unknown error: {e}"}
         cnt = 0
         cur_timestamp = beginning_time_stamp
         while cur_timestamp <= ending_time_stamp:
@@ -100,11 +109,20 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             if cnt:
                 with open("recent_id") as id_file:
                     record = int(id_file.read().strip())
-                cursor.execute("""
+                try:
+                    cursor.execute("""
                                 UPDATE cyclical_record
                                 SET record_id += (',' + "id")
                                 WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
                                 """, {"id": str(record)})
+                except sqlite3.IntegrityError as e:
+                    return {"success": False, "error": f"Integrity error: {e}"}
+                except sqlite3.OperationalError as e:
+                    return {"success": False, "error": f"Operational error: {e}"}
+                except sqlite3.DatabaseError as e:
+                    return {"success": False, "error": f"Database error: {e}"}
+                except Exception as e:
+                    return {"success": False, "error": f"Unknown error: {e}"}
             cnt += 1
             # add timestamp
             gap = 0
