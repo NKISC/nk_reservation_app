@@ -45,6 +45,12 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
             cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
                            {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                             "applicant_id": applicant_id, "time_stamp": time_stamp})
+        except sqlite3.IntegrityError as e:
+            return {"success": False, "error": f"Integrity error: {e}"}
+        except sqlite3.OperationalError as e:
+            return {"success": False, "error": f"Operational error: {e}"}
+        except sqlite3.DatabaseError as e:
+            return {"success": False, "error": f"Database error: {e}"}
         except BaseException as e:
             return {"success": False, "err_code": 100, "error": str(e)}
         return {"success": True}
@@ -105,7 +111,9 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         cnt = 0
         cur_timestamp = beginning_time_stamp
         while cur_timestamp <= ending_time_stamp:
-            add_records(classroom, noon, applicant_id, cur_timestamp)
+            ret = add_records(classroom, noon, applicant_id, cur_timestamp)
+            if not ret["success"]:
+                return {"success": False, "error": "Add_records function:" + ' ' + ret["error"]}
             if cnt:
                 with open("recent_id") as id_file:
                     record = int(id_file.read().strip())
