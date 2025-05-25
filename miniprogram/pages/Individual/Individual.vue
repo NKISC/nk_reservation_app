@@ -1,7 +1,9 @@
 <template>
 	<view class="indexPage">
 		<view class="header">
-			<view class="tx_bj"></view>
+      <button style="width: auto; padding: 0" open-type="chooseAvatar" @chooseavatar="onChooseAvatar"><u-avatar size="90" :src="avatarUrl" shape="square"></u-avatar></button>
+
+<!--          <img class="avatar" style="height: 120%; width: 120%;" :src="avatarUrl" alt="" />-->
 			<view class="user_title">{{ userDisplayName }}</view>
 		</view>
 		<view class="content">
@@ -41,7 +43,10 @@
 </template>
 
 <script>
-	export default {
+	import UAvatar from "../../uni_modules/uview-ui/components/u-avatar/u-avatar.vue";
+
+  export default {
+    components: {UAvatar},
 		data() {
 			return {
 				navList: ['个人信息', '我的预约', '设置'],
@@ -50,10 +55,12 @@
         recordList: [],
         recordHash: [],
         recordPlace: [],
+        avatarUrl: "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0",
         buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 			}
 		},
     onShow() {
+      this.avatarUrl = wx.getStorageSync("avatarUrl");
       this.recordHash = []
       wx.request({
         url: "https://nkapi.ememememem.space/query/user",
@@ -111,6 +118,10 @@
 					url: `/pages/Individual/checkReservation`,
 				})
 			},
+      onChooseAvatar(e) {
+        this.avatarUrl = e.detail.avatarUrl;
+        wx.setStorageSync("avatarUrl", this.avatarUrl);
+      },
 		}
 	}
 </script>
