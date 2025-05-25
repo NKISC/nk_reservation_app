@@ -247,11 +247,13 @@ export default {
             uni.navigateBack({
               delta: 2
             });
-            wx.showToast({
-              title: "修改成功！",
-              icon: "success",
-              duration: 3000
-            })
+            setTimeout(function () {
+              wx.showToast({
+                title: "修改成功！",
+                icon: "success",
+                duration: 3000
+              })
+            }, 1000);
           }
           else {
             if (r.err_code === 600) {

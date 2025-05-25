@@ -252,11 +252,13 @@
               uni.navigateBack({
                 delta: 1
               });
-              wx.showToast({
-                title: "预约成功！",
-                icon: "success",
-                duration: 3000
-              })
+              setTimeout(function () {
+                wx.showToast({
+                  title: "预约成功！",
+                  icon: "success",
+                  duration: 3000
+                })
+              }, 1000);
             }
             else {
               if (r.err_code === 600) {

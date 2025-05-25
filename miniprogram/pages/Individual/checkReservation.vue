@@ -169,11 +169,13 @@ export default {
           uni.navigateBack({
             delta: 1
           });
-          wx.showToast({
-            title: "删除成功",
-            icon: "success",
-            duration: 3000
-          });
+          setTimeout(function () {
+            wx.showToast({
+              title: "删除成功",
+              icon: "success",
+              duration: 3000
+            });
+          }, 1000);
         }
       })
     },
