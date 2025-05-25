@@ -93,7 +93,6 @@ export default {
     this.limitDate = this.buildDate(this.limitDate);
     this.tag_display = uni.getStorageSync('tag_display');
     this.checkingRecord = uni.getStorageSync('checkingRecord');
-    uni.removeStorageSync("checkingRecord");
 
     wx.request({
       url: "https://nkapi.ememememem.space/query/classroom",

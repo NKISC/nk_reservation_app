@@ -19,7 +19,7 @@
             预约日期：
             <view>
               <view class="main_qsrq_lable">
-                <uni-datetime-picker v-model="form.singleStart" type="date" :start="buildDate(new Date(alteringRecord.time_stamp * 1000))"
+                <uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart"
                                      @change='changeStart'>
                   {{transitionData(form.singleStart)}}
                 </uni-datetime-picker>
@@ -172,6 +172,9 @@ export default {
     this.alteringRecord = uni.getStorageSync("alteringRecord");
     uni.removeStorageSync("alteringClassroom");
     uni.removeStorageSync("alteringRecord");
+    let buildDate = (d) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    this.form.singleStart = buildDate(new Date(this.alteringRecord.time_stamp * 1000));
     this.navList = this.alteringClassroom.func_tag.split(",");
     this.navList.pop();
     this.navList = this.navList.map(x => this.tag_display[x]);
