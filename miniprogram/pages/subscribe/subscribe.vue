@@ -300,7 +300,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: url('../../static/title.svg') no-repeat;
+		background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/title.jpeg') no-repeat;
 		background-size: 100%;
 
 		.content {

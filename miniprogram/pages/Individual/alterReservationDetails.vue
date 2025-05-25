@@ -324,7 +324,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background: url('../../static/gr_bg.svg') no-repeat;
+  background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
   background-size: 100%;
 
 
@@ -342,6 +342,7 @@ export default {
     align-items: flex-end;
     font-size: 50rpx;
     font-weight: bold;
+    color: white;
   }
 
   .nav {

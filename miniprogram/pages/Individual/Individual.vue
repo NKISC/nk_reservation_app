@@ -122,7 +122,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: url('../../static/gr_bg.svg') no-repeat;
+		background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
 		background-size: 100%;
 
 		.header {
