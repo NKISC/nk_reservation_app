@@ -22,26 +22,32 @@
 				"navigationBarTitleText": "个人",
 				"navigationStyle": "custom"
 			}
-		}, {
-			"path": "pages/Individual/ReservationDetails",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		}, {
-			"path": "pages/Individual/checkReservation",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
-		}, {
-			"path": "pages/Individual/alterReservationDetails",
-			"style": {
-				"navigationBarTitleText": "",
-				"navigationStyle": "custom"
-			}
 		}
 	],
+	"subPackages": [{
+		"root": "pages_individual",
+		"pages": [
+			{
+				"path": "Individual/ReservationDetails",
+				"style": {
+					"navigationBarTitleText": "",
+					"navigationStyle": "custom"
+				}
+			}, {
+				"path": "Individual/checkReservation",
+				"style": {
+					"navigationBarTitleText": "",
+					"navigationStyle": "custom"
+				}
+			}, {
+				"path": "Individual/alterReservationDetails",
+				"style": {
+					"navigationBarTitleText": "",
+					"navigationStyle": "custom"
+				}
+			}
+		]
+	}],
 	"tabBar": {
 		"color": "#9E9E9E ",
 		"selectedColor": "#754E73",

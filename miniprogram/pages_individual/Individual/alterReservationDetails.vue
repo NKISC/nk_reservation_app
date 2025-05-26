@@ -123,7 +123,7 @@ import MyDialog from '@/components/MyDialog.vue';
 import uniDatetimePicker from '@/uni_modules/uni-datetime-picker/components/uni-datetime-picker/uni-datetime-picker';
 import {
   formatDate
-} from './Individual.js'
+} from '../../pages/Individual/Individual.js'
 export default {
   components: {
     MyDialog,

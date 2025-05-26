@@ -252,7 +252,7 @@
 			toyy(item) {
         uni.setStorageSync("reservingClassroom", item);
 				uni.navigateTo({
-					url: `/pages/Individual/ReservationDetails`,
+					url: `/pages_individual/Individual/ReservationDetails`,
 				})
 			},
 			checkOverflow() {

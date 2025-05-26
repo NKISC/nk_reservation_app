@@ -46,7 +46,7 @@ import MyDialog from '@/components/MyDialog.vue';
 import uniDatetimePicker from '@/uni_modules/uni-datetime-picker/components/uni-datetime-picker/uni-datetime-picker';
 import {
   formatDate
-} from './Individual.js'
+} from '../../pages/Individual/Individual.js'
 export default {
   components: {
     MyDialog,
@@ -182,7 +182,7 @@ export default {
       uni.setStorageSync("alteringRecord", this.checkingRecord);
       uni.setStorageSync("alteringClassroom", this.reservingClassroom);
       uni.navigateTo({
-        url: "/pages/Individual/alterReservationDetails",
+        url: "/pages_individual/Individual/alterReservationDetails",
       })
     }
   }

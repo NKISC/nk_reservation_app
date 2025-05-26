@@ -148,7 +148,7 @@
 			toDetails(record) {
         uni.setStorageSync("checkingRecord", record);
         uni.navigateTo({
-					url: `/pages/Individual/checkReservation`,
+					url: `/pages_individual/Individual/checkReservation`,
 				})
 			},
       onChooseAvatar(e) {
