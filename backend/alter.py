@@ -12,7 +12,6 @@ def alter_user(uid: str, display: str = None, permission: list[str] = None):
             "permission": (",".join(permission) + ",") if permission else user["permission"],
             "id": uid,
         })
-
     return {"success": True}
 
 

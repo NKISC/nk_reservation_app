@@ -8,20 +8,12 @@
 		}
 
 	},
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		// {
-		// 	"path": "pages/login/login",
-		// 	"style": {
-		// 		"navigationBarTitleText": "登录",
-		// 		"navigationStyle": "custom"
-		// 	}
-		// }, 
+	"pages": [
 		{
 			"path": "pages/subscribe/subscribe",
 			"style": {
 				"navigationBarTitleText": "预约",
 				"navigationStyle": "custom"
-				// "enablePullDownRefresh": false
 			}
 
 		}, {
@@ -29,14 +21,24 @@
 			"style": {
 				"navigationBarTitleText": "个人",
 				"navigationStyle": "custom"
-				// "enablePullDownRefresh": false
 			}
 		}, {
 			"path": "pages/Individual/ReservationDetails",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
-				// "enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/Individual/checkReservation",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/Individual/alterReservationDetails",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		}
 	],

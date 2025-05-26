@@ -244,19 +244,21 @@
             "classroom": this.reservingClassroom.id,
             "noon": (this.form.timePeriod === 'zw'),
             "applicant_id": uni.getStorageSync("openid"),
-            "time_stamp": new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime() / 1000,
+            "time_stamp": new Date(this.form.singleStart).getTime() / 1000,
           },
           success: (res) => {
             let r = res.data;
             if (r.success) {
-              wx.showToast({
-                title: "预约成功！",
-                icon: "success",
-                duration: 3000
-              })
               uni.navigateBack({
                 delta: 1
               });
+              setTimeout(function () {
+                wx.showToast({
+                  title: "预约成功！",
+                  icon: "success",
+                  duration: 3000
+                })
+              }, 1000);
             }
             else {
               if (r.err_code === 600) {
@@ -329,7 +331,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: url('../../static/gr_bg.svg') no-repeat;
+		background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
 		background-size: 100%;
 
 
@@ -347,6 +349,7 @@
 			align-items: flex-end;
 			font-size: 50rpx;
 			font-weight: bold;
+      color: white;
 		}
 
 		.nav {
