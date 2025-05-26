@@ -4,7 +4,7 @@
       <button style="width: auto; padding: 0" open-type="chooseAvatar" @chooseavatar="onChooseAvatar"><u-avatar size="90" :src="avatarUrl" shape="square"></u-avatar></button>
 
 <!--          <img class="avatar" style="height: 120%; width: 120%;" :src="avatarUrl" alt="" />-->
-			<view class="user_title">{{ userDisplayName }}</view>
+			<view class="user_title">{{ userInfo.display }}</view>
 		</view>
 		<view class="content">
 			<view class="nav">
@@ -38,6 +38,22 @@
 					</view>
 				</view>
 			</view>
+
+      <view v-if="navMode === '个人信息'">
+        <view class="itemList">
+          <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding-left: 5%; padding-right: 5%">
+            <view style="font-weight: bold; display: flex; justify-content: space-between;" @click="switchPermissionDisplay">
+              权限组 <span>{{ expandPermission ? "-" : "+" }}</span>
+            </view>
+            <view v-if="expandPermission" style="height: 10rpx"></view>
+            <view v-for="(item, index) in userPermissionDisplay" :key="index" v-if="expandPermission">
+              <view class="itembox" v-if="userPermissions[index] !== ''" style="height: fit-content; width: inherit">
+                <view style="font-weight: bold">{{ item }}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
 		</view>
 	</view>
 </template>
@@ -51,10 +67,13 @@
 			return {
 				navList: ['个人信息', '我的预约', '设置'],
 				navMode: '我的预约',
-        userDisplayName: "",
+        userInfo: {},
+        userPermissions: [],
+        userPermissionDisplay: [],
         recordList: [],
         recordHash: [],
         recordPlace: [],
+        expandPermission: false,
         avatarUrl: "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0",
         buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 			}
@@ -69,7 +88,18 @@
           cond: {"id": uni.getStorageSync("openid")}
         },
         success: (res) => {
-          this.userDisplayName = res.data[0].display;
+          this.userInfo = res.data[0];
+          this.userPermissions = this.userInfo.permission.split(",");
+          wx.request({
+            url: "https://nkapi.ememememem.space/query/display",
+            method: "POST",
+            data: {
+              cond: {"query": this.userPermissions.map(x => [x, "permission"])}
+            },
+            success: (rep) => {
+              this.userPermissionDisplay = rep.data;
+            }
+          })
         }
       })
       wx.request({
@@ -122,6 +152,9 @@
         this.avatarUrl = e.detail.avatarUrl;
         wx.setStorageSync("avatarUrl", this.avatarUrl);
       },
+      switchPermissionDisplay() {
+        this.expandPermission = !this.expandPermission;
+      }
 		}
 	}
 </script>
