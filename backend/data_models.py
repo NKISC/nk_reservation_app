@@ -14,13 +14,13 @@ class PermissionCheckQuery(BaseModel):
 class RecordAdditionModel(BaseModel):
     classroom: str
     noon: bool
-    applicant_id: int
+    applicant_id: str
     time_stamp: int
 
 class CyclicalRecordAdditionModel(BaseModel):
     classroom: str
     noon: bool
-    applicant_id: int
+    applicant_id: str
     beginning_time_stamp: int
     ending_time_stamp: int
     days: list[bool]
@@ -38,3 +38,9 @@ class UserAlterModel(BaseModel):
     uid: str
     display: str
     permission: list[str]
+
+
+class RecordAlterModel(BaseModel):
+    record_id: int
+    noon: bool
+    time_stamp: int
