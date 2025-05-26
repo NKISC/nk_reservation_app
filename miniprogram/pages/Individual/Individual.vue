@@ -5,6 +5,7 @@
 
 <!--          <img class="avatar" style="height: 120%; width: 120%;" :src="avatarUrl" alt="" />-->
 			<view class="user_title">{{ userInfo.display }}</view>
+      <view style="color: grey; font-size: 9px">{{ uid.slice(-8) }}</view>
 		</view>
 		<view class="content">
 			<view class="nav">
@@ -68,6 +69,7 @@
 				navList: ['个人信息', '我的预约', '设置'],
 				navMode: '我的预约',
         userInfo: {},
+        uid: "",
         userPermissions: [],
         userPermissionDisplay: [],
         recordList: [],
@@ -80,12 +82,13 @@
 		},
     onShow() {
       this.avatarUrl = wx.getStorageSync("avatarUrl");
+      this.uid = wx.getStorageSync("openid");
       this.recordHash = []
       wx.request({
         url: "https://nkapi.ememememem.space/query/user",
         method: "POST",
         data: {
-          cond: {"id": uni.getStorageSync("openid")}
+          cond: {"id": this.uid}
         },
         success: (res) => {
           this.userInfo = res.data[0];
@@ -106,7 +109,7 @@
         url: "https://nkapi.ememememem.space/query/record",
         method: "POST",
         data: {
-          cond: {"applicant_id": uni.getStorageSync("openid")}
+          cond: {"applicant_id": this.uid}
         },
         success: (res) => {
           this.recordList = res.data;
