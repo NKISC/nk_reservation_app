@@ -55,6 +55,14 @@
           </view>
         </view>
       </view>
+
+      <view v-if="navMode === '设置'">
+        <view class="itembox" v-if="userPermissions.includes('admin')" style="height: fit-content; background-color: #F0F0F0; padding: 3% 5% 3% 5%" @click="goToAdminTool">
+          <view style="font-weight: bold; display: flex; justify-content: space-between;">
+            管理员工具 <span> > </span>
+          </view>
+        </view>
+      </view>
 		</view>
 	</view>
 </template>
@@ -157,6 +165,11 @@
       },
       switchPermissionDisplay() {
         this.expandPermission = !this.expandPermission;
+      },
+      goToAdminTool() {
+        uni.navigateTo({
+          url: '/pages_individual/admin_tool/adminTool',
+        })
       }
 		}
 	}

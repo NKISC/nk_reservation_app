@@ -45,6 +45,12 @@
 					"navigationBarTitleText": "",
 					"navigationStyle": "custom"
 				}
+			}, {
+				"path": "admin_tool/adminTool",
+				"style": {
+					"navigationBarTitleText": "",
+					"navigationStyle": "custom"
+				}
 			}
 		]
 	}],
