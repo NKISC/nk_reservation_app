@@ -26,6 +26,34 @@
       </view>
     </view>
 
+    <view class="itemList">
+      <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding: 2% 5%">
+        <view style="font-weight: bold; display: flex; justify-content: space-between; padding: 3%" @click="switchReservationDisplay">
+          预约管理 <span>{{ expandReservation ? "-" : "+" }}</span>
+        </view>
+        <view v-if="expandReservation" style="height: 10rpx" />
+        <view v-for="(item, index) in reservations" :key="index" v-if="expandReservation">
+          <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+            <view style="font-weight: bold; color: grey; margin: 2%">{{ item.id }}</view>
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>教室</text><text style="color: grey">{{ classrooms.find(x => x.id === item.classroom_id).display }}</text>
+            </view>
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>时间</text><text style="color: grey;">{{ buildDate(new Date(item.time_stamp * 1000)) }} {{ item.noon ? "中午" : "下午" }}</text>
+            </view>
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>预约用户ID后8位</text><text style="color: grey;">{{ item.applicant_id.slice(-8) }}</text>
+            </view>
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>预约用户显示名</text><text style="color: grey;">{{ users.find(x => x.id === item.applicant_id).display }}</text>
+            </view>
+            <view style="height: 50rpx">
+              <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="deleteRecord(index)">取消预约</button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 
 </template>
@@ -35,8 +63,24 @@ export default {
   data() {
     return {
       expandUser: false,
-      users: []
+      expandReservation: false,
+      users: [],
+      reservations: [],
+      classrooms: [],
+      buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
     }
+  },
+  onLoad() {
+    wx.request({
+      url: "https://nkapi.ememememem.space/query/classroom",
+      method: "POST",
+      data: {
+        "cond": {}
+      },
+      success: (res) => {
+        this.classrooms = res.data
+      }
+    })
   },
   onShow() {
     wx.request({
@@ -49,6 +93,16 @@ export default {
         this.users = res.data;
       }
     })
+    wx.request({
+      url: "https://nkapi.ememememem.space/query/record",
+      method: "POST",
+      data: {
+        "cond": {}
+      },
+      success: (res) => {
+        this.reservations = res.data;
+      }
+    })
   },
   methods: {
     goBack() {
@@ -58,6 +112,9 @@ export default {
     },
     switchUserDisplay() {
       this.expandUser = !this.expandUser
+    },
+    switchReservationDisplay() {
+      this.expandReservation = !this.expandReservation
     },
     alterUserInfo(index) {
       wx.showToast({
@@ -81,6 +138,28 @@ export default {
             icon: "success",
             duration: 2000
           })
+        }
+      })
+    },
+    deleteRecord(index) {
+      wx.showToast({
+        title: "请求服务器...",
+        icon: "loading",
+        duration: 3000
+      })
+      wx.request({
+        url: "https://nkapi.ememememem.space/delete/record",
+        method: "POST",
+        data: {
+          "cond": {"id": this.reservations[index].id}
+        },
+        success: (res) => {
+          wx.showToast({
+            title: "删除成功！",
+            icon: "success",
+            duration: 2000
+          })
+          this.reservations.splice(index, 1);
         }
       })
     }
