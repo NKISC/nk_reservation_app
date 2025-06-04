@@ -19,7 +19,7 @@
             预约日期：
             <view>
               <view class="main_qsrq_lable">
-                <uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart"
+                <uni-datetime-picker v-model="form.singleStart" type="date" :start="datetimeStart" :end="limitDate"
                                      @change='changeStart'>
                   {{transitionData(form.singleStart)}}
                 </uni-datetime-picker>
@@ -79,7 +79,7 @@
               <view>
                 <u-line color="#9E9E9E" />
                 <view class="main_qsrq_lable">
-                  <uni-datetime-picker ref="picker" v-model="form.singleEnd" type="date" :start="form.singleStart" :end="(self.forma)">
+                  <uni-datetime-picker ref="picker" v-model="form.singleEnd" type="date" :start="form.singleStart" :end="limitDate">
                     {{transitionData(form.singleEnd)}}
                   </uni-datetime-picker>
                 </view>
@@ -123,7 +123,7 @@ import MyDialog from '@/components/MyDialog.vue';
 import uniDatetimePicker from '@/uni_modules/uni-datetime-picker/components/uni-datetime-picker/uni-datetime-picker';
 import {
   formatDate
-} from './Individual.js'
+} from '../../pages/Individual/Individual.js'
 export default {
   components: {
     MyDialog,
