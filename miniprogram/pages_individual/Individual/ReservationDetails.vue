@@ -87,8 +87,24 @@
 							</view>
 						</view>
 					</view>
-
 				</view>
+        <view style="margin-top: 5%; font-weight: bold; font-size: 120%">
+          近期活动：
+          <view v-for="(item,index) in recentReservations" :key="index">
+            <view class="listItem">
+              <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx; float: left">
+                <image :src="'https://nkapi.ememememem.space/img/' + reservingClassroom.pic_url" style="width: inherit; height: inherit"/>
+              </view>
+              <view style="margin-left: 10rpx;width: calc(100% - 170rpx)">
+                <view style="font-weight: bold;height: 50rpx;">{{ reservingClassroom.display }}</view>
+                <view style="font-weight: normal; font-size: 20rpx; color: grey">{{ buildDate(new Date(item.time_stamp * 1000))}} {{ item.noon ? "中午" : "下午" }}</view>
+              </view>
+            </view>
+          </view>
+          <view v-if="recentReservations.length === 0" style="font-size: 30rpx; display: flex; justify-content: center; color: grey; margin-top: 30%">
+            该教室最近无活动
+          </view>
+        </view>
 			</view>
 		</view>
 		<view class="footer">
@@ -147,6 +163,7 @@
         tag_display: {},
         reservingClassroom: {},
         reservingPlaceDisplay: "",
+        recentReservations: [],
 				navList: [],
 				navMode: '',
 				list: [{
@@ -187,6 +204,16 @@
         },
         success: (res) => {
           this.reservingPlaceDisplay = res.data[0]
+        }
+      });
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/record",
+        method: "POST",
+        data: {
+          cond: {"classroom_id": this.reservingClassroom.id}
+        },
+        success: (res) => {
+          this.recentReservations = res.data
         }
       })
     },
@@ -422,6 +449,20 @@
 				font-size: 30rpx;
 			}
 		}
+
+    .listItem {
+      width: 98%;
+      height: 200rpx;
+      background: #FFFFFF;
+      box-shadow: 0px 1px 2px 0px rgba(87, 27, 72, 0.15);
+      border-radius: 12rpx;
+      border: 1px solid #f2f2f2;
+      padding: 20rpx;
+      box-sizing: border-box;
+      display: flex;
+      margin: 5% 0;
+      font-size: 28rpx;
+    }
 
 		.footer {
 			margin-top: 90rpx;
