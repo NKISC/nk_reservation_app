@@ -99,6 +99,10 @@
               <view style="margin-left: 10rpx;width: calc(100% - 170rpx)">
                 <view style="font-weight: bold;height: 50rpx;">{{ reservingClassroom.display }}</view>
                 <view style="font-weight: normal; font-size: 20rpx; color: grey">{{ buildDate(new Date(item.time_stamp * 1000))}} {{ item.noon ? "中午" : "下午" }}</view>
+                <view style="font-weight: normal; font-size: 20rpx; color: black; display: flex; align-items: center; margin-top: 10rpx">
+                  <img src="../../static/gr_active.jpeg" style="height: 30rpx; width: 30rpx; margin-right: 15rpx" alt />
+                  <text>{{ userList.find(user => user.id === item.applicant_id).display }}</text>
+                </view>
               </view>
             </view>
           </view>
@@ -187,6 +191,7 @@
 				datetimeEnd: tomorrows,
         limitDate: new Date(),
         background: "",
+        userList: [],
 			}
 		},
     onLoad() {
@@ -217,6 +222,16 @@
         },
         success: (res) => {
           this.recentReservations = res.data
+        }
+      });
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/user",
+        method: "POST",
+        data: {
+          cond: {},
+        },
+        success: (res) => {
+          this.userList = res.data
         }
       })
     },
