@@ -1,5 +1,6 @@
 <template>
   <view class="indexPage">
+    <view class="bg-container" :style="background" />
     <view class="header">
       <view class="content">
         <view class="title">{{ reservingClassroom.display }}</view>
@@ -85,6 +86,7 @@ export default {
       datetimeStart: today,
       datetimeEnd: tomorrows,
       limitDate: new Date(),
+      background: "",
     }
   },
   onShow() {
@@ -102,6 +104,7 @@ export default {
       },
       success: (res) => {
         this.reservingClassroom = res.data[0];
+        this.background = "background: url(https://nkapi.ememememem.space/img/" + this.reservingClassroom.pic_url + ") no-repeat";
         this.navList = this.reservingClassroom.func_tag.split(",");
         this.navList.pop();
         this.navList = this.navList.map(x => this.tag_display[x]);
@@ -220,7 +223,7 @@ export default {
   color: #82007E !important;
 }
 
-.indexPage {
+.bg-container {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -228,7 +231,17 @@ export default {
   right: 0;
   background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
   background-size: 100%;
+  z-index: -100;
+  height: 32%;
+  overflow: hidden;
+}
 
+.indexPage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
   .header {
     width: 100%;
