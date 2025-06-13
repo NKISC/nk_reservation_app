@@ -36,7 +36,7 @@ def login(code: str):
         cursor.execute("select * from user_info where id=:id", {"id": ret["openid"]})
         if cursor.fetchone() is None:
             cursor.execute("insert into user_info (id, display, permission) VALUES (:id, :display, :permission)",
-                           {"id": ret["openid"], "display": ret["openid"][:5], "permission": ","})
+                           {"id": ret["openid"], "display": ret["openid"][-8:], "permission": ","})
 
     return ret
 
