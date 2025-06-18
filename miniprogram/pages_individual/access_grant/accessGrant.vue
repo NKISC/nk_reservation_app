@@ -38,7 +38,7 @@ export default {
           password: this.password,
         },
         success: (res) => {
-          if (res.success) {
+          if (res.data.success) {
             uni.navigateBack({
               delta: 1
             });
