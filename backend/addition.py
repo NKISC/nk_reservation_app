@@ -19,7 +19,6 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int, 
                     100: Python Exception
                 error (str): Error message.
     """
-
     if db is None:
         with sqlite3.connect('database.db') as db:
             cursor = db.cursor()
@@ -160,12 +159,15 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             if cnt:
                 with open("recent_id") as id_file:
                     recent_id = int(id_file.read().strip())
+                cursor.execute("SELECT * FROM cyclical_record WHERE rowid = ((SELECT MAX(rowid) FROM cyclical_record))")
+                id_string = cursor.fetchone()
+                id_string += (',' + str(recent_id))
                 try:
                     cursor.execute("""
                                 UPDATE cyclical_record
-                                SET record_id += (',' + "id")
+                                SET record_id = :id
                                 WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
-                                """, {"id": str(recent_id)})
+                                """, {"id": id_string})
                 except sqlite3.IntegrityError as e:
                     return {"success": False, "error": f"Integrity error: {e}"}
                 except sqlite3.OperationalError as e:
