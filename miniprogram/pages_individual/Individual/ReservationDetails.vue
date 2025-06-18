@@ -47,7 +47,7 @@
 
 					<u-checkbox-group v-model="form.isCyclic" @change="checkboxChange" style="margin-top: 20rpx;">
 						<u-checkbox :customStyle="{marginBottom: '8px'}" shape="circle" :active-color="'#82007E'"
-							label="是否重复"></u-checkbox>
+							label="是否重复（暂不可用）"></u-checkbox>
 					</u-checkbox-group>
 
 					<view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx;">
