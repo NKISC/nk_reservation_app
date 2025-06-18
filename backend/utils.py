@@ -41,6 +41,20 @@ def login(code: str):
     return ret
 
 
+def grant_access_from_password(uid: str, display: str, password: str) -> dict[str, Any]:
+    with open("password_perm_mapping") as ppm:
+        mappings = ppm.read().strip().split("\n")
+    is_access_granted = False
+    for x in mappings:
+        mapping = x.split(" ")
+        if password == mapping[0]:
+            from backend import alter
+            alter.alter_user(uid, display, mapping[1].split(",")[:-1])
+            is_access_granted = True
+            break
+    return {"success": True} if is_access_granted else {"success": False, "err_code": 500}
+
+
 def construct_condition(cond: dict[str, Any]) -> str:
     """
     Prepare the condition dict for sql statements. Works with construct_params if generic keys are present

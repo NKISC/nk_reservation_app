@@ -34,6 +34,12 @@ class LoginModel(BaseModel):
     code: str
 
 
+class GrantAccessModel(BaseModel):
+    uid: str
+    display: str
+    password: str
+
+
 class UserAlterModel(BaseModel):
     uid: str
     display: str

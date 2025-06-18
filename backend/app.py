@@ -89,6 +89,13 @@ async def handle_login(login_model: data_models.LoginModel):
     return res
 
 
+@app.post("/grant_access/")
+async def grant_access(grant_access_req: data_models.GrantAccessModel):
+    res = await asyncio.to_thread(utils.grant_access_from_password,
+                                  grant_access_req.uid, grant_access_req.display, grant_access_req.password)
+    return res
+
+
 @app.post("/alter/user/")
 async def alter_user(alter_req: data_models.UserAlterModel):
     res = await asyncio.to_thread(alter.alter_user, alter_req.uid, alter_req.display, alter_req.permission)

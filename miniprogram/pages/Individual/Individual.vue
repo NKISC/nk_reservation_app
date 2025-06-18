@@ -62,6 +62,11 @@
             管理员工具 <span> > </span>
           </view>
         </view>
+        <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding: 3% 5% 3% 5%" @click="goToAccessGrant">
+          <view style="font-weight: bold; display: flex; justify-content: space-between;">
+            获取权限 <span> > </span>
+          </view>
+        </view>
       </view>
 		</view>
 	</view>
@@ -169,6 +174,12 @@
       goToAdminTool() {
         uni.navigateTo({
           url: '/pages_individual/admin_tool/adminTool',
+        })
+      },
+      goToAccessGrant() {
+        uni.setStorageSync("userInfo", this.userInfo);
+        uni.navigateTo({
+          url: '/pages_individual/access_grant/accessGrant',
         })
       }
 		}

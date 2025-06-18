@@ -51,6 +51,12 @@
 					"navigationBarTitleText": "",
 					"navigationStyle": "custom"
 				}
+			}, {
+				"path": "access_grant/accessGrant",
+				"style": {
+					"navigationBarTitleText": "",
+					"navigationStyle": "custom"
+				}
 			}
 		]
 	}],
