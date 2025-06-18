@@ -1,5 +1,6 @@
 <template>
 	<view class="indexPage">
+    <view class="bg-container" :style="background" />
 		<view class="header">
 			<view class="content">
 				<view class="title">{{ reservingClassroom.display }}</view>
@@ -46,7 +47,7 @@
 
 					<u-checkbox-group v-model="form.isCyclic" @change="checkboxChange" style="margin-top: 20rpx;">
 						<u-checkbox :customStyle="{marginBottom: '8px'}" shape="circle" :active-color="'#82007E'"
-							label="是否重复"></u-checkbox>
+							label="是否重复（暂不可用）"></u-checkbox>
 					</u-checkbox-group>
 
 					<view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx;">
@@ -87,10 +88,33 @@
 							</view>
 						</view>
 					</view>
-
 				</view>
+        <view style="margin-top: 5%; font-weight: bold; font-size: 120%">
+          近期活动：
+          <view v-for="(item,index) in recentReservations" :key="index">
+            <view class="listItem">
+              <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx; float: left">
+                <image :src="'https://nkapi.ememememem.space/img/' + reservingClassroom.pic_url" style="width: inherit; height: inherit"/>
+              </view>
+              <view style="margin-left: 10rpx;width: calc(100% - 170rpx)">
+                <view style="font-weight: bold;height: 50rpx;">{{ reservingClassroom.display }}</view>
+                <view style="font-weight: normal; font-size: 20rpx; color: grey">{{ buildDate(new Date(item.time_stamp * 1000))}} {{ item.noon ? "中午" : "下午" }}</view>
+                <view style="font-weight: normal; font-size: 20rpx; color: black; display: flex; align-items: center; margin-top: 10rpx">
+                  <img src="../../static/gr_active.jpeg" style="height: 30rpx; width: 30rpx; margin-right: 15rpx" alt />
+                  <text>{{ userList.find(user => user.id === item.applicant_id).display }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view v-if="recentReservations.length === 0" style="font-size: 30rpx; display: flex; justify-content: center; color: grey; margin-top: 30%">
+            该教室最近无活动
+          </view>
+        </view>
 			</view>
 		</view>
+    <view style="margin-top: 500rpx">
+      <u-line />
+    </view>
 		<view class="footer">
 			<image src="../../static/fh.svg" style="width: 50rpx;height: 50rpx;" @click="goBack" />
 			<image src="../../static/ljyy.svg" style="width: 230rpx;height: 90rpx;" @click="openxq" />
@@ -131,8 +155,10 @@
 	import {
 		formatDate
 	} from '../../pages/Individual/Individual.js'
+  import ULine from "../../uni_modules/uview-ui/components/u-line/u-line.vue";
 	export default {
 		components: {
+      ULine,
 			MyDialog,
 			uniDatetimePicker
 		},
@@ -147,6 +173,7 @@
         tag_display: {},
         reservingClassroom: {},
         reservingPlaceDisplay: "",
+        recentReservations: [],
 				navList: [],
 				navMode: '',
 				list: [{
@@ -168,6 +195,8 @@
 				datetimeStart: today,
 				datetimeEnd: tomorrows,
         limitDate: new Date(),
+        background: "",
+        userList: [],
 			}
 		},
     onLoad() {
@@ -176,6 +205,7 @@
       this.tag_display = uni.getStorageSync('tag_display');
       this.reservingClassroom = uni.getStorageSync('reservingClassroom');
       uni.removeStorageSync("reservingClassroom");
+      this.background = "background: url(https://nkapi.ememememem.space/img/" + this.reservingClassroom.pic_url + ") no-repeat";
       this.navList = this.reservingClassroom.func_tag.split(",");
       this.navList.pop();
       this.navList = this.navList.map(x => this.tag_display[x]);
@@ -187,6 +217,26 @@
         },
         success: (res) => {
           this.reservingPlaceDisplay = res.data[0]
+        }
+      });
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/record",
+        method: "POST",
+        data: {
+          cond: {"classroom_id": this.reservingClassroom.id}
+        },
+        success: (res) => {
+          this.recentReservations = res.data
+        }
+      });
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/user",
+        method: "POST",
+        data: {
+          cond: {},
+        },
+        success: (res) => {
+          this.userList = res.data
         }
       })
     },
@@ -325,15 +375,25 @@
 		color: #82007E !important;
 	}
 
+  .bg-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
+    background-size: 100%;
+    z-index: -100;
+    height: 32%;
+    overflow: hidden;
+  }
+
 	.indexPage {
 		position: absolute;
 		top: 0;
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
-		background-size: 100%;
-
 
 		.header {
 			width: 100%;
@@ -423,12 +483,29 @@
 			}
 		}
 
+    .listItem {
+      width: 98%;
+      height: 200rpx;
+      background: #FFFFFF;
+      box-shadow: 0px 1px 2px 0px rgba(87, 27, 72, 0.15);
+      border-radius: 12rpx;
+      border: 1px solid #f2f2f2;
+      padding: 20rpx;
+      box-sizing: border-box;
+      display: flex;
+      margin: 5% 0;
+      font-size: 28rpx;
+    }
+
 		.footer {
 			margin-top: 90rpx;
 			width: 100%;
 			height: 10%;
 			border-top: 3px solid #eaeaea;
 			display: flex;
+      position: fixed;
+      bottom: 0;
+      background-color: white;
 			justify-content: space-between;
 			align-items: center;
 			padding: 0 50rpx;

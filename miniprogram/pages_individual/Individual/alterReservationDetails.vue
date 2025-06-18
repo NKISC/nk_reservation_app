@@ -1,5 +1,6 @@
 <template>
   <view class="indexPage">
+    <view class="bg-container" :style="background" />
     <view class="header">
       <view class="content">
         <view class="title">{{ alteringClassroom.display }}</view>
@@ -42,50 +43,6 @@
                 </view>
               </u-radio>
             </u-radio-group>
-          </view>
-
-          <u-checkbox-group v-model="form.isCyclic" @change="checkboxChange" style="margin-top: 20rpx;">
-            <u-checkbox :customStyle="{marginBottom: '8px'}" shape="circle" :active-color="'#82007E'"
-                        label="是否重复"></u-checkbox>
-          </u-checkbox-group>
-
-          <view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx;">
-            <view class="main_cfpl">重复频率：</view>
-            <view style="height: 60rpx;display: flex;flex-direction: column;">
-              <u-line color="#9E9E9E" />
-              <u-radio-group v-model="form.cyclicMethod" style="display: flex;justify-content: space-around;">
-                <u-radio name="mz" shape="square" :active-color="'#82007E'">
-                  <view style="color: #7E7E7E;font-size: 28rpx;font-weight: bold;">每周</view>
-                </u-radio>
-                <u-radio name="my" shape="square" :active-color="'#82007E'">
-                  <view style="color: #7E7E7E;font-size: 28rpx;font-weight: bold;">每月</view>
-                </u-radio>
-              </u-radio-group>
-              <u-line color="#9E9E9E" />
-            </view>
-          </view>
-
-          <view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx;">
-            <view class="main_qsrq">起始日期：</view>
-            <view style="display: flex;justify-content: space-around;">
-              <view>
-                <u-line color="#9E9E9E" />
-                <view class="main_qsrq_lable" style="color: #7E7E7E">
-                  {{transitionData(form.singleStart)}}
-                </view>
-                <u-line color="#9E9E9E" />
-              </view>
-              <view style="font-size: 40rpx;">--</view>
-              <view>
-                <u-line color="#9E9E9E" />
-                <view class="main_qsrq_lable">
-                  <uni-datetime-picker ref="picker" v-model="form.singleEnd" type="date" :start="form.singleStart" :end="limitDate">
-                    {{transitionData(form.singleEnd)}}
-                  </uni-datetime-picker>
-                </view>
-                <u-line color="#9E9E9E" />
-              </view>
-            </view>
           </view>
 
         </view>
@@ -162,6 +119,7 @@ export default {
       datetimeStart: today,
       datetimeEnd: tomorrows,
       limitDate: new Date(),
+      background: "",
     }
   },
   onLoad() {
@@ -172,6 +130,7 @@ export default {
     this.alteringRecord = uni.getStorageSync("alteringRecord");
     uni.removeStorageSync("alteringClassroom");
     uni.removeStorageSync("alteringRecord");
+    this.background = "background: url(https://nkapi.ememememem.space/img/" + this.alteringClassroom.pic_url + ") no-repeat";
     let buildDate = (d) =>
         `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     this.form.singleStart = buildDate(new Date(this.alteringRecord.time_stamp * 1000));
@@ -323,7 +282,7 @@ export default {
   color: #82007E !important;
 }
 
-.indexPage {
+.bg-container {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -331,7 +290,17 @@ export default {
   right: 0;
   background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
   background-size: 100%;
+  z-index: -100;
+  height: 32%;
+  overflow: hidden;
+}
 
+.indexPage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
   .header {
     width: 100%;
