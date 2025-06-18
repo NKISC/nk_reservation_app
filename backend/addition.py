@@ -88,7 +88,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                 return {"success": False, "error": "classroom_already_reserved"}
             # add timestamp
             gap = 0
-            for i in range(cur_day, 15):
+            for i in range(cur_day + 1, 15):
                 if i >= 8:
                     if days[i-7]:
                         gap = i - cur_day
@@ -140,7 +140,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             cnt += 1
             # add timestamp
             gap = 0
-            for i in range(cur_day, 15):
+            for i in range(cur_day + 1, 15):
                 if i >= 8:
                     if days[i-7]:
                         gap = i - cur_day
