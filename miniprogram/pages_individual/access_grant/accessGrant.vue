@@ -29,6 +29,11 @@ export default {
       })
     },
     submitPassword() {
+      wx.showToast({
+        title: "请求服务器...",
+        icon: "loading",
+        duration: 3000
+      })
       wx.request({
         url: "https://nkapi.ememememem.space/grant_access/",
         method: "POST",
