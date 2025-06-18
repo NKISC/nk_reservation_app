@@ -155,11 +155,11 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
     with sqlite3.connect("database.db") as db:
         cursor = db.cursor()
         cursor.execute("SELECT classroom_id FROM record")
-        rooms = cursor.fetchone()
+        rooms = cursor.fetchall()
         cursor.execute("SELECT noon FROM record")
-        noons = cursor.fetchone()
+        noons = cursor.fetchall()
         cursor.execute("SELECT time_stamp FROM record")
-        times = cursor.fetchone()
+        times = cursor.fetchall()
         if rooms is None:
             return False
         for i in range(0, len(rooms)):
