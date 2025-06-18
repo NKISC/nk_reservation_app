@@ -154,7 +154,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         cnt = 0
         cur_timestamp = beginning_time_stamp
         while cur_timestamp <= ending_time_stamp:
-            ret = add_records(classroom, noon, applicant_id, cur_timestamp)
+            ret = add_records(classroom, noon, applicant_id, cur_timestamp, db=db)
             if not ret["success"]:
                 return {"success": False, "error": "Add_records function:" + ' ' + ret["error"]}
             if cnt:
