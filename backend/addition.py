@@ -3,7 +3,7 @@ from backend.query import check_permission, judge_conflict
 from typing import *
 
 
-def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) -> {str, Union[bool, str]}:
+def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int, db: Optional[sqlite3.Connection] = None) -> {str, Union[bool, str]}:
     """
     Creating a new record.
     :param classroom: The classroom id.
@@ -19,14 +19,51 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
                     100: Python Exception
                 error (str): Error message.
     """
-    with sqlite3.connect('database.db') as db:
+
+    if db is None:
+        with sqlite3.connect('database.db') as db:
+            cursor = db.cursor()
+            with open("recent_id") as id_file:
+                recent_id = int(id_file.read().strip())
+            with open("recent_id", "w") as id_file:
+                id_file.write(str(recent_id + 1))
+
+            #judge permission
+            cursor.execute("SELECT permission FROM user_info WHERE id = :applicant_id", {'applicant_id': applicant_id})
+            res = cursor.fetchone()
+            perm = res[0].split(",")
+            del perm[-1]
+            clas = [classroom]
+            no_perm = check_permission(perm, clas)
+            for i in no_perm:
+                if i == classroom:
+                    return {"success": False, "err_code": 600, "error": "no_permission"}
+
+            #judge reservation conflict
+            if judge_conflict(classroom, noon, time_stamp):
+                return {"success": False, "err_code": 601, "error": "classroom_already_reserved"}
+
+            try:
+                cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
+                               {"id": recent_id + 1, "noon": noon, "classroom": classroom,
+                                "applicant_id": applicant_id, "time_stamp": time_stamp})
+            except sqlite3.IntegrityError as e:
+                return {"success": False, "error": f"Integrity error: {e}"}
+            except sqlite3.OperationalError as e:
+                return {"success": False, "error": f"Operational error: {e}"}
+            except sqlite3.DatabaseError as e:
+                return {"success": False, "error": f"Database error: {e}"}
+            except BaseException as e:
+                return {"success": False, "err_code": 100, "error": str(e)}
+            return {"success": True}
+    else:
         cursor = db.cursor()
         with open("recent_id") as id_file:
             recent_id = int(id_file.read().strip())
         with open("recent_id", "w") as id_file:
             id_file.write(str(recent_id + 1))
 
-        #judge permission
+        # judge permission
         cursor.execute("SELECT permission FROM user_info WHERE id = :applicant_id", {'applicant_id': applicant_id})
         res = cursor.fetchone()
         perm = res[0].split(",")
@@ -37,7 +74,7 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
             if i == classroom:
                 return {"success": False, "err_code": 600, "error": "no_permission"}
 
-        #judge reservation conflict
+        # judge reservation conflict
         if judge_conflict(classroom, noon, time_stamp):
             return {"success": False, "err_code": 601, "error": "classroom_already_reserved"}
 
