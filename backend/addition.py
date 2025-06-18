@@ -66,7 +66,13 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
     :param beginning_time_stamp: The beginning date of the reservation
     :param ending_time_stamp: The ending date of the reservation
     :param days: A bool list of days to add (from Monday to Sunday)
-    :return:
+    :return: A dictionary with the following keys:
+                success (bool): Whether the reservation was successful.
+                err_code (int)[optional]: The error code if an error occurs. Possible codes:
+                    600: Permission Denied
+                    601: Classroom Reservation Conflict
+                    100: Python Exception
+                error (str): Error message.
     """
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
@@ -97,9 +103,9 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
 
         # add records
         with open("recent_id") as id_file:
-            record = int(id_file.read().strip())
+            recent_id = int(id_file.read().strip())
         try:
-            cursor.execute("INSERT INTO cyclical_record VALUES (:id)", {"id": str(record)})
+            cursor.execute("INSERT INTO cyclical_record VALUES (:id)", {"id": str(recent_id + 1)})
         except sqlite3.IntegrityError as e:
             return {"success": False, "error": f"Integrity error: {e}"}
         except sqlite3.OperationalError as e:
@@ -116,13 +122,13 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                 return {"success": False, "error": "Add_records function:" + ' ' + ret["error"]}
             if cnt:
                 with open("recent_id") as id_file:
-                    record = int(id_file.read().strip())
+                    recent_id = int(id_file.read().strip())
                 try:
                     cursor.execute("""
                                 UPDATE cyclical_record
                                 SET record_id += (',' + "id")
                                 WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
-                                """, {"id": str(record)})
+                                """, {"id": str(recent_id)})
                 except sqlite3.IntegrityError as e:
                     return {"success": False, "error": f"Integrity error: {e}"}
                 except sqlite3.OperationalError as e:
