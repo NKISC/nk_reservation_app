@@ -112,6 +112,9 @@
         </view>
 			</view>
 		</view>
+    <view style="margin-top: 500rpx">
+      <u-line />
+    </view>
 		<view class="footer">
 			<image src="../../static/fh.svg" style="width: 50rpx;height: 50rpx;" @click="goBack" />
 			<image src="../../static/ljyy.svg" style="width: 230rpx;height: 90rpx;" @click="openxq" />
@@ -152,8 +155,10 @@
 	import {
 		formatDate
 	} from '../../pages/Individual/Individual.js'
+  import ULine from "../../uni_modules/uview-ui/components/u-line/u-line.vue";
 	export default {
 		components: {
+      ULine,
 			MyDialog,
 			uniDatetimePicker
 		},
@@ -498,6 +503,9 @@
 			height: 10%;
 			border-top: 3px solid #eaeaea;
 			display: flex;
+      position: fixed;
+      bottom: 0;
+      background-color: white;
 			justify-content: space-between;
 			align-items: center;
 			padding: 0 50rpx;
