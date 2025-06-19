@@ -47,7 +47,7 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
         else:
             cursor.execute("select * from record")
         ret = utils.construct_response(cursor, "record")
-        return ret
+        return sorted(ret, key=lambda x: x["time_stamp"])
 
       
 def query_display(q: dict[str, Any]) -> list[str]:
