@@ -18,7 +18,9 @@ def delete_from_table(table: str, x: Dict[str, Any]) -> Dict[str, Any]:
                     utils.construct_params(x)
                 )
             else:
-                return {"success": False, "error": "删除条件不能为空，防止误删全部数据"}
+                cursor.execute(
+                    f"DELETE FROM {table} WHERE true"
+                )
         return {"success": True}
     except sqlite3.IntegrityError as e:
         return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
