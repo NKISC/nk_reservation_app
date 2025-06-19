@@ -3,14 +3,14 @@ from backend.query import check_permission, judge_conflict
 from typing import *
 
 
-def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int, db: Optional[sqlite3.Connection] = None) -> {str, Union[bool, str]}:
+def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, db: Optional[sqlite3.Connection] = None) -> {str, Union[bool, str]}:
     """
     Creating a new record.
     :param classroom: The classroom id.
     :param noon: Whether the reservation is at noon.
     :param applicant_id: The user id of the applicant.
-    :param time_stamp: The date of the reservation (h, m, s, f are set to zero.
-                       For instance, if the reservation is on Feb. 1, 2025, the time_stamp will be 1738339200).
+    :param timestamp: The date of the reservation (h, m, s, f are set to zero.
+                       For instance, if the reservation is on Feb. 1, 2025, the timestamp will be 1738339200).
     :return: A dictionary with the following keys:
                 success (bool): Whether the reservation was successful.
                 err_code (int)[optional]: The error code if an error occurs. Possible codes:
@@ -39,13 +39,13 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int, 
                     return {"success": False, "err_code": 600, "error": "no_permission"}
 
             #judge reservation conflict
-            if judge_conflict(classroom, noon, time_stamp):
+            if judge_conflict(classroom, noon, timestamp):
                 return {"success": False, "err_code": 601, "error": "classroom_already_reserved"}
 
             try:
-                cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
+                cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                                {"id": recent_id + 1, "noon": noon, "classroom": classroom,
-                                "applicant_id": applicant_id, "time_stamp": time_stamp})
+                                "applicant_id": applicant_id, "timestamp": timestamp})
             except sqlite3.IntegrityError as e:
                 return {"success": False, "error": f"Integrity error: {e}"}
             except sqlite3.OperationalError as e:
@@ -74,13 +74,13 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int, 
                 return {"success": False, "err_code": 600, "error": "no_permission"}
 
         # judge reservation conflict
-        if judge_conflict(classroom, noon, time_stamp):
+        if judge_conflict(classroom, noon, timestamp):
             return {"success": False, "err_code": 601, "error": "classroom_already_reserved"}
 
         try:
-            cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :time_stamp)",
+            cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                            {"id": recent_id + 1, "noon": noon, "classroom": classroom,
-                            "applicant_id": applicant_id, "time_stamp": time_stamp})
+                            "applicant_id": applicant_id, "timestamp": timestamp})
         except sqlite3.IntegrityError as e:
             return {"success": False, "error": f"Integrity error: {e}"}
         except sqlite3.OperationalError as e:
@@ -92,15 +92,15 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int, 
         return {"success": True}
 
 
-def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginning_time_stamp: int,
-                         ending_time_stamp: int, days: list[bool]) -> {str, Union[bool, str]}:
+def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginning_timestamp: int,
+                         ending_timestamp: int, days: list[bool]) -> {str, Union[bool, str]}:
     """
     Creating cyclical records.
     :param classroom: The classroom id.
     :param noon: Whether the reservation is at noon.
     :param applicant_id: The user id of the applicant.
-    :param beginning_time_stamp: The beginning date of the reservation
-    :param ending_time_stamp: The ending date of the reservation
+    :param beginning_timestamp: The beginning date of the reservation
+    :param ending_timestamp: The ending date of the reservation
     :param days: A bool list of days to add (from Monday to Sunday)
     :return: A dictionary with the following keys:
                 success (bool): Whether the reservation was successful.
@@ -112,14 +112,14 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
     """
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
-        cur_timestamp = beginning_time_stamp
+        cur_timestamp = beginning_timestamp
         for i in range(1, 8):
             if days[i]:
                 cur_day = i
                 break
 
         # judge conflict
-        while cur_timestamp < ending_time_stamp:
+        while cur_timestamp <= ending_timestamp:
             # calculate timestamp gap
             for i in range(cur_day + 1, 15):
                 if i >= 8:
@@ -133,7 +133,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                         cur_day = i
                         break
 
-            if cur_timestamp + gap > ending_time_stamp:
+            if cur_timestamp + gap > ending_timestamp:
                 break
             if judge_conflict(classroom, noon, cur_day):
                 return {"success": False, "error": "classroom_already_reserved"}
@@ -154,8 +154,8 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         except Exception as e:
             return {"success": False, "error": f"Unknown error: {e}"}
         cnt = 0
-        cur_timestamp = beginning_time_stamp
-        while cur_timestamp < ending_time_stamp:
+        cur_timestamp = beginning_timestamp
+        while cur_timestamp <= ending_timestamp:
             # calculate timestamp gap
             gap = 0
             for i in range(cur_day + 1, 15):
@@ -169,7 +169,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                         gap = i - cur_day
                         cur_day = i
                         break
-            if cur_timestamp + gap > ending_time_stamp:
+            if cur_timestamp + gap > ending_timestamp:
                 break
 
             ret = add_records(classroom, noon, applicant_id, cur_timestamp, db=db)
