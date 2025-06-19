@@ -77,17 +77,20 @@
 								</view>
 								<u-line color="#9E9E9E" />
 							</view>
-							<view style="font-size: 40rpx;">--</view>
-							<view>
-								<u-line color="#9E9E9E" />
-								<view class="main_qsrq_lable">
-									<uni-datetime-picker ref="picker" v-model="form.singleEnd" type="date" :start="form.singleStart" :end="limitDate">
-										{{transitionData(form.singleEnd)}}
-									</uni-datetime-picker>
-								</view>
-								<u-line color="#9E9E9E" />
-							</view>
 						</view>
+            <!--Works for now-->
+            <view class="main_qsrq">终止日期：</view>
+            <view style="display: flex;justify-content: space-around;">
+              <view>
+                <u-line color="#9E9E9E" />
+                <view class="main_qsrq_lable">
+                  <uni-datetime-picker ref="picker" v-model="form.singleEnd" type="date" :start="form.singleStart" :end="limitDate">
+                    {{transitionData(form.singleEnd)}}
+                  </uni-datetime-picker>
+                </view>
+                <u-line color="#9E9E9E" />
+              </view>
+            </view>
 					</view>
 				</view>
         <view style="margin-top: 5%; font-weight: bold; font-size: 120%; height: fit-content">
