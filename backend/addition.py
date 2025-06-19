@@ -119,14 +119,11 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                 break
 
         # judge conflict
-        while cur_timestamp <= ending_time_stamp:
-            if judge_conflict(classroom, noon, cur_day):
-                return {"success": False, "error": "classroom_already_reserved"}
-            # add timestamp
-            gap = 0
+        while cur_timestamp < ending_time_stamp:
+            # calculate timestamp gap
             for i in range(cur_day + 1, 15):
                 if i >= 8:
-                    if days[i-7]:
+                    if days[i - 7]:
                         gap = i - cur_day
                         cur_day = i - 7
                         break
@@ -135,6 +132,12 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                         gap = i - cur_day
                         cur_day = i
                         break
+
+            if cur_timestamp + gap > ending_time_stamp:
+                break
+            if judge_conflict(classroom, noon, cur_day):
+                return {"success": False, "error": "classroom_already_reserved"}
+            # add timestamp
             cur_timestamp += (gap * 86400)
 
         # add records
@@ -152,7 +155,23 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             return {"success": False, "error": f"Unknown error: {e}"}
         cnt = 0
         cur_timestamp = beginning_time_stamp
-        while cur_timestamp <= ending_time_stamp:
+        while cur_timestamp < ending_time_stamp:
+            # calculate timestamp gap
+            gap = 0
+            for i in range(cur_day + 1, 15):
+                if i >= 8:
+                    if days[i - 7]:
+                        gap = i - cur_day
+                        cur_day = i - 7
+                        break
+                else:
+                    if days[i]:
+                        gap = i - cur_day
+                        cur_day = i
+                        break
+            if cur_timestamp + gap > ending_time_stamp:
+                break
+
             ret = add_records(classroom, noon, applicant_id, cur_timestamp, db=db)
             if not ret["success"]:
                 return {"success": False, "error": "Add_records function:" + ' ' + ret["error"]}
@@ -178,18 +197,6 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                     return {"success": False, "error": f"Unknown error: {e}"}
             cnt += 1
             # add timestamp
-            gap = 0
-            for i in range(cur_day + 1, 15):
-                if i >= 8:
-                    if days[i-7]:
-                        gap = i - cur_day
-                        cur_day = i - 7
-                        break
-                else:
-                    if days[i]:
-                        gap = i - cur_day
-                        cur_day = i
-                        break
             cur_timestamp += (gap * 86400)
         return {"success": True}
 
