@@ -198,6 +198,21 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             cnt += 1
             # add timestamp
             cur_timestamp += (gap * 86400)
+        id_string += ","
+        try:
+            cursor.execute("""
+                           UPDATE cyclical_record
+                           SET record_id = :id
+                           WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
+                           """, {"id": id_string})
+        except sqlite3.IntegrityError as e:
+            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
+        except sqlite3.OperationalError as e:
+            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
+        except sqlite3.DatabaseError as e:
+            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
+        except Exception as e:
+            return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
         return {"success": True}
 
 
