@@ -47,22 +47,23 @@
 
 					<u-checkbox-group v-model="form.isCyclic" @change="checkboxChange" style="margin-top: 20rpx;">
 						<u-checkbox :customStyle="{marginBottom: '8px'}" shape="circle" :active-color="'#82007E'"
-							label="是否重复（暂不可用）"></u-checkbox>
+							label="周期预约"></u-checkbox>
 					</u-checkbox-group>
 
-					<view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx;">
+					<view v-if="form.isCyclic.length > 0" style="margin-top: 20rpx; width: 100%">
 						<view class="main_cfpl">重复频率：</view>
 						<view style="height: 60rpx;display: flex;flex-direction: column;">
-							<u-line color="#9E9E9E" />
-							<u-radio-group v-model="form.cyclicMethod" style="display: flex;justify-content: space-around;">
-								<u-radio name="mz" shape="square" :active-color="'#82007E'">
-									<view style="color: #7E7E7E;font-size: 28rpx;font-weight: bold;">每周</view>
-								</u-radio>
-								<u-radio name="my" shape="square" :active-color="'#82007E'">
-									<view style="color: #7E7E7E;font-size: 28rpx;font-weight: bold;">每月</view>
-								</u-radio>
-							</u-radio-group>
-							<u-line color="#9E9E9E" />
+							<u-line color="#9E9E9E"/>
+              <u-checkbox-group v-model="form.cycForm">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; width: 100%">
+                  <span v-for="(item, index) in form.cycDay" v-if="index !== 0" :key="index" style="display: flex; align-items: center">
+                    <u-checkbox :name="index" /> <br/>{{ dayRefs[index - 1] }}
+                  </span>
+                </div>
+              </u-checkbox-group>
+
+
+              <u-line color="#9E9E9E"/>
 						</view>
 					</view>
 
@@ -137,7 +138,7 @@
 			</view>
 
 			<view class="mark_data">
-				<view class="mark_data_title" style="margin-bottom: 10rpx;">{{ "每" + (form.cyclicMethod === 'mz' ? "周" : "月") + "重复" }}</view>
+        <view class="mark_data_title" style="margin-bottom: 10rpx;">每周{{ constructCyclicalDayString() }}重复</view>
 				<view class="mark_data_sj" style="font-weight: bold;" v-if="form.isCyclic.length > 0">{{ form.singleStart }}</view>
 				<view class="mark_data_title" v-if="form.isCyclic.length > 0">--</view>
 				<view class="mark_data_sj" style="font-weight: bold;" v-if="form.isCyclic.length > 0">{{ form.singleEnd }}</view>
@@ -177,6 +178,7 @@
 				navList: [],
 				navMode: '',
         bottomMarginStyle: "",
+        dayRefs: {0: '一', 1: '二', 2: '三', 3: '四', 4: '五', 5: '六', 6: '日'},
 				list: [{
 						name: 'apple',
 						disabled: false
@@ -190,6 +192,8 @@
 					timePeriod: "",
 					isCyclic: [],
 					cyclicMethod: "",
+          cycDay: [false, false, false, false, false, false, false, false],
+          cycForm: [],
 					singleStart: tomorrow,
 					singleEnd: tomorrow,
 				},
@@ -271,12 +275,13 @@
 				});
 			},
 			openxq() {
+        this.cyclicalCheckboxChange();
 				if (this.form.isCyclic.length > 0) {
-					if (this.form.timePeriod && this.form.cyclicMethod && this.form.singleStart && this.form.singleEnd) {
+					if (this.form.timePeriod && this.form.singleStart && this.form.singleEnd && this.form.cycDay.find(x => x)) {
 						this.showmark = true
 					}
 				} else {
-					if (this.form.timePeriod && this.form.singleStart && this.form.singleEnd) {
+					if (this.form.timePeriod && this.form.singleStart) {
 						this.showmark = true
 					}
 				}
@@ -289,59 +294,118 @@
           icon: "loading",
           duration: 3000
         })
-				wx.request({
-          url: "https://nkapi.ememememem.space/addition/add_record",
-          method: "POST",
-          data: {
-            "classroom": this.reservingClassroom.id,
-            "noon": (this.form.timePeriod === 'zw'),
-            "applicant_id": uni.getStorageSync("openid"),
-            "time_stamp": new Date(this.form.singleStart).getTime() / 1000,
-          },
-          success: (res) => {
-            let r = res.data;
-            if (r.success) {
-              uni.navigateBack({
-                delta: 1
-              });
-              setTimeout(function () {
-                wx.showToast({
-                  title: "预约成功！",
-                  icon: "success",
-                  duration: 3000
-                })
-              }, 1000);
+        if (this.form.isCyclic.length > 0) {
+          wx.request({
+            url: "https://nkapi.ememememem.space/addition/add_cyclical_record",
+            method: "POST",
+            data: {
+              "classroom": this.reservingClassroom.id,
+              "noon": (this.form.timePeriod === 'zw'),
+              "applicant_id": uni.getStorageSync("openid"),
+              "beginning_time_stamp": new Date(this.form.singleStart).getTime() / 1000,
+              "ending_time_stamp": new Date(this.form.singleEnd).getTime() / 1000,
+              "days": this.form.cycDay
+            },
+            success: (res) => {
+              let r = res.data;
+              if (r.success) {
+                uni.navigateBack({
+                  delta: 1
+                });
+                setTimeout(function () {
+                  wx.showToast({
+                    title: "预约成功！",
+                    icon: "success",
+                    duration: 3000
+                  })
+                }, 1000);
+              } else {
+                if (r.err_code === 600) {
+                  wx.showToast({
+                    title: "无对应权限",
+                    icon: "error",
+                    duration: 3000
+                  })
+                } else if (r.err_code === 601) {
+                  wx.showToast({
+                    title: "该时段已被预约",
+                    icon: "error",
+                    duration: 3000
+                  })
+                } else if (r.err_code === 100) {
+                  wx.showToast({
+                    title: "服务器错误",
+                    icon: "error",
+                    duration: 3000
+                  })
+                }
+              }
+              this.showmark = false;
             }
-            else {
-              if (r.err_code === 600) {
-                wx.showToast({
-                  title: "无对应权限",
-                  icon: "error",
-                  duration: 3000
-                })
+          })
+        }
+        else {
+          wx.request({
+            url: "https://nkapi.ememememem.space/addition/add_record",
+            method: "POST",
+            data: {
+              "classroom": this.reservingClassroom.id,
+              "noon": (this.form.timePeriod === 'zw'),
+              "applicant_id": uni.getStorageSync("openid"),
+              "time_stamp": new Date(this.form.singleStart).getTime() / 1000,
+            },
+            success: (res) => {
+              let r = res.data;
+              if (r.success) {
+                uni.navigateBack({
+                  delta: 1
+                });
+                setTimeout(function () {
+                  wx.showToast({
+                    title: "预约成功！",
+                    icon: "success",
+                    duration: 3000
+                  })
+                }, 1000);
+              } else {
+                if (r.err_code === 600) {
+                  wx.showToast({
+                    title: "无对应权限",
+                    icon: "error",
+                    duration: 3000
+                  })
+                } else if (r.err_code === 601) {
+                  wx.showToast({
+                    title: "该时段已被预约",
+                    icon: "error",
+                    duration: 3000
+                  })
+                } else if (r.err_code === 100) {
+                  wx.showToast({
+                    title: "服务器错误",
+                    icon: "error",
+                    duration: 3000
+                  })
+                }
               }
-              else if (r.err_code === 601) {
-                wx.showToast({
-                  title: "该时段已被预约",
-                  icon: "error",
-                  duration: 3000
-                })
-              }
-              else if (r.err_code === 100) {
-                wx.showToast({
-                  title: "服务器错误",
-                  icon: "error",
-                  duration: 3000
-                })
-              }
+              this.showmark = false;
             }
-            this.showmark = false;
-          }
-        })
+          })
+        }
 			},
 			close() {
 				this.showmark = false
 			},
+      cyclicalCheckboxChange() {
+        for (let i = 1; i < 8; i++) {
+          this.form.cycDay[i] = this.form.cycForm.includes(i);
+        }
+      },
+      constructCyclicalDayString() {
+        let ret = [];
+        for (let i = 1; i < 8; i++) if (this.form.cycDay[i]) ret.push(this.dayRefs[i - 1]);
+        return ret.join("、");
+      }
 		}
 	}
 </script>
