@@ -46,11 +46,11 @@ def add_records(classroom: str, noon: bool, applicant_id: int, time_stamp: int) 
                            {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                             "applicant_id": applicant_id, "time_stamp": time_stamp})
         except sqlite3.IntegrityError as e:
-            return {"success": False, "error": f"Integrity error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
         except sqlite3.OperationalError as e:
-            return {"success": False, "error": f"Operational error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
         except sqlite3.DatabaseError as e:
-            return {"success": False, "error": f"Database error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
         except BaseException as e:
             return {"success": False, "err_code": 100, "error": str(e)}
         return {"success": True}
@@ -79,7 +79,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         # judge conflict
         while cur_timestamp <= ending_time_stamp:
             if judge_conflict(classroom, noon, cur_day):
-                return {"success": False, "error": "classroom_already_reserved"}
+                return {"success": False, "err_code": 601, "error": "classroom_already_reserved"}
             # add timestamp
             gap = 0
             for i in range(cur_day, 15):
@@ -101,19 +101,19 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         try:
             cursor.execute("INSERT INTO cyclical_record VALUES (:id)", {"id": str(record)})
         except sqlite3.IntegrityError as e:
-            return {"success": False, "error": f"Integrity error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
         except sqlite3.OperationalError as e:
-            return {"success": False, "error": f"Operational error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
         except sqlite3.DatabaseError as e:
-            return {"success": False, "error": f"Database error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
         except Exception as e:
-            return {"success": False, "error": f"Unknown error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
         cnt = 0
         cur_timestamp = beginning_time_stamp
         while cur_timestamp <= ending_time_stamp:
             ret = add_records(classroom, noon, applicant_id, cur_timestamp)
             if not ret["success"]:
-                return {"success": False, "error": "Add_records function:" + ' ' + ret["error"]}
+                return ret
             if cnt:
                 with open("recent_id") as id_file:
                     record = int(id_file.read().strip())
@@ -124,13 +124,13 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                                 WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
                                 """, {"id": str(record)})
                 except sqlite3.IntegrityError as e:
-                    return {"success": False, "error": f"Integrity error: {e}"}
+                    return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
                 except sqlite3.OperationalError as e:
-                    return {"success": False, "error": f"Operational error: {e}"}
+                    return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
                 except sqlite3.DatabaseError as e:
-                    return {"success": False, "error": f"Database error: {e}"}
+                    return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
                 except Exception as e:
-                    return {"success": False, "error": f"Unknown error: {e}"}
+                    return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
             cnt += 1
             # add timestamp
             gap = 0
@@ -161,10 +161,10 @@ def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
                        {'id': user_id + 1, 'display_name': display_name, 'permission': permission})
             return {"success": True}
         except sqlite3.IntegrityError as e:
-            return {"success": False, "error": f"Integrity error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
         except sqlite3.OperationalError as e:
-            return {"success": False, "error": f"Operational error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
         except sqlite3.DatabaseError as e:
-            return {"success": False, "error": f"Database error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
         except Exception as e:
-            return {"success": False, "error": f"Unknown error: {e}"}
+            return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
