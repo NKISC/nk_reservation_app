@@ -100,7 +100,7 @@ export default {
       url: "https://nkapi.ememememem.space/query/record",
       method: "POST",
       data: {
-        "cond": {}
+        "cond": {"by_id": true}
       },
       success: (res) => {
         this.reservations = res.data;
