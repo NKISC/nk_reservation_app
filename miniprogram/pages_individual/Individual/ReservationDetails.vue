@@ -89,7 +89,7 @@
 						</view>
 					</view>
 				</view>
-        <view style="margin-top: 5%; font-weight: bold; font-size: 120%">
+        <view style="margin-top: 5%; font-weight: bold; font-size: 120%; height: fit-content">
           近期活动：
           <view v-for="(item,index) in recentReservations" :key="index">
             <view class="listItem">
@@ -112,7 +112,7 @@
         </view>
 			</view>
 		</view>
-    <view style="margin-top: 500rpx">
+    <view :style="bottomMarginStyle">
       <u-line />
     </view>
 		<view class="footer">
@@ -176,6 +176,7 @@
         recentReservations: [],
 				navList: [],
 				navMode: '',
+        bottomMarginStyle: "",
 				list: [{
 						name: 'apple',
 						disabled: false
@@ -227,6 +228,7 @@
         },
         success: (res) => {
           this.recentReservations = res.data
+          this.bottomMarginStyle = "margin-top: " + (Math.max(0, (this.recentReservations.length - 1) * 250)) + "rpx"
         }
       });
       wx.request({
