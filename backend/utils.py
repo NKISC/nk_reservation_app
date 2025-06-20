@@ -3,7 +3,7 @@ import time
 import requests
 from typing import *
 
-GENERIC_QUERY_KEYS = ["func_tag", "pic_url", "permission"]
+GENERIC_QUERY_KEYS = ["func_tag", "pic_url", "permission", "cyclical_id"]
 
 
 def update_record():

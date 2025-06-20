@@ -35,8 +35,23 @@ def delete_from_table(table: str, x: Dict[str, Any]) -> Dict[str, Any]:
 def delete_record(x: Dict[str, Any]) -> Dict[str, Any]:
     return delete_from_table("record", x)
 
+
 def delete_user(x: Dict[str, Any]) -> Dict[str, Any]:
     return delete_from_table("user_info", x)
 
+
 def delete_classroom(x: Dict[str, Any]) -> Dict[str, Any]:
     return delete_from_table("classroom", x)
+
+
+def delete_cyclical(initiator: str) -> Dict[str, Any]:
+    import query
+    cyc_records = query.get_cyclical({"cyclical_id": initiator})[0]["record_id"].split(",")
+    del cyc_records[-1]
+    for rid in cyc_records:
+        rid = int(rid)
+        if query.query_record({"id": rid}):
+            ret = delete_record({"id": rid})
+            if not ret["success"]:
+                return ret
+    return {"success": True}
