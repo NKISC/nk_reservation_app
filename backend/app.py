@@ -127,7 +127,7 @@ async def alter_record(alter_req: data_models.RecordAlterModel):
 
 @app.post("/query/cyclical")
 async def get_cyclical(cond: data_models.BasePostQuery):
-    res = await asyncio.to_thread(get_cyclical, cond.cond)
+    res = await asyncio.to_thread(query.get_cyclical, cond.cond)
     return res
 
 

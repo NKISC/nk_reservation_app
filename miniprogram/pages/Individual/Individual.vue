@@ -88,6 +88,7 @@
 				navMode: '我的预约',
         userInfo: {},
         uid: "",
+        cycRecordIds: [],
         userPermissions: [],
         userPermissionDisplay: [],
         recordList: [],
@@ -156,6 +157,16 @@
               })
             }
           })
+        }
+      })
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/cyclical",
+        method: "POST",
+        data: {
+          cond: {"record_id": [""]}
+        },
+        success: (res) => {
+          this.cycRecordIds = res.data
         }
       })
     },
