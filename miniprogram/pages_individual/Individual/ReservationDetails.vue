@@ -248,7 +248,7 @@
         url: "https://nkapi.ememememem.space/query/cyclical",
         method: "POST",
         data: {
-          initiator: ""
+          cond: {"record_id": [""]}
         },
         success: (res) => {
           this.cycRecordIds = res.data
