@@ -124,3 +124,14 @@ async def delete_user(cond: data_models.BasePostQuery):
 async def alter_record(alter_req: data_models.RecordAlterModel):
     res = await asyncio.to_thread(alter.alter_record, alter_req.record_id, alter_req.noon, alter_req.time_stamp)
     return res
+
+@app.post("/query/cyclical")
+async def get_cyclical(cond: data_models.BasePostQuery):
+    res = await asyncio.to_thread(get_cyclical, cond.cond)
+    return res
+
+
+@app.post("/delete/cyclical/")
+async def delete_cyclical(q: data_models.CyclicalDeletionModel):
+    res = await asyncio.to_thread(deletion.delete_cyclical, q.initiator)
+    return res

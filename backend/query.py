@@ -47,7 +47,7 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
         else:
             cursor.execute("select * from record")
         ret = utils.construct_response(cursor, "record")
-        return ret
+        return ret if "by_id" in cond.keys() and cond["by_id"] else sorted(ret, key=lambda x: x["time_stamp"])
 
       
 def query_display(q: dict[str, Any]) -> list[str]:
@@ -180,3 +180,12 @@ def get_all_func_tags() -> dict[str, str]:
     r = query_display({"query": q_list})
 
     return {tags[i]: r[i] for i in range(0, len(q_list))}
+
+
+def get_cyclical(cond: dict[str, Any]) -> list[dict[str, str]]:
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        param = utils.construct_params(cond)
+        cursor.execute("select * from cyclical_record where " + utils.construct_condition(cond), param)
+        ret = utils.construct_response(cursor, "cyclical_record")
+        return ret

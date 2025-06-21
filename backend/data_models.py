@@ -50,3 +50,7 @@ class RecordAlterModel(BaseModel):
     record_id: int
     noon: bool
     time_stamp: int
+
+
+class CyclicalDeletionModel(BaseModel):
+    initiator: str
