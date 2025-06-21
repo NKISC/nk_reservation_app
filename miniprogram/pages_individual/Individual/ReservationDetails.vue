@@ -107,6 +107,11 @@
                   <img src="../../static/gr_active.jpeg" style="height: 30rpx; width: 30rpx; margin-right: 15rpx" alt />
                   <text>{{ userList.find(user => user.id === item.applicant_id).display }}</text>
                 </view>
+                <view style="font-weight: normal; font-size: 20rpx;
+                color: white; background-color: orange; border-radius: 20rpx; width: fit-content; padding: 0.5% 2%; margin-top: 3%"
+                v-if="cycRecordIds.find(group => group['record_id'].includes(item.id.toString() + ','))">
+                  周期
+                </view>
               </view>
             </view>
           </view>
@@ -178,6 +183,7 @@
         reservingClassroom: {},
         reservingPlaceDisplay: "",
         recentReservations: [],
+        cycRecordIds: [],
 				navList: [],
 				navMode: '',
         bottomMarginStyle: "",
@@ -238,6 +244,16 @@
           this.bottomMarginStyle = "margin-top: " + (Math.max(0, (this.recentReservations.length - 1) * 250)) + "rpx"
         }
       });
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/cyclical",
+        method: "POST",
+        data: {
+          initiator: ""
+        },
+        success: (res) => {
+          this.cycRecordIds = res.data
+        }
+      })
       wx.request({
         url: "https://nkapi.ememememem.space/query/user",
         method: "POST",

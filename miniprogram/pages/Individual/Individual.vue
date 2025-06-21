@@ -34,7 +34,12 @@
 								</view>
 							</view>
 					</view>
-					<view style="display: flex;justify-content: flex-end;height: 80rpx;margin-top: 10rpx;">
+          <view style="font-weight: normal; font-size: 20rpx;
+                color: white; background-color: orange; border-radius: 20rpx; width: fit-content; padding: 0.5% 2%; margin-top: 3%"
+                v-if="cycRecordIds.find(group => group['record_id'].includes(item.id.toString() + ','))">
+            周期
+          </view>
+					<view style="display: flex;justify-content: flex-end;height: 80rpx">
 						<view @click="toDetails(item)" class="checkBtn">查看</view>
 					</view>
 				</view>

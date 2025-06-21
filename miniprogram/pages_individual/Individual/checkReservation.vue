@@ -25,6 +25,11 @@
             </view>
           </view>
         </view>
+        <view style="font-weight: normal; font-size: 20rpx;
+                color: white; background-color: orange; border-radius: 20rpx; width: fit-content; padding: 0.5% 2%; margin-top: 3%"
+              v-if="cycRecordIds.find(group => group['record_id'].includes(checkingRecord.id.toString() + ','))">
+          周期
+        </view>
       </view>
     </view>
     <view class="footer">
@@ -39,6 +44,17 @@
       <image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='confirmCancel' />
 
     </MyDialog>
+    <view class="mark" v-if="showCycOpt">
+      <view style="display: flex;flex-direction: column;">
+        <view class="box" style="height: 400rpx; padding: 10%; margin: -200rpx; width: 550rpx">
+          该预约为周期预约。<br/>要删除以后的预约吗？
+          <view style="margin-top: 100rpx; display: flex; justify-content: space-between; width: 100%">
+            <view style="width: 200rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="confirmCancel(true)">仅本次预约</view>
+            <view style="width: 200rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="confirmCancelCyc">此后所有预约</view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -61,6 +77,7 @@ export default {
     } = formatDate();
     return {
       showCancel: false,
+      showCycOpt: false,
       tag_display: {},
       checkingRecord: {},
       reservingClassroom: {},
@@ -87,6 +104,7 @@ export default {
       datetimeEnd: tomorrows,
       limitDate: new Date(),
       background: "",
+      cycRecordIds: [],
     }
   },
   onShow() {
@@ -118,6 +136,16 @@ export default {
             this.reservingPlaceDisplay = res.data[0]
           }
         })
+      }
+    })
+    wx.request({
+      url: "https://nkapi.ememememem.space/query/cyclical",
+      method: "POST",
+      data: {
+        initiator: ""
+      },
+      success: (res) => {
+        this.cycRecordIds = res.data
       }
     })
   },
@@ -155,17 +183,48 @@ export default {
     closeCancel() {
       this.showCancel = false;
     },
-    confirmCancel() {
+    confirmCancel(bypassCyc = false) {
+      if (!bypassCyc && this.cycRecordIds.find(group => group['record_id'].includes(this.checkingRecord.id.toString() + ','))) {
+        this.showCycOpt = true
+      }
+      else {
+        wx.showToast({
+          title: "请求服务器...",
+          icon: "loading",
+          duration: 10000,
+        })
+        wx.request({
+          url: "https://nkapi.ememememem.space/delete/record",
+          method: "POST",
+          data: {
+            cond: {"id": this.checkingRecord.id}
+          },
+          success: (res) => {
+            uni.navigateBack({
+              delta: 1
+            });
+            setTimeout(function () {
+              wx.showToast({
+                title: "删除成功",
+                icon: "success",
+                duration: 3000
+              });
+            }, 1000);
+          }
+        })
+      }
+    },
+    confirmCancelCyc() {
       wx.showToast({
         title: "请求服务器...",
         icon: "loading",
         duration: 10000,
       })
       wx.request({
-        url: "https://nkapi.ememememem.space/delete/record",
+        url: "https://nkapi.ememememem.space/delete/cyclical",
         method: "POST",
         data: {
-          cond: {"id": this.checkingRecord.id}
+          initiator: this.checkingRecord.id,
         },
         success: (res) => {
           uni.navigateBack({
@@ -341,6 +400,30 @@ export default {
     align-items: center;
     padding: 0 50rpx;
     box-sizing: border-box;
+  }
+  .mark {
+    z-index: 1000;
+    opacity: 1;
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .box {
+      width: 500rpx;
+      height: 700rpx;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }
 </style>
