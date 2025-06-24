@@ -11,10 +11,13 @@ def update_record():
     Delete outdated records.
     :return:
     """
-    with sqlite3.connect("database.db") as db:
-        cursor = db.cursor()
-        cursor.execute('delete from record where time_stamp < :threshold',
-                   {"threshold": time.time() - 48 * 60 * 60})
+    try:
+        with sqlite3.connect("database.db") as db:
+            cursor = db.cursor()
+            cursor.execute('delete from record where time_stamp < :threshold',
+                        {"threshold": time.time() - 48 * 60 * 60})
+    except Exception as e:
+        return handle_db_error(e)
 
 
 def login(code: str):
