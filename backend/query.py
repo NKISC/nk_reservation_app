@@ -154,18 +154,12 @@ def query_user(cond: dict[str, Any]) -> list[dict[str, Any]]:
 def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
     with sqlite3.connect("database.db") as db:
         cursor = db.cursor()
-        cursor.execute("SELECT classroom_id FROM record")
-        rooms = cursor.fetchall()
-        cursor.execute("SELECT noon FROM record")
-        noons = cursor.fetchall()
-        cursor.execute("SELECT time_stamp FROM record")
-        times = cursor.fetchall()
-        if rooms is None:
-            return False
-        for i in range(0, len(rooms)):
-            if rooms[i] == classroom and noons[i] == noon and times[i] == time_stamp:
-                return True
-        return False
+        cursor.execute("""
+            SELECT COUNT(*) FROM record   
+            WHERE classroom_id = :classroom AND noon = :noon AND time_stamp = :time_stamp
+        """, {"classroom": classroom, "noon": noon, "time_stamp": time_stamp})
+        count = cursor.fetchone()[0]
+        return count > 0
 
 
 def get_all_func_tags() -> dict[str, str]:
