@@ -1,6 +1,7 @@
 import sqlite3
 from typing import Any, Dict
 from backend import utils
+from backend.utils import handle_db_error
 
 def delete_from_table(table: str, x: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -22,14 +23,8 @@ def delete_from_table(table: str, x: Dict[str, Any]) -> Dict[str, Any]:
                     f"DELETE FROM {table} WHERE true"
                 )
         return {"success": True}
-    except sqlite3.IntegrityError as e:
-        return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-    except sqlite3.OperationalError as e:
-        return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-    except sqlite3.DatabaseError as e:
-        return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
     except Exception as e:
-        return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
+        return handle_db_error(e)
 
 # 针对不同表的接口
 def delete_record(x: Dict[str, Any]) -> Dict[str, Any]:

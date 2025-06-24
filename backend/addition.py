@@ -1,6 +1,7 @@
 import sqlite3
 from backend.query import check_permission, judge_conflict
 from typing import *
+from backend.utils import handle_db_error
 
 
 def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, db: Optional[sqlite3.Connection] = None) -> {str, Union[bool, str]}:
@@ -46,14 +47,8 @@ def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, d
                 cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                                {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                                 "applicant_id": applicant_id, "timestamp": timestamp})
-            except sqlite3.IntegrityError as e:
-                return {"success": False, "error": f"Integrity error: {e}"}
-            except sqlite3.OperationalError as e:
-                return {"success": False, "error": f"Operational error: {e}"}
-            except sqlite3.DatabaseError as e:
-                return {"success": False, "error": f"Database error: {e}"}
-            except BaseException as e:
-                return {"success": False, "err_code": 100, "error": str(e)}
+            except Exception as e:
+                return handle_db_error(e)
             return {"success": True}
     else:
         cursor = db.cursor()
@@ -81,14 +76,8 @@ def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, d
             cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                            {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                             "applicant_id": applicant_id, "timestamp": timestamp})
-        except sqlite3.IntegrityError as e:
-            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-        except sqlite3.OperationalError as e:
-            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-        except sqlite3.DatabaseError as e:
-            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
-        except BaseException as e:
-            return {"success": False, "err_code": 100, "error": str(e)}
+        except Exception as e:
+            return handle_db_error(e)
         return {"success": True}
 
 
@@ -145,14 +134,8 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
             recent_id = int(id_file.read().strip())
         try:
             cursor.execute("INSERT INTO cyclical_record VALUES (:id)", {"id": str(recent_id + 1)})
-        except sqlite3.IntegrityError as e:
-            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-        except sqlite3.OperationalError as e:
-            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-        except sqlite3.DatabaseError as e:
-            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
         except Exception as e:
-            return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
+            return handle_db_error(e)
         cnt = 0
         cur_timestamp = beginning_timestamp
         while cur_timestamp <= ending_timestamp:
@@ -187,14 +170,8 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                                 SET record_id = :id
                                 WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
                                 """, {"id": id_string})
-                except sqlite3.IntegrityError as e:
-                    return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-                except sqlite3.OperationalError as e:
-                    return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-                except sqlite3.DatabaseError as e:
-                    return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
                 except Exception as e:
-                    return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
+                    return handle_db_error(e)
             cnt += 1
             # add timestamp
             cur_timestamp += (gap * 86400)
@@ -205,14 +182,8 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
                            SET record_id = :id
                            WHERE rowid = (SELECT MAX(rowid) FROM cyclical_record)
                            """, {"id": id_string})
-        except sqlite3.IntegrityError as e:
-            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-        except sqlite3.OperationalError as e:
-            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-        except sqlite3.DatabaseError as e:
-            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
         except Exception as e:
-            return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
+            return handle_db_error(e)
         return {"success": True}
 
 
@@ -227,11 +198,5 @@ def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
             cursor.execute("INSERT INTO user_info VALUES (:id, :display_name, :permission)",
                        {'id': user_id + 1, 'display_name': display_name, 'permission': permission})
             return {"success": True}
-        except sqlite3.IntegrityError as e:
-            return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-        except sqlite3.OperationalError as e:
-            return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-        except sqlite3.DatabaseError as e:
-            return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
         except Exception as e:
-            return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
+            return handle_db_error(e)
