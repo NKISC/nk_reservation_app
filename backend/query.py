@@ -155,7 +155,7 @@ def judge_conflict(classroom: str, noon: bool, time_stamp: int) -> bool:
     with sqlite3.connect("database.db") as db:
         cursor = db.cursor()
         cursor.execute("""
-            SELECT COUNT(*) FROM record 
+            SELECT COUNT(*) FROM record   
             WHERE classroom_id = :classroom AND noon = :noon AND time_stamp = :time_stamp
         """, {"classroom": classroom, "noon": noon, "time_stamp": time_stamp})
         count = cursor.fetchone()[0]
