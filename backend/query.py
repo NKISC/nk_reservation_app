@@ -42,8 +42,9 @@ def query_record(cond: dict[str, Any]) -> list[dict[str, Any]]:
     with sqlite3.connect('database.db') as db:
         utils.update_record()
         cursor = db.cursor()
-        if len(cond) != 0:
-            cursor.execute("select * from record where " + utils.construct_condition(cond), cond)
+        c = utils.construct_condition(cond)
+        if len(cond) != 0 and c != "":
+            cursor.execute("select * from record where " + c, cond)
         else:
             cursor.execute("select * from record")
         ret = utils.construct_response(cursor, "record")
