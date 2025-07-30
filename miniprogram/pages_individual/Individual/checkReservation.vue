@@ -41,7 +41,7 @@
       <view style="margin-bottom: 40rpx;">
         <view style="font-size: 33rpx;font-weight: bold;margin: auto">确认取消预约吗？</view>
       </view>
-      <image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='confirmCancel' />
+      <image src="../../static/queding.svg" style="width: 300rpx;height: 100rpx;" @click='confirmCancel(false)' />
 
     </MyDialog>
     <view class="mark" v-if="showCycOpt">
@@ -183,8 +183,8 @@ export default {
     closeCancel() {
       this.showCancel = false;
     },
-    confirmCancel(bypassCyc = false) {
-      if (!bypassCyc && this.cycRecordIds.find(group => group['record_id'].includes(this.checkingRecord.id.toString() + ','))) {
+    confirmCancel(bypassCyc) {
+      if (!bypassCyc && this.cycRecordIds.find(group => group['record_id'].includes(this.checkingRecord.id.toString() + ',')) !== undefined) {
         this.showCycOpt = true
       }
       else {
@@ -224,7 +224,7 @@ export default {
         url: "https://nkapi.ememememem.space/delete/cyclical",
         method: "POST",
         data: {
-          initiator: this.checkingRecord.id,
+          initiator: this.checkingRecord.id.toString(),
         },
         success: (res) => {
           uni.navigateBack({

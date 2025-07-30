@@ -45,8 +45,8 @@ def delete_classroom(x: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def delete_cyclical(initiator: str) -> Dict[str, Any]:
-    import query
-    cyc_records = query.get_cyclical({"cyclical_id": initiator})[0]["record_id"].split(",")
+    from backend import query
+    cyc_records = query.get_cyclical({"record_id": [initiator]})[0]["record_id"].split(",")
     del cyc_records[-1]
     for rid in cyc_records:
         rid = int(rid)
