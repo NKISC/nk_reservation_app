@@ -4,6 +4,7 @@ import requests
 from typing import *
 
 GENERIC_QUERY_KEYS = ["func_tag", "pic_url", "permission", "record_id"]
+IGNORED_KEYS = ["by_id"]
 
 
 def update_record():
@@ -67,6 +68,8 @@ def construct_condition(cond: dict[str, Any]) -> str:
     ret = ""
     cond_keys = list(cond.keys())
     for i in range(len(cond_keys)):
+        if cond_keys[i] in IGNORED_KEYS:
+            continue
         if cond_keys[i] in GENERIC_QUERY_KEYS:
             for j in range(len(cond[cond_keys[i]])):
                 ret += f"{cond_keys[i]} like :{cond_keys[i]}{j}"
@@ -93,6 +96,8 @@ def construct_params(cond: dict[str, Any]) -> dict[str, Any]:
     """
     param = {}
     for k in cond.keys():
+        if k in IGNORED_KEYS:
+            continue
         if k in GENERIC_QUERY_KEYS:
             for i in range(len(cond[k])):
                 param[str(k) + str(i)] = "%" + cond[k][i] + ",%"
