@@ -135,3 +135,9 @@ async def get_cyclical(cond: data_models.BasePostQuery):
 async def delete_cyclical(q: data_models.CyclicalDeletionModel):
     res = await asyncio.to_thread(deletion.delete_cyclical, q.initiator)
     return res
+
+
+@app.get("/query/generate_schedule/")
+async def generate_schedule():
+    res = await asyncio.to_thread(query.generate_schedule)
+    return res
