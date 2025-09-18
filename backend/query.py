@@ -3,7 +3,7 @@ import random
 import sqlite3
 from backend import utils
 from typing import *
-from openpyxl import *
+from openpyxl import Workbook
 from openpyxl.styles import *
 
 
