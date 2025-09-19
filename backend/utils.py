@@ -12,13 +12,15 @@ def update_record():
     Delete outdated records.
     :return:
     """
-    with sqlite3.connect("database.db") as db:
+    try:
         cursor = db.cursor()
         threshold = datetime.datetime.now() - \
                                  datetime.timedelta(days=datetime.datetime.now().weekday())
         threshold = threshold.timestamp()
         cursor.execute('delete from record where time_stamp < :threshold',
                    {"threshold": threshold})
+    except Exception as e:
+        return handle_db_error(e)
 
 
 def login(code: str):
@@ -119,3 +121,19 @@ def construct_response(cursor: sqlite3.Cursor, table: str) -> list[dict[str, Any
             p[heads[i][1]] = row[i]
         ret.append(p)
     return ret
+
+
+def handle_db_error(e: Exception) -> dict[str, Any]:
+    """
+    Unified database error handling function.
+    :param e: The exception that was raised
+    :return: A standardized error response dictionary
+    """
+    if isinstance(e, sqlite3.IntegrityError):
+        return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
+    elif isinstance(e, sqlite3.OperationalError):
+        return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
+    elif isinstance(e, sqlite3.DatabaseError):
+        return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
+    else:
+        return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}

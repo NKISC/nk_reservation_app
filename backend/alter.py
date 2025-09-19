@@ -1,6 +1,7 @@
 import sqlite3
 from backend import query
 from backend.query import judge_conflict
+from backend.utils import handle_db_error
 
 
 def alter_user(uid: str, display: str = None, permission: list[str] = None):
@@ -14,14 +15,8 @@ def alter_user(uid: str, display: str = None, permission: list[str] = None):
                 "id": uid,
             })
         return {"success": True}
-    except sqlite3.IntegrityError as e:
-        return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-    except sqlite3.OperationalError as e:
-        return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-    except sqlite3.DatabaseError as e:
-        return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
     except Exception as e:
-        return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
+        return handle_db_error(e)
 
 
 def alter_record(record_id: int, noon: bool, time_stamp: int):
@@ -34,11 +29,5 @@ def alter_record(record_id: int, noon: bool, time_stamp: int):
             cursor.execute("update record set noon = :noon, time_stamp = :time_stamp where id = :record_id",
                            {"noon": noon, "time_stamp": time_stamp, "record_id": record_id})
         return {"success": True}
-    except sqlite3.IntegrityError as e:
-        return {"success": False, "err_code": 100, "error": f"Integrity error: {e}"}
-    except sqlite3.OperationalError as e:
-        return {"success": False, "err_code": 100, "error": f"Operational error: {e}"}
-    except sqlite3.DatabaseError as e:
-        return {"success": False, "err_code": 100, "error": f"Database error: {e}"}
     except Exception as e:
-        return {"success": False, "err_code": 100, "error": f"Unknown error: {e}"}
+        return handle_db_error(e)
