@@ -5,6 +5,7 @@ from backend import utils
 from typing import *
 from openpyxl import Workbook
 from openpyxl.styles import *
+import traceback
 
 
 def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
@@ -223,44 +224,40 @@ def generate_schedule():
         ws = wb.active
 
         normal_style = NamedStyle(name="normal")
-        bd = Side(style="thin", color="#000000")
-        normal_style.border = Border(bd, bd, bd, bd)
-        normal_style.font = Font(name="Times New Roman", bold=False, color="#000000", size=8)
+        normal_style.font = Font(name="Times New Roman", bold=False, color="000000", size=8)
         normal_style.alignment = Alignment(horizontal="center", vertical="center")
 
         title_style = NamedStyle(name="title")
-        title_style.border = Border(bd, bd, bd, bd)
-        title_style.font = Font(name="Times New Roman", bold=True, color="#000000", size=16)
+        title_style.font = Font(name="Times New Roman", bold=True, color="000000", size=16)
         title_style.alignment = Alignment(horizontal="center", vertical="center")
 
-        ws.merge_cells("A1:J4")
+        ws["A1"] = (f"重庆南开中学学生社团中午活动安排表"
+                    f"（{start.year}/{start.month}/{start.day}-{end.year}/{end.month}/{end.day}）")
+        ws.merge_cells("A1:J5")
         title_cell = ws["A1"]
         title_cell.style = title_style
-        title_cell.value = (f"重庆南开中学学生社团中午活动安排表"
-                            f"（{start.year}/{start.month}/{start.day}-{end.year}/{end.month}/{end.day}）")
-
         weekdays = ["一", "二", "三", "四", "五"]
         for i in range(5):
-            ws.merge_cells(f"{chr(i * 2 + ord('A'))}6: {chr(i * 2 + ord('B'))}7")
-            cell = ws[f"{chr(i * 2 + ord('A'))}6"]
-            cell.style = normal_style
-            cell.font = Font(name="Times New Roman", bold=True, color="#000000", size=11)
-            cell.value = "星期" + weekdays[i]
+            ws[f"{chr(i * 2 + ord('A'))}6"] = "星期" + weekdays[i]
+            ws.merge_cells(f"{chr(i * 2 + ord('A'))}6:{chr(i * 2 + ord('B'))}7")
+            ws[f"{chr(i * 2 + ord('A'))}6"].style = normal_style
+            ws[f"{chr(i * 2 + ord('A'))}6"].font = Font(name="Times New Roman", bold=True, color="000000", size=11)
 
         max_item = max(len(records[i]) for i in range(len(records)))
         duty_cnt = 0
         for i in range(5):
             for j in range(max_item):
-                ws.merge_cells(f"{chr(i * 2 + ord('A'))}{7 + j * 4}: {chr(i * 2 + ord('B'))}{10 + j * 4}")
-                cell = ws[f"{chr(i * 2 + ord('A'))}{7 + j * 4}"]
-                cell.style = normal_style
                 if j < len(records[i]):
                     club_display = query_user({"id": records[i][j]["applicant_id"]})[0]["display"]
                     classroom_display = query_classroom({"id": records[i][j]["classroom_id"]})[0]["display"]
-                    cell.value = f"活动社团：{club_display}\n协助人：{on_duty[duty_cnt]}\n地点：{classroom_display}"
+                    ws[f"{chr(i * 2 + ord('A'))}{8 + j * 4}"]\
+                        = f"活动社团：{club_display}\n协助人：{on_duty[duty_cnt]}\n地点：{classroom_display}"
+                ws.merge_cells(f"{chr(i * 2 + ord('A'))}{8 + j * 4}:{chr(i * 2 + ord('B'))}{11 + j * 4}")
+                ws[f"{chr(i * 2 + ord('A'))}{8 + j * 4}"].style = normal_style
 
         wb.save("schedule.xlsx")
         wb.close()
         return {"success": True}
     except BaseException as e:
+        traceback.print_exc()
         return {"success": False, "err_code": 100, "error": e}
