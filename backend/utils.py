@@ -1,5 +1,5 @@
 import sqlite3
-import time
+import datetime
 import requests
 from typing import *
 
@@ -14,8 +14,11 @@ def update_record():
     """
     with sqlite3.connect("database.db") as db:
         cursor = db.cursor()
+        threshold = datetime.datetime.now() - \
+                                 datetime.timedelta(days=datetime.datetime.now().weekday())
+        threshold = threshold.timestamp()
         cursor.execute('delete from record where time_stamp < :threshold',
-                   {"threshold": time.time() - 48 * 60 * 60})
+                   {"threshold": threshold})
 
 
 def login(code: str):
