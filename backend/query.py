@@ -245,7 +245,8 @@ def generate_schedule():
                     club_display = query_user({"id": records[i][j]["applicant_id"]})[0]["display"]
                     classroom_display = query_classroom({"id": records[i][j]["classroom_id"]})[0]["display"]
                     ws[f"{chr(i * 2 + ord('A'))}{8 + j * 4}"]\
-                        = f"活动社团：{club_display}\n协助人：{on_duty[duty_cnt]}\n地点：{classroom_display}"
+                        = f"活动社团：{club_display}\n协助人：{on_duty[duty_cnt % len(on_duty)]}\n地点：{classroom_display}"
+                    duty_cnt += 1
                 ws.merge_cells(f"{chr(i * 2 + ord('A'))}{8 + j * 4}:{chr(i * 2 + ord('B'))}{11 + j * 4}")
                 ws[f"{chr(i * 2 + ord('A'))}{8 + j * 4}"].style = normal_style
 

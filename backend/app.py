@@ -141,3 +141,8 @@ async def delete_cyclical(q: data_models.CyclicalDeletionModel):
 async def generate_schedule():
     res = await asyncio.to_thread(query.generate_schedule)
     return res
+
+
+@app.get("/query/schedule/")
+async def get_schedule():
+    return fastapi.responses.FileResponse("schedule.xlsx", filename="schedule.xlsx")

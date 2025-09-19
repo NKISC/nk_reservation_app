@@ -34,6 +34,9 @@
           预约管理 <span>{{ expandReservation ? "-" : "+" }}</span>
         </view>
         <view v-if="expandReservation" style="height: 10rpx" />
+        <view v-if="expandReservation" class="itembox" style="display: flex; justify-content: center; height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+          <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="generateSchedule">生成本周排班表</button>
+        </view>
         <view v-for="(item, index) in reservations" :key="index" v-if="expandReservation">
           <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
             <view style="font-weight: bold; color: grey; margin: 2%">{{ item.id }}</view>
@@ -163,6 +166,34 @@ export default {
             duration: 2000
           })
           this.reservations.splice(index, 1);
+        }
+      })
+    },
+    generateSchedule() {
+      wx.showToast({
+        title: "请求服务器...",
+        icon: "loading",
+        duration: 3000
+      })
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/generate_schedule",
+        method: "GET",
+        success: (res) => {
+          wx.showToast({
+            title: "生成成功！",
+            icon: "success",
+            duration: 2000
+          })
+          wx.downloadFile({
+            url: "https://nkapi.ememememem.space/query/schedule/",
+            success: (res) => {
+              wx.openDocument({
+                filePath: res.tempFilePath,
+                fileType: "xlsx",
+                showMenu: true
+              })
+            }
+          })
         }
       })
     }
