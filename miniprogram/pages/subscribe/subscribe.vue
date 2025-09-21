@@ -201,6 +201,17 @@
 		},
     onLoad() {
       wx.request({
+        url: "http://nkapi.ememememem.space/connection/",
+        method: "GET",
+        fail: (res) => {
+          wx.showToast({
+            title: "网络错误！",
+            icon: "error",
+            duration: 5000
+          })
+        }
+      })
+      wx.request({
         url: "https://nkapi.ememememem.space/query/func_tags",
         method: "GET",
         success: (res) => {
