@@ -5,10 +5,10 @@ from backend.utils import handle_db_error
 
 def delete_from_table(table: str, x: Dict[str, Any]) -> Dict[str, Any]:
     """
-    通用删除函数
-    :param table: 表名
-    :param x: 删除条件
-    :return: 操作结果
+    General deletion function.
+    :param table: Table name
+    :param x: Condition dictionary
+    :return: Results
     """
     try:
         with sqlite3.connect("database.db") as db:

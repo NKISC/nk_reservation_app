@@ -4,7 +4,7 @@ from typing import *
 from backend.utils import handle_db_error
 
 
-def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, db: Optional[sqlite3.Connection] = None) -> {str, Union[bool, str]}:
+def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, db: Optional[sqlite3.Connection] = None) -> dict[str, Union[bool, str, int]]:
     """
     Creating a new record.
     :param classroom: The classroom id.
@@ -82,7 +82,7 @@ def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, d
 
 
 def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginning_timestamp: int,
-                         ending_timestamp: int, days: list[bool]) -> {str, Union[bool, str]}:
+                         ending_timestamp: int, days: list[bool]) -> dict[str, Union[bool, str, int]]:
     """
     Creating cyclical records.
     :param classroom: The classroom id.
@@ -187,7 +187,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         return {"success": True}
 
 
-def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
+def add_user(display_name: str, permission: str) -> dict[str, Union[bool, str, int]]:
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
         with open("user_id") as id_file:
