@@ -35,7 +35,8 @@
         </view>
         <view v-if="expandReservation" style="height: 10rpx" />
         <view v-if="expandReservation" class="itembox" style="display: flex; justify-content: center; height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
-          <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="generateSchedule">生成本周排班表</button>
+          <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="generateSchedule">生成本周排班表</button><br />
+          <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="generateStatistics">查看社团预约数据</button>
         </view>
         <view v-for="(item, index) in reservations" :key="index" v-if="expandReservation">
           <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
@@ -193,6 +194,27 @@ export default {
                 showMenu: true
               })
             }
+          })
+        }
+      })
+    },
+    generateStatistics() {
+      wx.showToast({
+        title: "请求服务器...",
+        icon: "loading",
+        duration: 3000
+      })
+      wx.request({
+        url: "https://nkapi.ememememem.space/query/generate_statistics",
+        method: "GET",
+        success: (res) => {
+          wx.showToast({
+            title: "生成成功！",
+            icon: "success",
+            duration: 2000
+          })
+          wx.previewImage({
+            urls: ["https://nkapi.ememememem.space/query/statistics"],
           })
         }
       })

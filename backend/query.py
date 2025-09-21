@@ -1,11 +1,15 @@
 import datetime
 import random
 import sqlite3
+
+import numpy as np
+
 from backend import utils
 from typing import *
 from openpyxl import Workbook
 from openpyxl.styles import *
 import traceback
+import matplotlib.pyplot as plt
 
 
 def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
@@ -256,3 +260,18 @@ def generate_schedule():
     except BaseException as e:
         traceback.print_exc()
         return {"success": False, "err_code": 100, "error": e}
+
+
+def generate_statistics():
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        registered_users = cursor.execute("select * from user_info where register_num != 0").fetchall()
+        displays, register_nums = [], []
+        for registered_user in registered_users:
+            displays.append(registered_user[1])
+            register_nums.append(registered_user[3])
+        plt.rcParams["font.family"] = "SimHei"
+        plt.bar(np.array(displays), np.array(register_nums))
+        plt.gca().yaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        plt.title("各社团活动教室预约情况")
+        plt.savefig("statistics.png")
