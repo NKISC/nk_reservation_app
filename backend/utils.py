@@ -13,12 +13,13 @@ def update_record():
     :return:
     """
     try:
-        cursor = db.cursor()
-        threshold = datetime.datetime.now() - \
-                                 datetime.timedelta(days=datetime.datetime.now().weekday())
-        threshold = threshold.timestamp()
-        cursor.execute('delete from record where time_stamp < :threshold',
-                   {"threshold": threshold})
+        with sqlite3.connect("database.db") as db:
+            cursor = db.cursor()
+            threshold = datetime.datetime.now() - \
+                                     datetime.timedelta(days=datetime.datetime.now().weekday())
+            threshold = threshold.timestamp()
+            cursor.execute('delete from record where time_stamp < :threshold',
+                       {"threshold": threshold})
     except Exception as e:
         return handle_db_error(e)
 

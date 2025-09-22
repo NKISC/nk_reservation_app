@@ -4,7 +4,7 @@ from typing import *
 from backend.utils import handle_db_error
 
 
-def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, db: Optional[sqlite3.Connection] = None) -> {str, Union[bool, str]}:
+def add_records(classroom: str, noon: bool, applicant_id: str, timestamp: int, db: Optional[sqlite3.Connection] = None) -> dict[str, Union[bool, str, int]]:
     """
     Creating a new record.
     :param classroom: The classroom id.
@@ -39,7 +39,7 @@ def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, d
                 if i == classroom:
                     return {"success": False, "err_code": 600, "error": "no_permission"}
 
-            #judge reservation conflict
+            # judge reservation conflict
             if judge_conflict(classroom, noon, timestamp):
                 return {"success": False, "err_code": 601, "error": "classroom_already_reserved"}
 
@@ -47,6 +47,8 @@ def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, d
                 cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                                {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                                 "applicant_id": applicant_id, "timestamp": timestamp})
+                cursor.execute("update user_info set register_num = :register_num where id = :applicant_id",
+                               {"applicant_id": applicant_id, "register_num": res[3] + 1})
             except Exception as e:
                 return handle_db_error(e)
             return {"success": True}
@@ -76,13 +78,15 @@ def add_records(classroom: str, noon: bool, applicant_id: int, timestamp: int, d
             cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                            {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                             "applicant_id": applicant_id, "timestamp": timestamp})
+            cursor.execute("update user_info set register_num = :register_num where id = :applicant_id",
+                           {"applicant_id": applicant_id, "register_num": res[3] + 1})
         except Exception as e:
             return handle_db_error(e)
         return {"success": True}
 
 
-def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginning_timestamp: int,
-                         ending_timestamp: int, days: list[bool]) -> {str, Union[bool, str]}:
+def add_cyclical_records(classroom: str, noon: bool, applicant_id: str, beginning_timestamp: int,
+                         ending_timestamp: int, days: list[bool]) -> dict[str, Union[bool, str, int]]:
     """
     Creating cyclical records.
     :param classroom: The classroom id.
@@ -187,7 +191,7 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: int, beginnin
         return {"success": True}
 
 
-def add_user(display_name: str, permission: str) -> {str, Union[bool, str]}:
+def add_user(display_name: str, permission: str) -> dict[str, Union[bool, str, int]]:
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
         with open("user_id") as id_file:

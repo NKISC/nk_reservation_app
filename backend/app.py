@@ -141,3 +141,21 @@ async def delete_cyclical(q: data_models.CyclicalDeletionModel):
 async def generate_schedule():
     res = await asyncio.to_thread(query.generate_schedule)
     return res
+
+
+@app.get("/query/schedule/")
+async def get_schedule():
+    return fastapi.responses.FileResponse("schedule.xlsx", filename="schedule.xlsx")
+
+
+@app.get("/query/generate_statistics/")
+async def generate_statistics():
+    res = await asyncio.to_thread(query.generate_statistics)
+    return res
+
+
+@app.get("/query/statistics/")
+async def get_statistics():
+    with open(f"statistics.png", "rb") as img_file:
+        img = img_file.read()
+    return fastapi.Response(content=img, media_type="image/png")
