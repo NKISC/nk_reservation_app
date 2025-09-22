@@ -1,5 +1,5 @@
 import sqlite3
-from backend.query import check_permission, judge_conflict
+from backend.query import check_permission, judge_conflict, query_user
 from typing import *
 from backend.utils import handle_db_error
 
@@ -47,8 +47,9 @@ def add_records(classroom: str, noon: bool, applicant_id: str, timestamp: int, d
                 cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                                {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                                 "applicant_id": applicant_id, "timestamp": timestamp})
+                usr = query_user({"id": applicant_id})[0]
                 cursor.execute("update user_info set register_num = :register_num where id = :applicant_id",
-                               {"applicant_id": applicant_id, "register_num": res[3] + 1})
+                               {"applicant_id": applicant_id, "register_num": usr["register_num"] + 1})
             except Exception as e:
                 return handle_db_error(e)
             return {"success": True}
@@ -78,8 +79,9 @@ def add_records(classroom: str, noon: bool, applicant_id: str, timestamp: int, d
             cursor.execute("INSERT INTO [record] VALUES (:id, :classroom, :noon, :applicant_id, :timestamp)",
                            {"id": recent_id + 1, "noon": noon, "classroom": classroom,
                             "applicant_id": applicant_id, "timestamp": timestamp})
+            usr = query_user({"id": applicant_id})[0]
             cursor.execute("update user_info set register_num = :register_num where id = :applicant_id",
-                           {"applicant_id": applicant_id, "register_num": res[3] + 1})
+                           {"applicant_id": applicant_id, "register_num": usr["register_num"] + 1})
         except Exception as e:
             return handle_db_error(e)
         return {"success": True}
