@@ -201,7 +201,7 @@
 		},
     onLoad() {
       wx.request({
-        url: "http://nkapi.ememememem.space/connection/",
+        url: "https://nkapi.ememememem.space/connection/",
         method: "GET",
         fail: (res) => {
           wx.showToast({
