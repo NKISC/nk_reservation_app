@@ -18,7 +18,7 @@
 				</view>
 			</view>
 			<view class="itemList" v-if="navMode === '我的预约'">
-				<view v-for="item,index in recordList" :key="index" class="itembox">
+				<view v-for="(item,index) in recordList" :key="index" class="itembox">
 					<view style="display: flex;justify-content: space-between;height: 50rpx;align-items: center;">
 						<view>{{ recordHash[index].display }}</view>
             <view>{{ buildDate(new Date(item.time_stamp * 1000)) }} {{ item.noon ? "中午" : "下午" }}</view>
@@ -27,7 +27,7 @@
 						<image src="../../static/gr_ditu3.svg" style="width: 120rpx;height: 50rpx;" />
 							<view style="position: absolute;left: 40rpx;top:7rpx;font-size: 25rpx;color: #830080;">{{ recordPlace[index] }}</view>
 							<view style="display: flex;margin-top: 5rpx;">
-								<view v-for="i,indexs in item.nav" :key="indexs">
+								<view v-for="(i,indexs) in item.nav" :key="indexs">
 									<view class="tabs">
 										{{i}}
 									</view>
@@ -39,7 +39,7 @@
                 v-if="cycRecordIds.find(group => group['record_id'].includes(item.id.toString() + ','))">
             周期
           </view>
-					<view style="display: flex;justify-content: flex-end;height: 80rpx">
+					<view style="display: flex;justify-content: flex-end;height: 80rpx" v-if="item.time_stamp >= today.getTime() / 1000">
 						<view @click="toDetails(item)" class="checkBtn">查看</view>
 					</view>
 				</view>
@@ -94,12 +94,15 @@
         recordList: [],
         recordHash: [],
         recordPlace: [],
+        today: new Date(),
         expandPermission: false,
         avatarUrl: "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0",
         buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 			}
 		},
     onShow() {
+      this.today = new Date();
+      this.today.setHours(0, 0, 0, 0);
       this.avatarUrl = wx.getStorageSync("avatarUrl");
       this.uid = wx.getStorageSync("openid");
       this.recordHash = []
