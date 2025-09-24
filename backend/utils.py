@@ -49,6 +49,19 @@ def login(code: str):
 
 
 def grant_access_from_password(uid: str, display: str, password: str) -> dict[str, Any]:
+    """
+    Grant access from passwords.
+    The password is searched in a server-side file "password_perm_mapping" formatted as follows:
+
+    (password) (permissions) (isDisposable | 0 or 1)
+
+    If a password is disposable (isDisposable == "1"), it is deleted from the file once used.
+    :param uid: The id of the user
+    :param display: The display name of the user, which is actually not needed in this function,
+    and will be deleted in future refactors
+    :param password: The password for the permission
+    :return:
+    """
     with open("password_perm_mapping") as ppm:
         mappings = ppm.read().strip().split("\n")
     is_access_granted = False
