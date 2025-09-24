@@ -54,8 +54,24 @@
             <view style="display: flex; justify-content: space-between; margin: 2%">
               <text>预约用户显示名</text><text style="color: grey;">{{ users.find(x => x.id === item.applicant_id).display }}</text>
             </view>
+            <view style="font-weight: normal; font-size: 20rpx;
+                color: white; background-color: orange; border-radius: 20rpx; width: fit-content; padding: 0.5% 2%; margin-top: 3%"
+                  v-if="cycRecordIds.find(group => group['record_id'].includes(item.id.toString() + ','))">
+              周期
+            </view>
             <view style="height: 50rpx">
-              <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="deleteRecord(index)">取消预约</button>
+              <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="confirmCancel(index, false)">取消预约</button>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="mark" v-if="showCycOpt">
+        <view style="display: flex;flex-direction: column;">
+          <view class="box" style="height: 400rpx; padding: 10%; margin: -200rpx; width: 550rpx">
+            该预约为周期预约。<br/>要删除以后的预约吗？
+            <view style="margin-top: 100rpx; display: flex; justify-content: space-between; width: 100%">
+              <view style="width: 200rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="confirmCancel(deleting_index, true)">仅本次预约</view>
+              <view style="width: 200rpx; height: 40rpx; padding: 10rpx; background-color: #82007E; color: white; text-align: center; border-radius: 25rpx" @click="confirmCancelCyc(deleting_index)">此后所有预约</view>
             </view>
           </view>
         </view>
@@ -76,6 +92,9 @@ export default {
       permSearch: "",
       reservations: [],
       classrooms: [],
+      cycRecordIds: [],
+      showCycOpt: false,
+      deleting_index: 0,
       buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
     }
   },
@@ -88,6 +107,16 @@ export default {
       },
       success: (res) => {
         this.classrooms = res.data
+      }
+    })
+    wx.request({
+      url: "https://nkapi.ememememem.space/query/cyclical",
+      method: "POST",
+      data: {
+        cond: {"record_id": [""]}
+      },
+      success: (res) => {
+        this.cycRecordIds = res.data
       }
     })
   },
@@ -150,25 +179,68 @@ export default {
         }
       })
     },
-    deleteRecord(index) {
+    confirmCancel(index, bypassCyc) {
+      if (!bypassCyc && this.cycRecordIds.find(group => group['record_id'].includes(this.reservations[index].id.toString() + ',')) !== undefined) {
+        this.showCycOpt = true
+        this.deleting_index = index
+      }
+      else {
+        wx.showToast({
+          title: "请求服务器...",
+          icon: "loading",
+          duration: 10000,
+        })
+        wx.request({
+          url: "https://nkapi.ememememem.space/delete/record",
+          method: "POST",
+          data: {
+            cond: {"id": this.reservations[index].id}
+          },
+          success: (res) => {
+            setTimeout(function () {
+              wx.showToast({
+                title: "删除成功",
+                icon: "success",
+                duration: 3000
+              });
+            }, 1000);
+            this.showCycOpt = false;
+            this.reservations.splice(index, 1);
+          }
+        })
+      }
+    },
+    confirmCancelCyc(index) {
       wx.showToast({
         title: "请求服务器...",
         icon: "loading",
-        duration: 3000
+        duration: 10000,
       })
       wx.request({
-        url: "https://nkapi.ememememem.space/delete/record",
+        url: "https://nkapi.ememememem.space/delete/cyclical",
         method: "POST",
         data: {
-          "cond": {"id": this.reservations[index].id}
+          initiator: this.reservations[index].id.toString(),
         },
         success: (res) => {
-          wx.showToast({
-            title: "删除成功！",
-            icon: "success",
-            duration: 2000
+          this.showCycOpt = false;
+          setTimeout(function () {
+            wx.showToast({
+              title: "删除成功",
+              icon: "success",
+              duration: 3000
+            });
+          }, 1000);
+          wx.request({
+            url: "https://nkapi.ememememem.space/query/record",
+            method: "POST",
+            data: {
+              "cond": {"by_id": true}
+            },
+            success: (res) => {
+              this.reservations = res.data;
+            }
           })
-          this.reservations.splice(index, 1);
         }
       })
     },
@@ -232,5 +304,30 @@ export default {
   left: 0;
   right: 0;
   background-size: 100%;
+
+  .mark {
+    z-index: 1000;
+    opacity: 1;
+    position: fixed;
+    height: 100vh;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .box {
+      width: 500rpx;
+      height: 700rpx;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }
 </style>
