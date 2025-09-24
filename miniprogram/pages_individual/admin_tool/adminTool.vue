@@ -177,7 +177,7 @@ export default {
         duration: 3000
       })
       wx.request({
-        url: "https://nkapi.ememememem.space/query/generate_schedule",
+        url: "https://nkapi.ememememem.space/query/generate_schedule/",
         method: "GET",
         success: (res) => {
           wx.showToast({
@@ -205,7 +205,7 @@ export default {
         duration: 3000
       })
       wx.request({
-        url: "https://nkapi.ememememem.space/query/generate_statistics",
+        url: "https://nkapi.ememememem.space/query/generate_statistics/",
         method: "GET",
         success: (res) => {
           wx.showToast({
@@ -214,7 +214,7 @@ export default {
             duration: 2000
           })
           wx.previewImage({
-            urls: ["https://nkapi.ememememem.space/query/statistics"],
+            urls: ["https://nkapi.ememememem.space/query/statistics?time=" + new Date().getTime()],
           })
         }
       })
