@@ -10,9 +10,10 @@
         </view>
         <view v-if="expandUser" style="height: 10rpx"></view>
         <u-search placeholder="用户ID/显示名" v-model="userSearch" :clearabled="true" :show-action="false" v-if="expandUser"/>
+        <u-search placeholder="权限代码" v-model="permSearch" :clearabled="true" :show-action="false" v-if="expandUser"/>
         <view v-for="(item, index) in users" :key="index" v-if="expandUser">
           <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px"
-          v-if="item.id.includes(userSearch) ||  item.display.includes(userSearch)">
+          v-if="(item.id.includes(userSearch) || item.display.includes(userSearch)) && item.permission.includes(permSearch)">
             <view style="font-weight: bold; color: grey; margin: 2%">{{ item.id }}</view>
             <view style="display: flex; justify-content: space-between; margin: 2%">
               <text>显示名</text><input v-model="users[index].display" style="background-color: white; color: black; text-align: right; padding: 1%" />
@@ -72,6 +73,7 @@ export default {
       expandReservation: false,
       users: [],
       userSearch: "",
+      permSearch: "",
       reservations: [],
       classrooms: [],
       buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,

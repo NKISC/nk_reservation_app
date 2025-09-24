@@ -53,7 +53,7 @@
             </view>
             <view v-if="expandPermission" style="height: 10rpx"></view>
             <view v-for="(item, index) in userPermissionDisplay" :key="index" v-if="expandPermission">
-              <view class="itembox" v-if="userPermissions[index] !== ''" style="height: fit-content; width: inherit">
+              <view class="itembox" v-if="userPermissions[index] !== ''" style="height: fit-content; width: inherit; margin: 10rpx">
                 <view style="font-weight: bold">{{ item }}</view>
               </view>
             </view>
