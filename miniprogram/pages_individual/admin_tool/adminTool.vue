@@ -113,7 +113,7 @@
             <text>权限</text><input v-model="new_permission" style="background-color: white; color: black; text-align: right; padding: 1%" />
           </view>
           <view style="display: flex; justify-content: space-between; margin: 2%">
-            <text>一次性</text><u-switch v-model="new_isDisposable"></u-switch>
+            <text>一次性</text><u-switch v-model="new_isDisposable" active-color="#82007E"></u-switch>
           </view>
           <view style="height: 50rpx; display: flex; justify-content: space-between;">
             <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="cancel_ppm_create">取消</button>
