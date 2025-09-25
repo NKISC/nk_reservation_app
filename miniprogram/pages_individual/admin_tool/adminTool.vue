@@ -426,6 +426,7 @@ export default {
           })
         }
       })
+      this.showPpmCreate = false;
     },
     switchPpmDisplay() {
       this.expandPPM = !this.expandPPM;
