@@ -28,7 +28,16 @@ def delete_from_table(table: str, x: Dict[str, Any]) -> Dict[str, Any]:
 
 # 针对不同表的接口
 def delete_record(x: Dict[str, Any]) -> Dict[str, Any]:
-    return delete_from_table("record", x)
+    try:
+        with sqlite3.connect("database.db") as db:
+            cursor = db.cursor()
+            applicant_id = cursor.execute("select * from record where id = ?", (x["id"])).fetchone()[3]
+            cursor.execute("update user_info set register_num = register_num - 1 where id = :id",
+                           {"id": applicant_id})
+            cursor.close()
+        return delete_from_table("record", x)
+    except Exception as e:
+        return handle_db_error(e)
 
 
 def delete_user(x: Dict[str, Any]) -> Dict[str, Any]:
@@ -49,4 +58,15 @@ def delete_cyclical(initiator: str) -> Dict[str, Any]:
             ret = delete_record({"id": rid})
             if not ret["success"]:
                 return ret
+    return {"success": True}
+
+
+def delete_permission_password(password: str) -> Dict[str, Any]:
+    with open("password_perm_mapping") as ppm:
+        entries = ppm.read().strip().splitlines()
+    for entry in entries:
+        if entry.split(" ")[0] == password:
+            entries.remove(entry)
+    with open(f"password_perm_mapping", "w") as ppm:
+        ppm.write("\n".join(entries))
     return {"success": True}

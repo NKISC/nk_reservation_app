@@ -159,3 +159,19 @@ async def get_statistics():
     with open(f"statistics.png", "rb") as img_file:
         img = img_file.read()
     return fastapi.Response(content=img, media_type="image/png")
+
+
+@app.get("/query/ppm")
+async def get_ppm():
+    return query.get_permission_passwords()
+
+
+@app.post("/addition/ppm/")
+async def add_ppm(cond: data_models.BasePostQuery):
+    return await asyncio.to_thread(addition.add_permission_password,
+                                   cond["password"], cond["permission"], cond["isDisposable"])
+
+
+@app.post("/delete/ppm/")
+async def delete_ppm(cond: data_models.BasePostQuery):
+    return await asyncio.to_thread(deletion.delete_permission_password, cond["password"])

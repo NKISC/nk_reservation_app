@@ -206,3 +206,9 @@ def add_user(display_name: str, permission: str) -> dict[str, Union[bool, str, i
             return {"success": True}
         except Exception as e:
             return handle_db_error(e)
+
+
+def add_permission_password(password: str, permission: str, is_disposable: bool) -> Dict[str, Any]:
+    with open("password_perm_mapping", "a") as ppm:
+        ppm.write(f"\n{password} {permission} {'1' if is_disposable else '0'}")
+    return {"success": True}

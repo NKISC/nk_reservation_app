@@ -49,16 +49,39 @@ def login(code: str):
 
 
 def grant_access_from_password(uid: str, display: str, password: str) -> dict[str, Any]:
+    """
+    Grant access from passwords.
+    The password is searched in a server-side file "password_perm_mapping" formatted as follows:
+
+    (password) (permissions) (isDisposable | 0 or 1)
+
+    If a password is disposable (isDisposable == "1"), it is deleted from the file once used.
+    :param uid: The id of the user
+    :param display: The display name of the user, which is actually not needed in this function,
+    and will be deleted in future refactors
+    :param password: The password for the permission
+    :return:
+    """
     with open("password_perm_mapping") as ppm:
         mappings = ppm.read().strip().split("\n")
     is_access_granted = False
+    upd = []
     for x in mappings:
         mapping = x.split(" ")
         if password == mapping[0]:
             from backend import alter
-            alter.alter_user(uid, display, mapping[1].split(",")[:-1])
+            from backend.query import query_user
+            user = query_user({"id": uid})[0]
+            new_perm: list = user["permission"].split(",")[:-1]
+            new_perm.extend(mapping[1].split(",")[:-1])
+            new_perm = list(dict.fromkeys(new_perm).keys())
+            alter.alter_user(uid, display, new_perm)
             is_access_granted = True
+            if mapping[2] == "0":
+                upd.append(mapping[1])
             break
+    with open("password_perm_mapping", "w") as ppm:
+        ppm.write("\n".join(upd))
     return {"success": True} if is_access_granted else {"success": False, "err_code": 500}
 
 
