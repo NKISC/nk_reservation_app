@@ -90,13 +90,13 @@
         <view v-for="(item, index) in ppm" :key="index" v-if="expandPPM">
           <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
             <view style="display: flex; justify-content: space-between; margin: 2%">
-              <text>密码</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].password }}</text>
+              <text>密码</text><text style="color: grey;" >{{ ppm[index].password }}</text>
             </view>
             <view style="display: flex; justify-content: space-between; margin: 2%">
-              <text>权限</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].permission }}</text>
+              <text>权限</text><text style="color: grey;" >{{ ppm[index].permission }}</text>
             </view>
             <view style="display: flex; justify-content: space-between; margin: 2%">
-              <text>一次性</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].isDisposable ? "是" : "否"}}</text>
+              <text>一次性</text><text style="color: grey;" >{{ ppm[index].isDisposable ? "是" : "否"}}</text>
             </view>
             <view style="height: 50rpx">
               <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="delete_ppm(index)">删除密码</button>
@@ -105,7 +105,7 @@
         </view>
       </view>
       <view class="mark" v-if="showPpmCreate">
-        <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+        <view class="itembox" style="height: fit-content; width: 80%; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
           <view style="display: flex; justify-content: space-between; margin: 2%">
             <text>密码</text><input v-model="new_password" style="background-color: white; color: black; text-align: right; padding: 1%" />
           </view>
