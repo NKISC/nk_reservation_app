@@ -36,7 +36,7 @@
         </view>
         <view v-if="expandReservation" style="height: 10rpx" />
         <view v-if="expandReservation" class="itembox" style="display: flex; justify-content: center; height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
-          <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="generateSchedule">生成本周排班表</button><br />
+          <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="generateSchedule">生成本周排班表</button>
           <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="generateStatistics">查看社团预约数据</button>
         </view>
         <view v-for="(item, index) in reservations" :key="index" v-if="expandReservation">
@@ -77,23 +77,91 @@
         </view>
       </view>
     </view>
+
+    <view class="itemList">
+      <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding: 2% 5%">
+        <view style="font-weight: bold; display: flex; justify-content: space-between; padding: 3%" @click="switchReservationDisplay">
+          权限密码管理 <span>{{ expandPPM ? "-" : "+" }}</span>
+        </view>
+        <view v-if="expandPPM" style="height: 10rpx" />
+        <view v-if="expandPPM" class="itembox" style="display: flex; justify-content: center; height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+          <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="go_create_ppm">创建新密码</button>
+        </view>
+        <view v-for="(item, index) in ppm" :key="index" v-if="expandPPM">
+          <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>密码</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].password }}</text>
+            </view>
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>权限</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].permission }}</text>
+            </view>
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>一次性</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].isDisposable ? "是" : "否"}}</text>
+            </view>
+            <view style="height: 50rpx">
+              <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="delete_ppm(index)">删除密码</button>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="mark" v-if="showPpmCreate">
+        <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+          <view style="display: flex; justify-content: space-between; margin: 2%">
+            <text>密码</text><input v-model="new_password" style="background-color: white; color: black; text-align: right; padding: 1%" />
+          </view>
+          <view style="display: flex; justify-content: space-between; margin: 2%">
+            <text>权限</text><input v-model="new_permission" style="background-color: white; color: black; text-align: right; padding: 1%" />
+          </view>
+          <view style="display: flex; justify-content: space-between; margin: 2%">
+            <text>一次性</text><u-switch v-model="new_isDisposable"></u-switch>
+          </view>
+          <view style="height: 50rpx; display: flex; justify-content: space-between;">
+            <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="cancel_ppm_create">取消</button>
+            <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="create_ppm">创建</button>
+          </view>
+        </view>
+      </view>
+    </view>
+<!--
+<view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>密码</text><input v-model="ppm[index].password" style="background-color: white; color: black; text-align: right; padding: 1%" />
+            </view>
+            <view style="display: flex; justify-content: space-between; margin: 2%">
+              <text>权限</text><input v-model="ppm[index].permission" style="background-color: white; color: black; text-align: right; padding: 1%" />
+            </view>
+            <view>
+              <u-switch v-model="ppm[index].isDisposable"></u-switch>
+            </view>
+          </view>
+-->
   </view>
 
 </template>
 <script>
+import USwitch from "../../uni_modules/uview-ui/components/u-switch/u-switch.vue";
+import UButton from "../../uni_modules/uview-ui/components/u-button/u-button.vue";
+
 export default {
   name: "adminTool",
+  components: {UButton, USwitch},
   data() {
     return {
       expandUser: false,
       expandReservation: false,
+      expandPPM: false,
       users: [],
+      ppm: [],
       userSearch: "",
       permSearch: "",
       reservations: [],
       classrooms: [],
       cycRecordIds: [],
       showCycOpt: false,
+      showPpmCreate: false,
+      new_password: "",
+      new_permission: "",
+      new_isDisposable: false,
       deleting_index: 0,
       buildDate: (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
     }
@@ -117,6 +185,13 @@ export default {
       },
       success: (res) => {
         this.cycRecordIds = res.data
+      }
+    })
+    wx.request({
+      url: "https://nkapi.ememememem.space/query/ppm/",
+      method: "GET",
+      success: (res) => {
+        this.ppm = res.data
       }
     })
   },
@@ -289,6 +364,65 @@ export default {
           })
           wx.previewImage({
             urls: ["https://nkapi.ememememem.space/query/statistics?time=" + new Date().getTime()],
+          })
+        }
+      })
+    },
+    delete_ppm(index) {
+      wx.showToast({
+        title: "请求服务器...",
+        icon: "loading",
+        duration: 3000
+      })
+      wx.request({
+        url: "https://nkapi.ememememem.space/delete/ppm/",
+        method: "POST",
+        data: {
+          "cond": {"password": this.ppm[index].password}
+        },
+        success: (res) => {
+          wx.showToast({
+            title: "删除成功！",
+            icon: "success",
+            duration: 2000
+          })
+          this.ppm.splice(index, 1)
+        }
+      })
+    },
+    go_create_ppm() {
+      this.showPpmCreate = true;
+    },
+    cancel_ppm_create() {
+      this.showPpmCreate = false;
+      this.new_permission = "";
+      this.new_password = "";
+      this.new_isDisposable = false;
+    },
+    create_ppm() {
+      wx.showToast({
+        title: "请求服务器...",
+        icon: "loading",
+        duration: 3000
+      })
+      wx.request({
+        url: "https://nkapi.ememememem.space/addition/ppm/",
+        method: "POST",
+        data: {
+          "cond": {"password": this.new_password, "isDisposable": this.new_isDisposable, "permission": this.new_permission},
+        },
+        success: (res) => {
+          wx.showToast({
+            title: "添加成功！",
+            icon: "success",
+            duration: 2000
+          })
+          wx.request({
+            url: "https://nkapi.ememememem.space/query/ppm/",
+            method: "GET",
+            success: (res) => {
+              this.ppm = res.data
+            }
           })
         }
       })

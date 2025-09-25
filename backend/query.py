@@ -276,3 +276,10 @@ def generate_statistics():
         plt.gca().yaxis.set_major_locator(plt.MaxNLocator(integer=True))
         plt.title("各社团活动教室预约情况")
         plt.savefig("statistics.png")
+
+
+def get_permission_passwords() -> list[dict[str, Union[str, bool]]]:
+    with open("password_perm_mapping") as ppm:
+        return [{"password": mapping.split(' ')[0],
+                "permission": mapping.split(' ')[1],
+                "isDisposable": True if mapping.split(' ')[2] == "1" else False} for mapping in ppm.read().strip().splitlines()]

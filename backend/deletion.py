@@ -59,3 +59,14 @@ def delete_cyclical(initiator: str) -> Dict[str, Any]:
             if not ret["success"]:
                 return ret
     return {"success": True}
+
+
+def delete_permission_password(password: str) -> Dict[str, Any]:
+    with open("password_perm_mapping") as ppm:
+        entries = ppm.read().strip().splitlines()
+    for entry in entries:
+        if entry.split(" ")[0] == password:
+            entries.remove(entry)
+    with open(f"password_perm_mapping", "w") as ppm:
+        ppm.write("\n".join(entries))
+    return {"success": True}
