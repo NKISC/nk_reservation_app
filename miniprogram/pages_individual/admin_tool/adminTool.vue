@@ -80,7 +80,7 @@
 
     <view class="itemList">
       <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding: 2% 5%">
-        <view style="font-weight: bold; display: flex; justify-content: space-between; padding: 3%" @click="switchReservationDisplay">
+        <view style="font-weight: bold; display: flex; justify-content: space-between; padding: 3%" @click="switchPpmDisplay">
           权限密码管理 <span>{{ expandPPM ? "-" : "+" }}</span>
         </view>
         <view v-if="expandPPM" style="height: 10rpx" />
@@ -426,6 +426,9 @@ export default {
           })
         }
       })
+    },
+    switchPpmDisplay() {
+      this.expandPPM = !this.expandPPM;
     }
   }
 }
