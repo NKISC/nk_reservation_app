@@ -400,6 +400,14 @@ export default {
       this.new_isDisposable = false;
     },
     create_ppm() {
+      if (this.new_permission.includes(" ") || this.new_password.includes(" ") || this.new_password === "" || this.new_permission === "") {
+        wx.showToast({
+          title: "输入包含空格！",
+          icon: "error",
+          duration: 3000
+        })
+        return
+      }
       wx.showToast({
         title: "请求服务器...",
         icon: "loading",
