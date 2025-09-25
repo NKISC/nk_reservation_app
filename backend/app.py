@@ -169,9 +169,9 @@ async def get_ppm():
 @app.post("/addition/ppm/")
 async def add_ppm(cond: data_models.BasePostQuery):
     return await asyncio.to_thread(addition.add_permission_password,
-                                   cond["password"], cond["permission"], cond["isDisposable"])
+                                   cond.cond["password"], cond.cond["permission"], cond.cond["isDisposable"])
 
 
 @app.post("/delete/ppm/")
 async def delete_ppm(cond: data_models.BasePostQuery):
-    return await asyncio.to_thread(deletion.delete_permission_password, cond["password"])
+    return await asyncio.to_thread(deletion.delete_permission_password, cond.cond["password"])
