@@ -141,7 +141,82 @@
                 </view>
               </view>
             </view>
+            <view v-for="(item,index) in expItem" :key="index" v-if="navMode === '实验楼'">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
+                <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
+                  <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
+                  <view style="display: flex; flex-wrap: wrap; height: 38rpx;">
+                    <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
+                      <view
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+                        {{tag_display[i]}}
+                      </view>
+                    </view>
+                  </view>
+                  <view
+                      style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
+                    <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
+                    <view style="width: 50rpx;height: 50rpx;">
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
             <view v-for="(item,index) in bookBarItem" :key="index" v-if="navMode === '书吧'">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
+                <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
+                  <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
+                  <view style="display: flex; flex-wrap: wrap; height: 38rpx;">
+                    <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
+                      <view
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+                        {{tag_display[i]}}
+                      </view>
+                    </view>
+                  </view>
+                  <view
+                      style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
+                    <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
+                    <view style="width: 50rpx;height: 50rpx;">
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view v-for="(item,index) in artItem" :key="index" v-if="navMode === '艺术馆'">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+                <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
+                  <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
+                </view>
+                <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
+                  <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
+                  <view style="display: flex; flex-wrap: wrap; height: 38rpx;">
+                    <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
+                      <view
+                          style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
+                        {{tag_display[i]}}
+                      </view>
+                    </view>
+                  </view>
+                  <view
+                      style="display: flex;justify-content: space-between;height: calc(100% - 88rpx);align-items: center;">
+                    <view style="font-size: 30rpx;color: #9E9E9E;margin-top: 20rpx;">{{item.num}}</view>
+                    <view style="width: 50rpx;height: 50rpx;">
+                      <image src="../../static/yy_qw.svg" style="width: 100%;height: 100%;" />
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view v-for="(item,index) in outdoorsItem" :key="index" v-if="navMode === '室外'">
               <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
@@ -184,7 +259,7 @@
 				canShowMore: false,
 				wk: null,
 				nk: null,
-				navList: ['南楼', '第二办公楼', '北楼', '书吧', '科学馆'],
+				navList: ['南楼', '第二办公楼', '北楼', '书吧', '科学馆', '实验楼', '艺术馆', '室外'],
 				navMode: '南楼',
 				search: "",
 				ChooseItem: [],
@@ -196,6 +271,9 @@
         northItem: [],
         bookBarItem: [],
         scienceItem: [],
+        expItem: [],
+        artItem: [],
+        outdoorsItem: [],
         tag_display: {},
 			}
 		},
@@ -230,7 +308,8 @@
         },
         success: (res) => {
           let cls = res.data;
-          let classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": []}
+          let classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": [], "exp": [],
+          "art": [], "outdoors": []}
           let i;
           for (i = 0; i < cls.length; i++) classroomItems[cls[i]["place"]].push(cls[i]);
           this.southItem = classroomItems.south;
@@ -238,6 +317,9 @@
           this.bookBarItem = classroomItems.book_bar;
           this.scienceItem = classroomItems.science;
           this.northItem = classroomItems.north;
+          this.expItem = classroomItems.exp;
+          this.artItem = classroomItems.art;
+          this.outdoorsItem = classroomItems.outdoors;
         }
       })
     },
