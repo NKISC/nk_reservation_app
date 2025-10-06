@@ -47,7 +47,7 @@
                 </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
-									<view style="display: flex;height: 38rpx;">
+									<view style="display: flex; flex-wrap: wrap; height: 38rpx;">
 										<view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
                       <!-- It would somehow only work this way... -->
 											<view
@@ -73,7 +73,7 @@
                 </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
-									<view style="display: flex;height: 38rpx;">
+									<view style="display: flex; flex-wrap: wrap; height: 38rpx;">
                     <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
                       <view
                           style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
@@ -98,7 +98,7 @@
                 </view>
 								<view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
 									<view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
-									<view style="display: flex;height: 38rpx;">
+									<view style="display: flex; flex-wrap: wrap; height: 38rpx;">
                     <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
                       <view
                           style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
@@ -123,7 +123,7 @@
                 </view>
                 <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
                   <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
-                  <view style="display: flex;height: 38rpx;">
+                  <view style="display: flex; flex-wrap: wrap; height: 38rpx;">
                     <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
                       <view
                           style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
@@ -148,7 +148,7 @@
                 </view>
                 <view style="margin-left: 10rpx;width: calc(100% - 170rpx);">
                   <view style="font-weight: bold;height: 50rpx;">{{item.display}}</view>
-                  <view style="display: flex;height: 38rpx;">
+                  <view style="display: flex; flex-wrap: wrap; height: 38rpx;">
                     <view v-for="(i,indexs) in (item.func_tag != null ? item.func_tag.split(',') : [])" :key="indexs">
                       <view
                           style="font-size: 27rpx;margin-right: 10rpx;background-color: #F5F5F5;color: #9E9E9E;padding: 0rpx 20rpx;box-sizing: border-box;" v-if="i !== ''">
