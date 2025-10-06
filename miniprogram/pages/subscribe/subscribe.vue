@@ -67,7 +67,7 @@
 							</view>
 						</view>
 						<view v-for="(item,index) in northItem" :key="index" v-if="navMode === '北楼'">
-              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode) || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -92,7 +92,7 @@
 							</view>
 						</view>
 						<view v-for="(item,index) in office2Item" :key="index" v-if="navMode === '第二办公楼'">
-              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode) || ChooseMode === '')">
 								<view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -117,7 +117,7 @@
 							</view>
 						</view>
             <view v-for="(item,index) in scienceItem" :key="index" v-if="navMode === '科学馆'">
-              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode) || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -142,7 +142,7 @@
               </view>
             </view>
             <view v-for="(item,index) in expItem" :key="index" v-if="navMode === '实验楼'">
-              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode) || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -167,7 +167,7 @@
               </view>
             </view>
             <view v-for="(item,index) in bookBarItem" :key="index" v-if="navMode === '书吧'">
-              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode) || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -192,7 +192,7 @@
               </view>
             </view>
             <view v-for="(item,index) in artItem" :key="index" v-if="navMode === '艺术馆'">
-              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode) || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
@@ -217,7 +217,7 @@
               </view>
             </view>
             <view v-for="(item,index) in outdoorsItem" :key="index" v-if="navMode === '室外'">
-              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (ChooseMode in item.func_tag.split(',') || ChooseMode === '')">
+              <view class="listItem" @click="toyy(item)" v-if="item.display.includes(search) && (item.func_tag.split(',').map(x => tag_display[x]).includes(ChooseMode) || ChooseMode === '')">
                 <view style="width: 170rpx;height: 100%;background-color: #F5F5F5;border-radius: 12rpx;">
                   <image :src="'https://nkapi.ememememem.space/img/' + item.pic_url" style="width: inherit; height: inherit"/>
                 </view>
