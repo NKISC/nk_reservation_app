@@ -131,13 +131,6 @@
 		<MyDialog v-if="showmark" @close='close'>
 			<view style="margin-bottom: 40rpx;">
 				<view style="font-size: 33rpx;font-weight: bold;margin: auto">{{ reservingClassroom.display }}</view>
-				<view style="display: flex;margin-top: 10rpx;">
-          <view class="nav">
-            <view v-for="item,index in navList" :key="index">
-              <view style="font-size: 22rpx; width: 90%" class="navItem" v-if="item !== null">{{item}}</view>
-            </view>
-          </view>
-				</view>
 			</view>
 			<view class="mark_data">
 				<view class="mark_data_title" style="">{{ transitionData(form.singleStart) }}</view>
