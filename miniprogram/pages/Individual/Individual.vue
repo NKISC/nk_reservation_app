@@ -2,9 +2,8 @@
 	<view class="indexPage">
 		<view class="header">
       <button style="width: auto; padding: 0" open-type="chooseAvatar" @chooseavatar="onChooseAvatar"><u-avatar size="90" :src="avatarUrl" shape="square"></u-avatar></button>
-
 <!--          <img class="avatar" style="height: 120%; width: 120%;" :src="avatarUrl" alt="" />-->
-			<view class="user_title">{{ userInfo.display }}</view>
+			<view class="user_title" @click="goToNicknameSetting">{{ userInfo.display }}</view>
       <view style="color: grey; font-size: 9px">{{ uid.slice(-8) }}</view>
 		</view>
 		<view class="content">
@@ -200,6 +199,10 @@
         uni.navigateTo({
           url: '/pages_individual/access_grant/accessGrant',
         })
+      },
+      goToNicknameSetting() {
+        uni.setStorageSync("user", this.userInfo);
+        uni.navigateTo({'url': '/pages_individual/Individual/nicknameSetting'})
       }
 		}
 	}

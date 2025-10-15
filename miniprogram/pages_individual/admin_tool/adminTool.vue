@@ -80,7 +80,7 @@
 
     <view class="itemList">
       <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding: 2% 5%">
-        <view style="font-weight: bold; display: flex; justify-content: space-between; padding: 3%" @click="switchReservationDisplay">
+        <view style="font-weight: bold; display: flex; justify-content: space-between; padding: 3%" @click="switchPpmDisplay">
           权限密码管理 <span>{{ expandPPM ? "-" : "+" }}</span>
         </view>
         <view v-if="expandPPM" style="height: 10rpx" />
@@ -90,13 +90,13 @@
         <view v-for="(item, index) in ppm" :key="index" v-if="expandPPM">
           <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
             <view style="display: flex; justify-content: space-between; margin: 2%">
-              <text>密码</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].password }}</text>
+              <text>密码</text><text style="color: grey;" >{{ ppm[index].password }}</text>
             </view>
             <view style="display: flex; justify-content: space-between; margin: 2%">
-              <text>权限</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].permission }}</text>
+              <text>权限</text><text style="color: grey;" >{{ ppm[index].permission }}</text>
             </view>
             <view style="display: flex; justify-content: space-between; margin: 2%">
-              <text>一次性</text><text style="background-color: white; color: black; text-align: right; padding: 1%" >{{ ppm[index].isDisposable ? "是" : "否"}}</text>
+              <text>一次性</text><text style="color: grey;" >{{ ppm[index].isDisposable ? "是" : "否"}}</text>
             </view>
             <view style="height: 50rpx">
               <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="delete_ppm(index)">删除密码</button>
@@ -105,7 +105,7 @@
         </view>
       </view>
       <view class="mark" v-if="showPpmCreate">
-        <view class="itembox" style="height: fit-content; width: inherit; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
+        <view class="itembox" style="height: fit-content; width: 80%; background-color: #3A3A3A; color: white; margin: 3%; padding: 3%; font-size: 15px">
           <view style="display: flex; justify-content: space-between; margin: 2%">
             <text>密码</text><input v-model="new_password" style="background-color: white; color: black; text-align: right; padding: 1%" />
           </view>
@@ -113,7 +113,7 @@
             <text>权限</text><input v-model="new_permission" style="background-color: white; color: black; text-align: right; padding: 1%" />
           </view>
           <view style="display: flex; justify-content: space-between; margin: 2%">
-            <text>一次性</text><u-switch v-model="new_isDisposable"></u-switch>
+            <text>一次性</text><u-switch v-model="new_isDisposable" active-color="#82007E"></u-switch>
           </view>
           <view style="height: 50rpx; display: flex; justify-content: space-between;">
             <button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: fit-content; float: right" @click="cancel_ppm_create">取消</button>
@@ -400,6 +400,14 @@ export default {
       this.new_isDisposable = false;
     },
     create_ppm() {
+      if (this.new_permission.includes(" ") || this.new_password.includes(" ") || this.new_password === "" || this.new_permission === "") {
+        wx.showToast({
+          title: "输入包含空格！",
+          icon: "error",
+          duration: 3000
+        })
+        return
+      }
       wx.showToast({
         title: "请求服务器...",
         icon: "loading",
@@ -426,6 +434,10 @@ export default {
           })
         }
       })
+      this.showPpmCreate = false;
+    },
+    switchPpmDisplay() {
+      this.expandPPM = !this.expandPPM;
     }
   }
 }
