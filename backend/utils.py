@@ -78,8 +78,9 @@ def grant_access_from_password(uid: str, display: str, password: str) -> dict[st
             alter.alter_user(uid, display, new_perm)
             is_access_granted = True
             if mapping[2] == "0":
-                upd.append(mapping[1])
-            break
+                upd.append(x)
+        else:
+            upd.append(x)
     with open("password_perm_mapping", "w") as ppm:
         ppm.write("\n".join(upd))
     return {"success": True} if is_access_granted else {"success": False, "err_code": 500}
