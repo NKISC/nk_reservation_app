@@ -73,13 +73,14 @@ def grant_access_from_password(uid: str, display: str, password: str) -> dict[st
             from backend.query import query_user
             user = query_user({"id": uid})[0]
             new_perm: list = user["permission"].split(",")[:-1]
-            new_perm.extend(mapping[1].split(",")[:-1])
+            new_perm.extend(mapping[1].split(","))
             new_perm = list(dict.fromkeys(new_perm).keys())
             alter.alter_user(uid, display, new_perm)
             is_access_granted = True
             if mapping[2] == "0":
-                upd.append(mapping[1])
-            break
+                upd.append(x)
+        else:
+            upd.append(x)
     with open("password_perm_mapping", "w") as ppm:
         ppm.write("\n".join(upd))
     return {"success": True} if is_access_granted else {"success": False, "err_code": 500}
