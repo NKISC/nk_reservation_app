@@ -211,6 +211,7 @@ def generate_schedule():
         now = datetime.datetime.now()
         start = now - datetime.timedelta(days=now.weekday())
         start.replace(hour=0, minute=0, second=0, microsecond=0)
+        start = start + datetime.timedelta(days=7)
         end = start + datetime.timedelta(days=7)
 
         records: list[list[dict[str, Any]]] = [[] for _ in range(7)]

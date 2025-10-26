@@ -196,19 +196,21 @@
 					cyclicMethod: "",
           cycDay: [false, false, false, false, false, false, false, false],
           cycForm: [],
-					singleStart: tomorrow,
-					singleEnd: tomorrow,
+					singleStart: (() => new Date(Date.now() + (((8 - new Date().getDay()) % 7 || 7) * 86400000)))(),
+					singleEnd: (() => new Date(Date.now() + (((8 - new Date().getDay()) % 7 || 7) * 86400000)))(),
 				},
-				datetimeStart: today,
-				datetimeEnd: tomorrows,
+				datetimeStart: (() => new Date(Date.now() + (((8 - new Date().getDay()) % 7 || 7) * 86400000)))(),
         limitDate: new Date(),
         background: "",
         userList: [],
 			}
 		},
     onLoad() {
-      this.limitDate.setDate(new Date().getDate() + 60);
+      this.limitDate.setDate(new Date().getDate() + 21);
       this.limitDate = this.buildDate(this.limitDate);
+      this.form.singleStart = this.buildDate(this.form.singleStart);
+      this.form.singleEnd = this.buildDate(this.form.singleEnd);
+      this.datetimeStart = this.buildDate(this.datetimeStart);
       this.tag_display = uni.getStorageSync('tag_display');
       this.reservingClassroom = uni.getStorageSync('reservingClassroom');
       uni.removeStorageSync("reservingClassroom");
