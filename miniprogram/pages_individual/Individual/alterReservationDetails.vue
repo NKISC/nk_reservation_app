@@ -113,18 +113,21 @@ export default {
         timePeriod: "",
         isCyclic: [],
         cyclicMethod: "",
-        singleStart: tomorrow,
-        singleEnd: tomorrow,
+        singleStart: (() => new Date(Date.now() + (((8 - new Date().getDay()) % 7 || 7) * 86400000)))(),
+        singleEnd: (() => new Date(Date.now() + (((8 - new Date().getDay()) % 7 || 7) * 86400000)))(),
       },
-      datetimeStart: today,
+      datetimeStart: (() => new Date(Date.now() + (((8 - new Date().getDay()) % 7 || 7) * 86400000)))(),
       datetimeEnd: tomorrows,
       limitDate: new Date(),
       background: "",
     }
   },
   onLoad() {
-    this.limitDate.setDate(new Date().getDate() + 60);
+    this.limitDate.setDate(new Date().getDate() + 21);
     this.limitDate = this.buildDate(this.limitDate);
+    this.form.singleStart = this.buildDate(this.form.singleStart);
+    this.form.singleEnd = this.buildDate(this.form.singleEnd);
+    this.datetimeStart = this.buildDate(this.datetimeStart);
     this.tag_display = uni.getStorageSync('tag_display');
     this.alteringClassroom = uni.getStorageSync('alteringClassroom');
     this.alteringRecord = uni.getStorageSync("alteringRecord");
