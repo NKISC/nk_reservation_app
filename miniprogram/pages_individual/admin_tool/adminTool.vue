@@ -272,6 +272,14 @@ export default {
             cond: {"id": this.reservations[index].id}
           },
           success: (res) => {
+            if (!res.data["success"]) {
+              wx.showToast({
+                title: "服务器错误",
+                icon: "error",
+                duration: 3000
+              });
+              return
+            }
             setTimeout(function () {
               wx.showToast({
                 title: "删除成功",
@@ -298,6 +306,14 @@ export default {
           initiator: this.reservations[index].id.toString(),
         },
         success: (res) => {
+          if (!res.data["success"]) {
+            wx.showToast({
+              title: "服务器错误",
+              icon: "error",
+              duration: 3000
+            });
+            return
+          }
           this.showCycOpt = false;
           setTimeout(function () {
             wx.showToast({
