@@ -31,7 +31,7 @@ def delete_record(x: Dict[str, Any]) -> Dict[str, Any]:
     try:
         with sqlite3.connect("database.db") as db:
             cursor = db.cursor()
-            applicant_id = cursor.execute("select * from record where id = ?", (x["id"])).fetchone()[3]
+            applicant_id = cursor.execute("select * from record where id = :id", {"id": x["id"]}).fetchone()[3]
             cursor.execute("update user_info set register_num = register_num - 1 where id = :id",
                            {"id": applicant_id})
             cursor.close()
