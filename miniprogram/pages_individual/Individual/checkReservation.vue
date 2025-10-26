@@ -200,6 +200,14 @@ export default {
             cond: {"id": this.checkingRecord.id}
           },
           success: (res) => {
+            if (!res.data["success"]) {
+              wx.showToast({
+                title: "服务器错误",
+                icon: "error",
+                duration: 3000
+              });
+              return
+            }
             uni.navigateBack({
               delta: 1
             });
@@ -227,6 +235,14 @@ export default {
           initiator: this.checkingRecord.id.toString(),
         },
         success: (res) => {
+          if (!res.data["success"]) {
+            wx.showToast({
+              title: "服务器错误",
+              icon: "error",
+              duration: 3000
+            });
+            return
+          }
           uni.navigateBack({
             delta: 1
           });
