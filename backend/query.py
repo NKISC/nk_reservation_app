@@ -12,7 +12,7 @@ import traceback
 import matplotlib.pyplot as plt
 
 
-def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
+def query_classroom(cond: dict[str, Any], available_only: bool = False) -> list[dict[str, Any]]:
     """
     Query the classroom information.
     :param cond: A dictionary containing the filters that select the classrooms to return.
@@ -27,11 +27,17 @@ def query_classroom(cond: dict[str, Any]) -> list[dict[str, Any]]:
     with sqlite3.connect('database.db') as db:
         cursor = db.cursor()
         param = utils.construct_params(cond)
-        if len(cond) != 0:
-            cursor.execute("select * from classroom where " + utils.construct_condition(cond), param)
-        else:
-            cursor.execute("select * from classroom")
-        ret = utils.construct_response(cursor, "classroom")
+        from backend.classroom_management import ensure_availability
+        ensure_availability(db)
+        where = utils.construct_condition(cond) if cond else ""
+        params = param
+        if available_only:
+            where = (where + " AND " if where else "") + "COALESCE((SELECT available FROM classroom_availability a WHERE a.id=classroom.id), 1)=1"
+        cursor.execute("SELECT classroom.*, COALESCE((SELECT available FROM classroom_availability a WHERE a.id=classroom.id), 1) AS available FROM classroom" + (" WHERE " + where if where else ""), params)
+        names = [item[0] for item in cursor.description]
+        ret = [dict(zip(names, row)) for row in cursor.fetchall()]
+        for classroom in ret:
+            classroom["available"] = bool(classroom["available"])
         return ret
 
 

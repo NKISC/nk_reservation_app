@@ -300,29 +300,8 @@
         }
       })
 
-      wx.request({
-        url: "https://nkapi.ememememem.space/query/classroom",
-        method: "POST",
-        data: {
-          cond: {}
-        },
-        success: (res) => {
-          let cls = res.data;
-          let classroomItems = {"south": [], "office2": [], "north": [], "book_bar": [], "science": [], "exp": [],
-          "art": [], "outdoors": []}
-          let i;
-          for (i = 0; i < cls.length; i++) classroomItems[cls[i]["place"]].push(cls[i]);
-          this.southItem = classroomItems.south;
-          this.office2Item = classroomItems.office2;
-          this.bookBarItem = classroomItems.book_bar;
-          this.scienceItem = classroomItems.science;
-          this.northItem = classroomItems.north;
-          this.expItem = classroomItems.exp;
-          this.artItem = classroomItems.art;
-          this.outdoorsItem = classroomItems.outdoors;
-        }
-      })
     },
+    onShow() { this.loadClassrooms(); },
 		mounted() {
 			this.$nextTick(() => {
 				this.checkOverflow();
@@ -330,6 +309,24 @@
 		},
 		created() {},
 		methods: {
+			loadClassrooms() {
+				wx.request({
+					url: "https://nkapi.ememememem.space/query/classroom", method: "POST",
+					data: {cond: {}, available_only: true},
+					success: (res) => {
+						const valid = {south: [], office2: [], north: [], book_bar: [], science: [], exp: [], art: [], outdoors: []};
+						const cls = Array.isArray(res.data) ? res.data : [];
+						for (let i = 0; i < cls.length; i++) {
+							const room = cls[i];
+							if (room.available === false || !Object.prototype.hasOwnProperty.call(valid, room.place)) continue;
+							valid[room.place].push(room);
+						}
+						this.southItem = valid.south; this.office2Item = valid.office2; this.northItem = valid.north;
+						this.bookBarItem = valid.book_bar; this.scienceItem = valid.science; this.expItem = valid.exp;
+						this.artItem = valid.art; this.outdoorsItem = valid.outdoors;
+					}
+				});
+			},
 			toggleDropdown() {
 				this.isOpen = !this.isOpen;
 			},

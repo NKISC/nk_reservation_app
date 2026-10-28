@@ -3,6 +3,16 @@ from backend.query import check_permission, judge_conflict, query_user
 from typing import *
 from backend.utils import handle_db_error
 
+def _classroom_available(classroom):
+    with sqlite3.connect('database.db') as check_db:
+        row = check_db.execute("SELECT 1 FROM classroom WHERE id=?", (classroom,)).fetchone()
+        if not row:
+            return False
+        from backend.classroom_management import ensure_availability
+        ensure_availability(check_db)
+        state = check_db.execute("SELECT available FROM classroom_availability WHERE id=?", (classroom,)).fetchone()
+        return state is None or bool(state[0])
+
 
 def add_records(classroom: str, noon: bool, applicant_id: str, timestamp: int, db: Optional[sqlite3.Connection] = None) -> dict[str, Union[bool, str, int]]:
     """
@@ -20,6 +30,8 @@ def add_records(classroom: str, noon: bool, applicant_id: str, timestamp: int, d
                     100: Python Exception
                 error (str): Error message.
     """
+    if not _classroom_available(classroom):
+        return {"success": False, "err_code": 602, "error": "classroom_unavailable"}
     if db is None:
         with sqlite3.connect('database.db') as db:
             cursor = db.cursor()
@@ -106,6 +118,8 @@ def add_cyclical_records(classroom: str, noon: bool, applicant_id: str, beginnin
                 error (str): Error message.
     """
     with sqlite3.connect('database.db') as db:
+        if not _classroom_available(classroom):
+            return {"success": False, "err_code": 602, "error": "classroom_unavailable"}
         cursor = db.cursor()
         cur_timestamp = beginning_timestamp
         for i in range(1, 8):

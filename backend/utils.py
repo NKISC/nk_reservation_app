@@ -48,6 +48,24 @@ def login(code: str):
     return ret
 
 
+def exchange_admin_code(code: str) -> str | None:
+    """Exchange a fresh login code and return its openid; fail closed."""
+    try:
+        with open("appid") as f:
+            appid = f.readline().strip()
+        with open("appSecret") as f:
+            secret = f.readline().strip()
+        response = requests.get("https://api.weixin.qq.com/sns/jscode2session", params={
+            "appid": appid, "secret": secret, "js_code": code,
+            "grant_type": "authorization_code",
+        }, timeout=8)
+        response.raise_for_status()
+        result = response.json()
+        return result.get("openid") if isinstance(result, dict) and not result.get("errcode") else None
+    except Exception:
+        return None
+
+
 def grant_access_from_password(uid: str, display: str, password: str) -> dict[str, Any]:
     """
     Grant access from passwords.
