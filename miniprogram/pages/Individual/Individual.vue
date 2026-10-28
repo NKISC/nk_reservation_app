@@ -46,13 +46,13 @@
 
       <view v-if="navMode === '个人信息'">
         <view class="itemList">
-          <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding-left: 5%; padding-right: 5%">
+          <view class="itembox permission-card">
             <view style="font-weight: bold; display: flex; justify-content: space-between;" @click="switchPermissionDisplay">
               权限组 <span>{{ expandPermission ? "-" : "+" }}</span>
             </view>
             <view v-if="expandPermission" style="height: 10rpx"></view>
             <view v-for="(item, index) in userPermissionDisplay" :key="index" v-if="expandPermission">
-              <view class="itembox" v-if="userPermissions[index] !== ''" style="height: fit-content; width: inherit; margin: 10rpx">
+              <view class="itembox permission-entry" v-if="userPermissions[index] !== ''">
                 <view style="font-weight: bold">{{ item }}</view>
               </view>
             </view>
@@ -60,13 +60,13 @@
         </view>
       </view>
 
-      <view v-if="navMode === '设置'">
-        <view class="itembox" v-if="userPermissions.includes('admin')" style="height: fit-content; background-color: #F0F0F0; padding: 3% 5% 3% 5%" @click="goToAdminTool">
+      <view class="settingsList" v-if="navMode === '设置'">
+        <view class="itembox setting-entry" v-if="userPermissions.includes('admin')" @click="goToAdminTool">
           <view style="font-weight: bold; display: flex; justify-content: space-between;">
             管理员工具 <span> > </span>
           </view>
         </view>
-        <view class="itembox" style="height: fit-content; background-color: #F0F0F0; padding: 3% 5% 3% 5%" @click="goToAccessGrant">
+        <view class="itembox setting-entry" @click="goToAccessGrant">
           <view style="font-weight: bold; display: flex; justify-content: space-between;">
             获取权限 <span> > </span>
           </view>
@@ -215,12 +215,16 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
-		background-size: 100%;
+		padding-top: calc(var(--status-bar-height, 0px) + env(safe-area-inset-top) + 16rpx);
+		box-sizing: border-box;
+		overflow-y: auto;
+		background: #f7f5f8;
 
 		.header {
 			width: 100%;
-			height: 650rpx;
+			height: auto;
+			min-height: 0;
+			padding: 24rpx 0;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -235,7 +239,7 @@
 			}
 
 			.user_title {
-				color: #000;
+				color: #292329;
 				font-size: 40rpx;
 				font-weight: bold;
 				margin-bottom: 10rpx;
@@ -248,25 +252,32 @@
 		}
 
 		.content {
-			margin-top: -100rpx;
+			margin-top: 0;
+			padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
 			width: 100%;
-			height: calc(100% - 550rpx);
 
 			.nav {
 				width: 100%;
-				height: 80rpx;
+				height: 100rpx;
 				display: flex;
 				justify-content: space-evenly;
 				align-items: center;
 				font-size: 36rpx;
 				font-weight: bold;
-				color: #7E7E7E;
+				color: #9E9E9E;
+				> view {
+					flex: 1;
+					min-width: 0;
+				}
 
 				.navItem {
 					display: flex;
 					justify-content: center;
-					width: 100%;
-					height: 80rpx;
+					align-items: center;
+					flex: 1;
+					width: auto;
+					height: 100rpx;
+					min-height: 100rpx;
 					position: relative;
 
 					.line {
@@ -287,15 +298,15 @@
 				}
 
 				.navItem.active {
-					color: #000;
+					color: #82007E;
 					font-weight: bold;
 				}
 			}
 
 			.itemList {
 				width: 100%;
-				height: calc(100% - 80rpx);
-				overflow: auto;
+				height: auto;
+				overflow: visible;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
@@ -304,12 +315,18 @@
 				.itembox {
 					width: 90%;
 					height: 200rpx;
-					background-color: #F9F5F7;
+					min-height: 200rpx;
+					flex-shrink: 0;
+					background-color: #fff;
+					border: 1px solid #eee8f0;
+					border-radius: 12rpx;
+					box-shadow: 0 2rpx 8rpx rgba(87, 27, 72, 0.08);
 					margin-bottom: 30rpx;
 					padding: 20rpx;
 					box-sizing: border-box;
 				}
 			}
+			.settingsList { width: 100%; padding-bottom: 24rpx; }
 		}
 
 		.tabs {
@@ -331,6 +348,31 @@
 			color: #fff;
 			text-align: center;
 			border-radius: 12rpx;
+		}
+		.header button { background: transparent; border: 0; line-height: 1; }
+		.header button::after { border: 0; }
+		.itembox {
+			background: #fff;
+			border: 1px solid #eee8f0;
+			border-radius: 12rpx;
+			box-shadow: 0 2rpx 8rpx rgba(87, 27, 72, 0.08);
+			box-sizing: border-box;
+		}
+		.content .itemList .itembox.permission-card,
+		.setting-entry {
+			width: 90%;
+			min-height: 100rpx;
+			height: auto;
+			margin: 20rpx auto;
+			padding: 28rpx 5%;
+			color: #292329;
+		}
+		.content .itemList .itembox.permission-entry {
+			width: 100%;
+			min-height: 70rpx;
+			height: auto;
+			margin: 12rpx 0;
+			padding: 18rpx;
 		}
 	}
 </style>

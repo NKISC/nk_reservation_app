@@ -4,16 +4,36 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:mp-weixin": "node ./build/run-uni-build.js development --watch",
+    "build:mp-weixin:dev": "node ./build/run-uni-build.js development",
+    "build:mp-weixin": "node ./build/run-uni-build.js production",
+    "test:mp-weixin-runtime": "node ./build/check-mp-weixin-runtime.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.3"
+    "axios": "^1.6.3",
+    "@dcloudio/uni-app": "2.0.2-4060620250520001",
+    "@dcloudio/uni-mp-weixin": "2.0.2-4060620250520001",
+    "vue": "2.6.14"
   },
   "devDependencies": {
-    "sass": "^1.69.5",
-    "sass-loader": "^13.3.3"
+    "@dcloudio/uni-cli-i18n": "2.0.2-4060620250520001",
+    "@dcloudio/uni-i18n": "2.0.2-4060620250520001",
+    "@dcloudio/uni-cli-shared": "2.0.2-4060620250520001",
+    "@dcloudio/uni-template-compiler": "2.0.2-4060620250520001",
+    "@dcloudio/webpack-uni-pages-loader": "2.0.2-4060620250520001",
+    "@dcloudio/webpack-uni-mp-loader": "2.0.2-4060620250520001",
+    "@dcloudio/vue-cli-plugin-uni": "2.0.2-4060620250520001",
+    "@vue/cli-plugin-babel": "4.5.19",
+    "@vue/cli-service": "4.5.19",
+    "copy-webpack-plugin": "5.1.2",
+    "module-alias": "2.2.3",
+    "postcss": "7.0.39",
+    "sass": "1.69.5",
+    "sass-loader": "10.5.2",
+    "vue-template-compiler": "2.6.14"
   }
 }

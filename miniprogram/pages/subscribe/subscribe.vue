@@ -393,15 +393,18 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/title.jpeg') no-repeat;
-		background-size: 100%;
+		padding-top: calc(var(--status-bar-height, 0px) + env(safe-area-inset-top));
+		box-sizing: border-box;
+		background: #f7f5f8;
 
 		.content {
 			display: flex;
 			width: 100%;
-			height: calc(100% - 200rpx);
-			margin-top: 200rpx;
+			height: 100%;
+			margin-top: 0;
 			overflow: auto;
+			padding-bottom: env(safe-area-inset-bottom);
+			box-sizing: border-box;
 
 			.nav {
 				width: 20%;

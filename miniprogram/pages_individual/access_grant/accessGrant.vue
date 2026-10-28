@@ -1,12 +1,14 @@
 <template>
-  <view class="indexPage" style="padding-top: 13%; padding-left: 5%; padding-right: 5%; height: fit-content">
-    <view style="margin-bottom: 20%">
+  <view class="indexPage" style="padding-top: 24rpx; padding-left: 5%; padding-right: 5%; height: fit-content">
+    <view style="margin-bottom: 40rpx">
       <img src="../../static/fh.svg" style="width: 35rpx; height: 35rpx; margin-right: 5%;" @click="goBack" alt/> <text style="font-weight: bold; vertical-align: center;">获取权限</text>
     </view>
-    <input v-model="password" placeholder="输入权限密码..." style="width: inherit; border: black solid 2px; border-radius: 20rpx; margin: 5% 1%; padding: 1% 5%">
-    <view style="display: flex; justify-content: space-between; margin: 5% 2%">
+    <view class="form-card">
+    <input v-model="password" placeholder="输入权限密码..." style="width: inherit; border-radius: 20rpx; margin: 5% 1%; padding: 1% 5%">
+    <view class="form-actions" style="display: flex; justify-content: space-between; margin: 5% 2%">
       <span style="color: grey; font-size: 22rpx">可向相关老师索取权限密码</span>
       <span><button style="background-color: #82007E; color: white; padding: 0 3%; font-size: 11px; height: 50rpx; width: 80rpx; float: right" @click="submitPassword">获取</button></span>
+    </view>
     </view>
   </view>
 
@@ -75,6 +77,13 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background-size: 100%;
+  background: #f7f5f8;
+  padding-top: calc(var(--status-bar-height, 0px) + env(safe-area-inset-top) + 24rpx) !important;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  color: #29232c;
+  .form-card { background: #fff; border: 1px solid #eee8f0; border-radius: 12rpx; box-shadow: 0 2rpx 8rpx rgba(87,27,72,.08); padding: 24rpx; }
+  input { background: #fff !important; border: 1px solid #e7e1e9 !important; border-radius: 12rpx !important; margin: 12rpx 0 !important; height: 88rpx; line-height: 48rpx; padding: 20rpx 24rpx !important; box-sizing: border-box; }
+  button { background: #82007e; color: #fff; border: 0; border-radius: 12rpx; min-width: 120rpx; }
 }
 </style>
