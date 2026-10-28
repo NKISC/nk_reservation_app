@@ -17,3 +17,29 @@ and leave it running while editing.
 Set a real WeChat mini-program AppID in `manifest.json` before using WeChat login or
 uploading. Production use also requires appropriate request/upload domains and a
 configured backend; building does not contact the backend or validate credentials.
+
+## Classroom management
+
+Open **管理员工具 → 教室管理** to create or edit classrooms and stop or reopen
+bookings. Classroom IDs remain fixed after creation. Disabling a classroom hides
+it from the booking list and rejects new single and recurring bookings without
+deleting existing reservations. Existing booking permissions still apply; creating
+a classroom does not grant users access to it.
+
+The new `/addition/classroom` and `/alter/classroom` endpoints require a fresh
+WeChat login code and check the corresponding user's `admin` permission on the
+server. Configure the backend's `appid` and `appSecret` files for this to work.
+This check is specific to the new endpoints, not an authorization overhaul of the
+older admin APIs. The old `/delete/classroom/` endpoint now returns HTTP 410;
+disable classrooms instead of deleting them.
+
+Availability uses a separate, automatically created SQLite table; existing rooms
+default to available. `/query/classroom` includes disabled rooms for reservation
+display; pass `available_only: true` alongside `cond` for the booking list.
+
+With backend dependencies and `httpx` installed, run the isolated regression tests from the
+repository root (no live database or WeChat access required):
+
+```sh
+python -m unittest discover -s test -p test_classroom_management.py -v
+```

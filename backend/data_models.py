@@ -5,6 +5,19 @@ from typing import *
 class BasePostQuery(BaseModel):
     cond: dict[str, Any]
 
+class ClassroomQueryModel(BaseModel):
+    cond: dict[str, Any] = {}
+    available_only: bool = False
+
+class ClassroomManagementModel(BaseModel):
+    code: str
+    id: str
+    display: str
+    place: str
+    pic_url: str = ""
+    func_tag: str = ""
+    available: bool = True
+
 
 class PermissionCheckQuery(BaseModel):
     permissions: list[str]

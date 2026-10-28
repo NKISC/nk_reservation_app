@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@dcloudio/uni-app": "^2.0.2-4060620250520001",
+    "@dcloudio/uni-mp-weixin": "^2.0.2-4060620250520001"
+  }
+}

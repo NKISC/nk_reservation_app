@@ -7,6 +7,7 @@ from backend import addition
 from backend import utils
 from backend import alter
 from backend import deletion
+from backend import classroom_management
 
 app = fastapi.FastAPI()
 
@@ -23,8 +24,8 @@ async def deploy():
 
 
 @app.post("/query/classroom")
-async def query_classroom(cond: data_models.BasePostQuery):
-    res = await asyncio.to_thread(query.query_classroom, cond.cond)
+async def query_classroom(cond: data_models.ClassroomQueryModel):
+    res = await asyncio.to_thread(query.query_classroom, cond.cond, cond.available_only)
     return res
 
 
@@ -56,6 +57,20 @@ async def query_img(url: str):
 async def addition_record(q: data_models.RecordAdditionModel):
     res = await asyncio.to_thread(addition.add_records, q.classroom, q.noon, q.applicant_id, q.time_stamp)
     return res
+
+
+@app.post("/addition/classroom")
+async def addition_classroom(q: data_models.ClassroomManagementModel):
+    if not await asyncio.to_thread(classroom_management.authorized, q.code):
+        return {"success": False, "error": "unauthorized"}
+    return await asyncio.to_thread(classroom_management.manage, q.dict(exclude={"code"}), False)
+
+
+@app.post("/alter/classroom")
+async def alter_classroom(q: data_models.ClassroomManagementModel):
+    if not await asyncio.to_thread(classroom_management.authorized, q.code):
+        return {"success": False, "error": "unauthorized"}
+    return await asyncio.to_thread(classroom_management.manage, q.dict(exclude={"code"}), True)
 
 
 @app.post("/addition/add_cyclical_record")
@@ -110,8 +125,7 @@ async def delete_record(cond: data_models.BasePostQuery):
 
 @app.post("/delete/classroom/")
 async def delete_classroom(cond: data_models.BasePostQuery):
-    res = await asyncio.to_thread(deletion.delete_classroom, cond.cond)
-    return res
+    return fastapi.responses.JSONResponse(status_code=410, content={"success": False, "error": "use_disable"})
 
 
 @app.post("/delete/user/")
