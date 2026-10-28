@@ -1,12 +1,14 @@
 <template>
-  <view class="indexPage" style="padding-top: 13%; padding-left: 5%; padding-right: 5%; height: fit-content">
-    <view style="margin-bottom: 20%">
+  <view class="indexPage" style="padding-top: 24rpx; padding-left: 5%; padding-right: 5%; height: fit-content">
+    <view style="margin-bottom: 40rpx">
       <img src="../../static/fh.svg" style="width: 35rpx; height: 35rpx; margin-right: 5%;" @click="goBack" alt/> <text style="font-weight: bold; vertical-align: center;">昵称设置</text>
     </view>
-    <view style="display: flex; justify-content: space-between; margin: 2%">
+    <view class="form-card">
+    <view class="form-row" style="display: flex; justify-content: space-between; margin: 2%">
       <text style="font-weight: bold">昵称</text><input v-model="user.display" style="background-color: white; color: black; text-align: right; padding: 1%" />
     </view>
-    <u-button style="background-color: #82007E" text="确认" shape="circle" color="#82007E" @click="alterUserInfo"></u-button>
+    <u-button class="primary-action" style="background-color: #82007E" text="确认" shape="circle" color="#82007E" @click="alterUserInfo"></u-button>
+    </view>
 
   </view>
 
@@ -73,7 +75,15 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background-size: 100%;
+  background: #f7f5f8;
+  padding-top: calc(var(--status-bar-height, 0px) + env(safe-area-inset-top) + 24rpx) !important;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  color: #29232c;
+  .form-card { background: #fff; border: 1px solid #eee8f0; border-radius: 12rpx; box-shadow: 0 2rpx 8rpx rgba(87,27,72,.08); padding: 24rpx; }
+  .form-row { align-items: center; gap: 20rpx; }
+  input { min-width: 0; flex: 1; height: 84rpx; line-height: 48rpx; border: 1px solid #e7e1e9 !important; border-radius: 12rpx; padding: 16rpx 20rpx !important; box-sizing: border-box; }
+  .primary-action { margin-top: 24rpx; }
 
   .mark {
     z-index: 1000;

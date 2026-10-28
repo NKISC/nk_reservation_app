@@ -4,7 +4,6 @@
     <view class="header">
       <view class="content">
         <view class="title">{{ alteringClassroom.display }}</view>
-        <view style="height: 200rpx;"></view>
         <view style="display: flex;margin-top: 20rpx;align-items: center;">
           <image src="../../static/gr_ditu2.svg" style="width: 30rpx;height: 30rpx;" />
           <view style="margin-left: 10rpx;font-size: 40rpx;color: #9D979D;font-weight: bold;">{{ alteringPlaceDisplay }}</view>
@@ -291,8 +290,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background: url('https://cdn.jsdelivr.net/gh/emforinfinityenergy/contents/picture/gr_bg.jpeg') no-repeat;
-  background-size: 100%;
+  background: #f7f5f8;
   z-index: -100;
   height: 32%;
   overflow: hidden;
@@ -304,22 +302,27 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+  background: #f7f5f8;
+  padding-top: calc(var(--status-bar-height, 0px) + env(safe-area-inset-top) + 16rpx);
+  box-sizing: border-box;
+  overflow-y: auto;
 
   .header {
     width: 100%;
-    height: 83%;
+    height: auto;
     padding: 0 40rpx;
+    padding-bottom: 190rpx;
     box-sizing: border-box;
   }
 
   .title {
     width: 100%;
-    height: 200rpx;
+    height: auto;
     display: flex;
     align-items: flex-end;
     font-size: 50rpx;
     font-weight: bold;
-    color: white;
+      color: #29232c;
   }
 
   .nav {
@@ -347,7 +350,10 @@ export default {
     margin-top: 30rpx;
     width: 100%;
     // height: 550rpx;
-    background-color: #F9F5F7;
+    background-color: #fff;
+    border: 1px solid #eee8f0;
+    border-radius: 12rpx;
+    box-shadow: 0 2rpx 8rpx rgba(87, 27, 72, 0.08);
     padding: 30rpx;
     box-sizing: border-box;
     display: flex;
@@ -396,12 +402,17 @@ export default {
   .footer {
     margin-top: 90rpx;
     width: 100%;
-    height: 10%;
+    height: auto;
+    min-height: calc(112rpx + env(safe-area-inset-bottom));
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: #fff;
     border-top: 3px solid #eaeaea;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 50rpx;
+    padding: 16rpx 32rpx calc(env(safe-area-inset-bottom) + 16rpx);
     box-sizing: border-box;
   }
 }

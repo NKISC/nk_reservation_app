@@ -1,5 +1,5 @@
 <template>
-  <view class="indexPage" style="padding-top: 13%; padding-left: 5%; padding-right: 5%; height: fit-content">
+  <view class="indexPage" style="padding-top: 24rpx; padding-left: 5%; padding-right: 5%; height: fit-content">
     <view style="margin-bottom: 20%">
       <img src="../../static/fh.svg" style="width: 35rpx; height: 35rpx; margin-right: 5%;" @click="goBack" alt/> <text style="font-weight: bold; vertical-align: center;">管理员工具</text>
     </view>
@@ -465,7 +465,9 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background-size: 100%;
+  background: #f7f5f8;
+  padding-top: calc(var(--status-bar-height, 0px) + env(safe-area-inset-top) + 24rpx) !important;
+  overflow-y: auto;
 
   .mark {
     z-index: 1000;
@@ -491,5 +493,9 @@ export default {
       align-items: center;
     }
   }
+  .itembox { border-radius: 12rpx; box-shadow: 0 2rpx 8rpx rgba(87, 27, 72, .08); }
+  .itemList .itembox { background: #fff !important; color: #29232c !important; border: 1px solid #eee8f0; max-width: 100%; box-sizing: border-box; }
+  input { min-width: 0; height: 76rpx; line-height: 44rpx; border: 1px solid #e7e1e9; border-radius: 10rpx; padding: 14rpx 16rpx !important; box-sizing: border-box; }
+  button { background: #82007e; color: #fff; border: 0; border-radius: 12rpx; min-height: 64rpx; white-space: normal; }
 }
 </style>
