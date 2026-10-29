@@ -19,6 +19,11 @@ class ClassroomManagementModel(BaseModel):
     available: bool = True
 
 
+class ClassroomDeletionModel(BaseModel):
+    code: str
+    id: str
+
+
 class PermissionCheckQuery(BaseModel):
     permissions: list[str]
     classrooms: list[str]

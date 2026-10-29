@@ -26,18 +26,25 @@ it from the booking list and rejects new single and recurring bookings without
 deleting existing reservations. Existing booking permissions still apply; creating
 a classroom does not grant users access to it.
 
+To permanently remove a classroom, select **删除教室** and confirm the warning.
+Deletion also removes all its single and recurring bookings, updates affected
+users' booking counts, and clears classroom permission/availability references in
+one transaction. Other classrooms and their bookings are retained. This cannot be
+undone; use **停用** instead if you want to preserve existing bookings. Image files
+are retained because they may be shared.
+
 In the classroom editor, choose a photo from the album or camera instead of
 entering an image ID. Images can be previewed, replaced, or removed. Uploads accept
 JPEG, PNG, and WebP up to 5 MiB and 20 million pixels, and are converted to JPEG.
 Click **保存** after uploading or removing a photo to save the classroom change.
 Removing or replacing a photo does not delete existing image files.
 
-The new `/addition/classroom` and `/alter/classroom` endpoints require a fresh
+The `/addition/classroom`, `/alter/classroom`, and `/delete/classroom/` endpoints require a fresh
 WeChat login code and check the corresponding user's `admin` permission on the
 server. Configure the backend's `appid` and `appSecret` files for this to work.
-This check is specific to the new endpoints, not an authorization overhaul of the
-older admin APIs. The old `/delete/classroom/` endpoint now returns HTTP 410;
-disable classrooms instead of deleting them.
+This check is specific to these endpoints, not an authorization overhaul of the
+older admin APIs. Deletion accepts `{code, id}` for one classroom only; the legacy
+unauthenticated `{cond: ...}` deletion payload is not supported.
 
 Image uploads also require a fresh admin login code. The
 `/upload/classroom-image` endpoint accepts raw image bytes with an
@@ -56,4 +63,5 @@ repository root (no live database or WeChat access required):
 ```sh
 python -m unittest discover -s test -p 'test_classroom*.py' -v
 node test/test_classroom_image_ui.cjs
+node test/test_classroom_deletion_ui.cjs
 ```

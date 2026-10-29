@@ -44,8 +44,52 @@ def delete_user(x: Dict[str, Any]) -> Dict[str, Any]:
     return delete_from_table("user_info", x)
 
 
-def delete_classroom(x: Dict[str, Any]) -> Dict[str, Any]:
-    return delete_from_table("classroom", x)
+def delete_classroom(classroom_id: str) -> Dict[str, Any]:
+    """Permanently remove one classroom and its dependent reservation data."""
+    if not isinstance(classroom_id, str) or not classroom_id.strip():
+        return {"success": False, "error": "invalid_id"}
+    try:
+        with sqlite3.connect("database.db", timeout=30) as db:
+            db.execute("BEGIN IMMEDIATE")
+            if not db.execute("SELECT 1 FROM classroom WHERE id=?", (classroom_id,)).fetchone():
+                return {"success": False, "error": "unknown_classroom"}
+            removed_ids = {str(row[0]) for row in db.execute(
+                "SELECT id FROM record WHERE classroom_id=?", (classroom_id,)).fetchall()}
+            counts = db.execute(
+                "SELECT applicant_id, COUNT(*) FROM record WHERE classroom_id=? GROUP BY applicant_id",
+                (classroom_id,)).fetchall()
+            for applicant_id, count in counts:
+                db.execute("UPDATE user_info SET register_num=MAX(0, register_num-?) WHERE id=?",
+                           (count, applicant_id))
+            db.execute("DELETE FROM record WHERE classroom_id=?", (classroom_id,))
+
+            # Match whole comma-delimited tokens only; preserve unrelated group IDs.
+            for (rowid, value) in db.execute("SELECT rowid, record_id FROM cyclical_record").fetchall():
+                tokens_all = (value or "").split(",")
+                tokens = [token for token in tokens_all if token and token not in removed_ids]
+                if len(tokens) != len([token for token in tokens_all if token]):
+                    if tokens:
+                        db.execute("UPDATE cyclical_record SET record_id=? WHERE rowid=?",
+                                   (",".join(tokens) + ",", rowid))
+                    else:
+                        db.execute("DELETE FROM cyclical_record WHERE rowid=?", (rowid,))
+
+            tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if "classroom_availability" in tables:
+                db.execute("DELETE FROM classroom_availability WHERE id=?", (classroom_id,))
+            if "permission" in tables:
+                cols = {row[1] for row in db.execute("PRAGMA table_info(permission)")}
+                if {"classrooms"}.issubset(cols):
+                    for rowid, value in db.execute("SELECT rowid, classrooms FROM permission").fetchall():
+                        tokens_all = (value or "").split(",")
+                        tokens = [token for token in tokens_all if token and (token == "*" or token != classroom_id)]
+                        if len(tokens) != len([token for token in tokens_all if token]):
+                            db.execute("UPDATE permission SET classrooms=? WHERE rowid=?",
+                                       ((",".join(tokens) + ",") if tokens else "", rowid))
+            db.execute("DELETE FROM classroom WHERE id=?", (classroom_id,))
+        return {"success": True, "deleted_records": len(removed_ids)}
+    except Exception:
+        return {"success": False, "error": "database_error"}
 
 
 def delete_cyclical(initiator: str) -> Dict[str, Any]:

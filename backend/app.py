@@ -161,8 +161,12 @@ async def delete_record(cond: data_models.BasePostQuery):
 
 
 @app.post("/delete/classroom/")
-async def delete_classroom(cond: data_models.BasePostQuery):
-    return fastapi.responses.JSONResponse(status_code=410, content={"success": False, "error": "use_disable"})
+async def delete_classroom(q: data_models.ClassroomDeletionModel):
+    if not q.id or not q.id.strip():
+        return {"success": False, "error": "invalid_id"}
+    if not q.code or not q.code.strip() or not await asyncio.to_thread(classroom_management.authorized, q.code):
+        return {"success": False, "error": "unauthorized"}
+    return await asyncio.to_thread(deletion.delete_classroom, q.id)
 
 
 @app.post("/delete/user/")
