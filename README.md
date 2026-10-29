@@ -26,12 +26,25 @@ it from the booking list and rejects new single and recurring bookings without
 deleting existing reservations. Existing booking permissions still apply; creating
 a classroom does not grant users access to it.
 
+In the classroom editor, choose a photo from the album or camera instead of
+entering an image ID. Images can be previewed, replaced, or removed. Uploads accept
+JPEG, PNG, and WebP up to 5 MiB and 20 million pixels, and are converted to JPEG.
+Click **保存** after uploading or removing a photo to save the classroom change.
+Removing or replacing a photo does not delete existing image files.
+
 The new `/addition/classroom` and `/alter/classroom` endpoints require a fresh
 WeChat login code and check the corresponding user's `admin` permission on the
 server. Configure the backend's `appid` and `appSecret` files for this to work.
 This check is specific to the new endpoints, not an authorization overhaul of the
 older admin APIs. The old `/delete/classroom/` endpoint now returns HTTP 410;
 disable classrooms instead of deleting them.
+
+Image uploads also require a fresh admin login code. The
+`/upload/classroom-image` endpoint accepts raw image bytes with an
+`X-Wechat-Code` header and returns the internal `pic_url` used by classroom saves.
+It requires Pillow (`python -m pip install Pillow`) and write access to the
+working directory's `img/` folder. Keep that folder in persistent storage/backups;
+generated uploads are ignored by Git.
 
 Availability uses a separate, automatically created SQLite table; existing rooms
 default to available. `/query/classroom` includes disabled rooms for reservation
@@ -41,5 +54,6 @@ With backend dependencies and `httpx` installed, run the isolated regression tes
 repository root (no live database or WeChat access required):
 
 ```sh
-python -m unittest discover -s test -p test_classroom_management.py -v
+python -m unittest discover -s test -p 'test_classroom*.py' -v
+node test/test_classroom_image_ui.cjs
 ```

@@ -1,4 +1,5 @@
 import fastapi
+from fastapi import Request
 import asyncio
 import sqlite3
 from backend import query
@@ -10,6 +11,42 @@ from backend import deletion
 from backend import classroom_management
 
 app = fastapi.FastAPI()
+
+
+@app.post("/upload/classroom-image")
+async def upload_classroom_image(request: Request):
+    from backend import classroom_images
+
+    # Authenticate before consuming any potentially large request body.
+    code = request.headers.get("X-Wechat-Code", "")
+    if not code or not await asyncio.to_thread(classroom_management.authorized, code):
+        return {"success": False, "error": "unauthorized"}
+    content_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+    if content_type not in {"image/jpeg", "image/png", "image/webp", "application/octet-stream"}:
+        return {"success": False, "error": "invalid_image"}
+    length = request.headers.get("content-length")
+    if length is not None:
+        try:
+            if int(length) > classroom_images.MAX_BYTES:
+                return {"success": False, "error": "image_too_large"}
+        except ValueError:
+            pass
+    chunks = []
+    size = 0
+    async for chunk in request.stream():
+        size += len(chunk)
+        if size > classroom_images.MAX_BYTES:
+            return {"success": False, "error": "image_too_large"}
+        chunks.append(chunk)
+    try:
+        ident = await asyncio.to_thread(classroom_images.normalize_and_store, b"".join(chunks))
+    except classroom_images.ImageTooLarge:
+        return {"success": False, "error": "image_too_large"}
+    except classroom_images.InvalidImage:
+        return {"success": False, "error": "invalid_image"}
+    except classroom_images.ImageStorageError:
+        return {"success": False, "error": "image_storage_error"}
+    return {"success": True, "pic_url": ident}
 
 
 @app.get("/connection")
