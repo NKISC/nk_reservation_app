@@ -110,6 +110,15 @@ class ClassroomManagementTest(unittest.TestCase):
         self.assertIsInstance(row["available"], bool)
         with sqlite3.connect("database.db") as db:
             db.execute("INSERT INTO record VALUES (7,'new-room',0,'user',1)")
+        legacy = client.post("/delete/classroom/", json={"cond": {"id": "new-room"}})
+        missing = client.post("/delete/classroom/", json={"code": "fresh", "cond": {"id": "new-room"}})
+        empty = client.post("/delete/classroom/", json={"code": "fresh", "id": "  "})
+        self.assertIn(legacy.status_code, (200, 422))
+        self.assertEqual(missing.status_code, 422)
+        self.assertEqual(empty.json(), {"success": False, "error": "invalid_id"})
+        with sqlite3.connect("database.db") as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM classroom WHERE id='new-room'").fetchone()[0], 1)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM record WHERE classroom_id='new-room'").fetchone()[0], 1)
         edit = dict(body, display="Disabled Room", available=False)
         with patch("backend.utils.exchange_admin_code", return_value="admin"):
             disabled = client.post("/alter/classroom", json=edit)
@@ -121,9 +130,10 @@ class ClassroomManagementTest(unittest.TestCase):
         self.assertIs(disabled_row["available"], False)
         with sqlite3.connect("database.db") as db:
             self.assertEqual(db.execute("SELECT COUNT(*) FROM record WHERE classroom_id='new-room'").fetchone()[0], 1)
-        deleted = client.post("/delete/classroom/", json={"cond": {"id": "new-room"}})
-        self.assertEqual(deleted.status_code, 410)
-        self.assertTrue(any(item["id"] == "new-room" for item in query.query_classroom({})))
+        with patch("backend.utils.exchange_admin_code", return_value="admin"):
+            deleted = client.post("/delete/classroom/", json={"code": "fresh", "id": "new-room"})
+        self.assertEqual(deleted.json(), {"success": True, "deleted_records": 1})
+        self.assertFalse(any(item["id"] == "new-room" for item in query.query_classroom({})))
         self.assertEqual(client.get("/connection").json(), {"status": "ok"})
 
     def test_direct_and_cyclical_unavailable_have_no_side_effects(self):

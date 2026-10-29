@@ -16,28 +16,28 @@
           <view v-if="!roomError && !roomLoading && !filteredClassrooms.length" class="room-hint">{{ classrooms.length ? "没有找到匹配的教室" : "暂无教室" }}</view>
           <view v-for="room in filteredClassrooms" :key="room.id" class="room-row">
             <view class="room-main"><text class="room-name">{{ room.display || "未命名教室" }}</text><text class="room-id">{{ room.id }} · {{ placeName(room.place) }}</text></view>
-            <view class="room-actions"><text :class="room.available === false ? 'room-off' : 'room-on'">{{ room.available === false ? "已停用" : "可预约" }}</text><button class="room-button" @click="editRoom(room)">编辑</button><button class="room-button" @click="confirmRoomAvailability(room)">{{ room.available === false ? "重新开放" : "停用" }}</button></view>
+            <view class="room-actions"><text :class="room.available === false ? 'room-off' : 'room-on'">{{ room.available === false ? "已停用" : "可预约" }}</text><button class="room-button" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="editRoom(room)">编辑</button><button class="room-button" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="confirmRoomAvailability(room)">{{ room.available === false ? "重新开放" : "停用" }}</button><button class="room-button room-delete" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="confirmDeleteClassroom(room)">{{ roomDeleting ? "删除中…" : "删除教室" }}</button></view>
           </view>
-          <button class="room-add" @click="newRoom">＋ 新建教室</button>
+          <button class="room-add" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="newRoom">＋ 新建教室</button>
           <view v-if="roomFormOpen" class="room-form">
             <view class="room-form-title">{{ roomEditing ? "编辑教室" : "新建教室" }}</view>
-            <view class="room-field" v-if="!roomEditing"><text>教室编号</text><input v-model="roomForm.id" :disabled="roomSaving || roomImageBusy" placeholder="稳定且唯一的编号" /></view>
+            <view class="room-field" v-if="!roomEditing"><text>教室编号</text><input v-model="roomForm.id" :disabled="roomSaving || roomImageBusy || roomDeleting" placeholder="稳定且唯一的编号" /></view>
             <view class="room-field" v-else><text>教室编号</text><text class="room-id">{{ roomForm.id }}（不可修改）</text></view>
-            <view class="room-field"><text>显示名称</text><input v-model="roomForm.display" :disabled="roomSaving || roomImageBusy" placeholder="例如：南楼 201" /></view>
-            <view class="room-field"><text>所在地点</text><picker :disabled="roomSaving || roomImageBusy" :range="placeOptions" range-key="label" :value="placeIndex" @change="onPlaceChange"><view class="picker-value">{{ placeOptions[placeIndex].label }}　⌄</view></picker></view>
+            <view class="room-field"><text>显示名称</text><input v-model="roomForm.display" :disabled="roomSaving || roomImageBusy || roomDeleting" placeholder="例如：南楼 201" /></view>
+            <view class="room-field"><text>所在地点</text><picker :disabled="roomSaving || roomImageBusy || roomDeleting" :range="placeOptions" range-key="label" :value="placeIndex" @change="onPlaceChange"><view class="picker-value">{{ placeOptions[placeIndex].label }}　⌄</view></picker></view>
             <view class="room-image" v-if="roomImagePreview">
               <image class="room-image-preview" :src="roomImagePreview" mode="aspectFill" />
-              <view class="room-image-controls"><button class="room-button" :disabled="roomSaving || roomImageBusy" @click="chooseRoomImage">更换照片</button><button class="room-button remove-image" :disabled="roomSaving || roomImageBusy" @click="removeRoomImage">移除</button></view>
+              <view class="room-image-controls"><button class="room-button" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="chooseRoomImage">更换照片</button><button class="room-button remove-image" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="removeRoomImage">移除</button></view>
             </view>
-            <button v-else class="room-button image-picker" :disabled="roomSaving || roomImageBusy" @click="chooseRoomImage">{{ roomImageBusy ? "正在处理照片…" : "选择教室照片" }}</button>
+            <button v-else class="room-button image-picker" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="chooseRoomImage">{{ roomImageBusy ? "正在处理照片…" : "选择教室照片" }}</button>
             <view v-if="roomImageBusy" class="room-note image-status">{{ roomImageLocalPath || roomForm.pic_url ? "正在上传照片…" : "正在处理照片…" }}</view>
             <view class="room-note">可从相册选择或拍照，图片最大 5MB。照片只会在点击“保存”后关联到教室。</view>
             <view v-if="roomImageError" class="room-error">{{ roomImageError }} <text @click="chooseRoomImage">重试</text></view>
-            <view class="room-field"><text>功能标签（选填）</text><input v-model="roomForm.func_tag" :disabled="roomSaving || roomImageBusy" placeholder="填写已有标签代码，逗号分隔" /></view>
-            <view class="room-field"><text>允许预约</text><switch :disabled="roomSaving || roomImageBusy" :checked="roomForm.available" color="#82007e" @change="roomForm.available = $event.detail.value" /></view>
+            <view class="room-field"><text>功能标签（选填）</text><input v-model="roomForm.func_tag" :disabled="roomSaving || roomImageBusy || roomDeleting" placeholder="填写已有标签代码，逗号分隔" /></view>
+            <view class="room-field"><text>允许预约</text><switch :disabled="roomSaving || roomImageBusy || roomDeleting" :checked="roomForm.available" color="#82007e" @change="roomForm.available = $event.detail.value" /></view>
             <view class="room-note">标签代码须使用系统已有值。开放状态只控制教室是否可预约；用户仍须具备现有权限。新增教室不会自动授予预约权限。</view>
             <view v-if="roomFormError" class="room-error">{{ roomFormError }}</view>
-            <view class="room-form-actions"><button class="room-button" :disabled="roomSaving || roomImageBusy" @click="closeRoomForm">取消</button><button class="room-button primary" :disabled="roomSaving || roomImageBusy" @click="saveRoom">{{ roomSaving ? "保存中…" : "保存" }}</button></view>
+            <view class="room-form-actions"><button class="room-button" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="closeRoomForm">取消</button><button class="room-button primary" :disabled="roomSaving || roomImageBusy || roomDeleting" @click="saveRoom">{{ roomSaving ? "保存中…" : "保存" }}</button></view>
           </view>
         </view>
       </view>
@@ -196,7 +196,8 @@ export default {
       roomActionError: "",
       roomSearch: "",
       roomFormOpen: false,
-       roomSaving: false,
+        roomSaving: false,
+        roomDeleting: false,
        roomImageBusy: false,
        roomImageError: "",
        roomImageLocalPath: "",
@@ -283,14 +284,17 @@ export default {
         else this.roomError = "教室列表暂时无法读取，请稍后重试。";
       }, fail: () => { this.roomError = "网络连接失败，教室列表未能加载。"; }, complete: () => { this.roomLoading = false; } });
     },
+    loadReservations() { wx.request({url:"https://nkapi.ememememem.space/query/record", method:"POST", data:{cond:{by_id:true}}, success: res => { if (Array.isArray(res.data)) this.reservations = res.data; }}); },
+    loadUsers() { wx.request({url:"https://nkapi.ememememem.space/query/user", method:"POST", data:{cond:{}}, success: res => { if (Array.isArray(res.data)) this.users = res.data; }}); },
+    loadCycRecordIds() { wx.request({url:"https://nkapi.ememememem.space/query/cyclical", method:"POST", data:{cond:{record_id:[""]}}, success: res => { if (Array.isArray(res.data)) this.cycRecordIds = res.data; }}); },
     roomImageUrl(id) { return id ? "https://nkapi.ememememem.space/img/" + encodeURIComponent(id) : ""; },
     resetRoomImageOperation() { this.roomImageOperation += 1; this.roomImageBusy = false; this.roomImageError = ""; this.roomImageLocalPath = ""; },
-    newRoom() { if (this.roomSaving || this.roomImageBusy) return; this.resetRoomImageOperation(); this.roomActionError = ""; this.roomEditing = false; this.roomFormError = ""; this.roomForm = {id:"", display:"", place:"south", pic_url:"", func_tag:"", available:true}; this.roomFormOpen = true; },
-    editRoom(room) { if (this.roomSaving || this.roomImageBusy) return; this.resetRoomImageOperation(); this.roomActionError = ""; this.roomEditing = true; this.roomFormError = ""; this.roomForm = Object.assign({available:true, pic_url:"", func_tag:""}, room); if (!this.placeOptions.some(x => x.key === this.roomForm.place)) this.roomForm.place = "south"; this.roomFormOpen = true; },
-    closeRoomForm() { if (this.roomSaving || this.roomImageBusy) return; this.resetRoomImageOperation(); this.roomFormOpen = false; },
-    removeRoomImage() { if (this.roomSaving || this.roomImageBusy) return; this.roomImageOperation += 1; this.roomImageLocalPath = ""; this.roomImageError = ""; this.roomForm.pic_url = ""; },
+     newRoom() { if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return; this.resetRoomImageOperation(); this.roomActionError = ""; this.roomEditing = false; this.roomFormError = ""; this.roomForm = {id:"", display:"", place:"south", pic_url:"", func_tag:"", available:true}; this.roomFormOpen = true; },
+     editRoom(room) { if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return; this.resetRoomImageOperation(); this.roomActionError = ""; this.roomEditing = true; this.roomFormError = ""; this.roomForm = Object.assign({available:true, pic_url:"", func_tag:""}, room); if (!this.placeOptions.some(x => x.key === this.roomForm.place)) this.roomForm.place = "south"; this.roomFormOpen = true; },
+     closeRoomForm() { if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return; this.resetRoomImageOperation(); this.roomFormOpen = false; },
+     removeRoomImage() { if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return; this.roomImageOperation += 1; this.roomImageLocalPath = ""; this.roomImageError = ""; this.roomForm.pic_url = ""; },
     chooseRoomImage() {
-      if (this.roomSaving || this.roomImageBusy || !this.roomFormOpen) return;
+       if (this.roomSaving || this.roomImageBusy || this.roomDeleting || !this.roomFormOpen) return;
       this.roomImageBusy = true; this.roomImageError = "";
       const operation = ++this.roomImageOperation;
       const fail = message => { if (operation !== this.roomImageOperation) return; this.roomImageBusy = false; this.roomImageError = message; };
@@ -330,18 +334,42 @@ export default {
     },
     errorMessage(code) { const messages = {unauthorized:"管理员身份验证失败，请重新登录。", forbidden:"当前账号无权管理教室。", duplicate_id:"该教室编号已存在。", unknown_classroom:"教室不存在，列表可能已更新。", invalid_place:"请选择有效地点。", invalid_id:"教室编号格式无效。", invalid_display:"请填写有效的显示名称。", invalid_pic_url:"教室照片无效，请重新选择照片。", invalid_func_tag:"功能标签无效，请使用系统已有标签代码。", invalid_available:"开放状态无效，请重新选择。", database_error:"服务器暂时无法保存，请稍后重试。"}; return messages[code] || "保存失败，请检查填写内容后重试。"; },
     confirmRoomAvailability(room) {
-      if (this.roomSaving || this.roomImageBusy) return;
+      if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return;
       const enabling = room.available === false;
       uni.showModal({title: enabling ? "重新开放教室？" : "停用教室？", content: enabling ? "重新开放后，符合现有权限的用户可以预约。" : "停用后将不能新建预约；已有预约会保留，不会被删除。", success: res => { if (res.confirm) this.mutateRoom(room, enabling, true, false); }});
     },
     saveRoom() {
-      if (this.roomSaving || this.roomImageBusy) return;
+      if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return;
       if (!this.roomForm.id.trim() || !this.roomForm.display.trim()) { this.roomFormError = "请填写教室编号和显示名称。"; return; }
       if (!this.placeOptions.some(x => x.key === this.roomForm.place)) { this.roomFormError = "请选择有效地点。"; return; }
       this.mutateRoom(this.roomForm, this.roomForm.available, this.roomEditing, true);
-    },
+     },
+     confirmDeleteClassroom(room) {
+      if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return;
+       const name = room.display || room.id;
+       uni.showModal({title:"永久删除教室？", content:`确定永久删除“${name}”（${room.id}）吗？该教室的所有预约（包括周期预约）都会被永久删除，且无法撤销。`, confirmText:"永久删除", confirmColor:"#b42318", success: res => { if (res.confirm) this.deleteClassroom(room); }});
+     },
+     deleteClassroom(room) {
+       if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return;
+       this.roomDeleting = true; this.roomActionError = "";
+       wx.login({success: login => {
+         if (!login || !login.code) { this.roomActionError = "无法取得登录凭证，未能确认删除状态，请刷新列表后检查。"; this.roomDeleting = false; return; }
+         wx.request({url:"https://nkapi.ememememem.space/delete/classroom/", method:"POST", data:{code:login.code, id:room.id}, success: response => {
+           const body = response && response.data;
+           if (!response || (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) || !body || body.success !== true) {
+             const messages = {unauthorized:"管理员身份验证失败，教室尚未删除。", invalid_id:"教室编号无效，教室尚未删除。", unknown_classroom:"教室不存在或列表已更新，请刷新后重试。", database_error:"服务器暂时无法删除教室，请稍后重试。"};
+             this.roomActionError = messages[body && body.error] || "未能确认删除结果，请刷新列表后检查。"; return;
+           }
+           this.classrooms = this.classrooms.filter(item => item.id !== room.id);
+           this.reservations = this.reservations.filter(item => item.classroom_id !== room.id);
+           if (this.roomFormOpen && this.roomEditing && this.roomForm.id === room.id) { this.resetRoomImageOperation(); this.roomFormOpen = false; this.roomFormError = ""; this.roomEditing = false; }
+           this.loadClassrooms(); this.loadReservations(); this.loadUsers(); this.loadCycRecordIds();
+           wx.showToast({title:"教室及预约已删除", icon:"success"});
+         }, fail: () => { this.roomActionError = "网络连接失败，未能确认删除状态，请刷新列表后检查。"; }, complete: () => { this.roomDeleting = false; }});
+       }, fail: () => { this.roomActionError = "无法取得登录凭证，未能确认删除状态，请刷新列表后检查。"; this.roomDeleting = false; }});
+     },
     mutateRoom(room, available, editing, fromForm) {
-      if (this.roomSaving || this.roomImageBusy) return;
+       if (this.roomSaving || this.roomImageBusy || this.roomDeleting) return;
       this.roomSaving = true; this.roomFormError = ""; this.roomActionError = "";
       const setFailure = message => { if (fromForm && this.roomFormOpen) this.roomFormError = message; else this.roomActionError = message; };
       wx.login({ success: login => {
@@ -648,6 +676,7 @@ export default {
   .room-image-preview { width: 190rpx; height: 140rpx; border-radius: 10rpx; background: #eee8f0; }
   .room-image-controls { display: flex; gap: 12rpx; flex-wrap: wrap; }
   .room-button.remove-image { background: #fff; color: #82007e; border: 1px solid #d8c6d8; }
+  .room-button.room-delete { background: #fff; color: #a32121; border: 1px solid #d99; }
   .image-picker { width: 100%; margin: 10rpx 0; }
   .room-form-title { font-weight: bold; margin-bottom: 14rpx; }
   .room-field { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 10rpx 0; }
