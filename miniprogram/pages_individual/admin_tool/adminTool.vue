@@ -21,17 +21,23 @@
           <button class="room-add" @click="newRoom">＋ 新建教室</button>
           <view v-if="roomFormOpen" class="room-form">
             <view class="room-form-title">{{ roomEditing ? "编辑教室" : "新建教室" }}</view>
-            <view class="room-field" v-if="!roomEditing"><text>教室编号</text><input v-model="roomForm.id" :disabled="roomSaving" placeholder="稳定且唯一的编号" /></view>
+            <view class="room-field" v-if="!roomEditing"><text>教室编号</text><input v-model="roomForm.id" :disabled="roomSaving || roomImageBusy" placeholder="稳定且唯一的编号" /></view>
             <view class="room-field" v-else><text>教室编号</text><text class="room-id">{{ roomForm.id }}（不可修改）</text></view>
-            <view class="room-field"><text>显示名称</text><input v-model="roomForm.display" :disabled="roomSaving" placeholder="例如：南楼 201" /></view>
-            <view class="room-field"><text>所在地点</text><picker :disabled="roomSaving" :range="placeOptions" range-key="label" :value="placeIndex" @change="onPlaceChange"><view class="picker-value">{{ placeOptions[placeIndex].label }}　⌄</view></picker></view>
-            <view class="room-field"><text>图片 ID（选填）</text><input v-model="roomForm.pic_url" :disabled="roomSaving" placeholder="已上传图片的 ID" /></view>
-            <view class="room-note">图片 ID 需对应服务器上已有的图片资源。</view>
-            <view class="room-field"><text>功能标签（选填）</text><input v-model="roomForm.func_tag" :disabled="roomSaving" placeholder="填写已有标签代码，逗号分隔" /></view>
-            <view class="room-field"><text>允许预约</text><switch :disabled="roomSaving" :checked="roomForm.available" color="#82007e" @change="roomForm.available = $event.detail.value" /></view>
+            <view class="room-field"><text>显示名称</text><input v-model="roomForm.display" :disabled="roomSaving || roomImageBusy" placeholder="例如：南楼 201" /></view>
+            <view class="room-field"><text>所在地点</text><picker :disabled="roomSaving || roomImageBusy" :range="placeOptions" range-key="label" :value="placeIndex" @change="onPlaceChange"><view class="picker-value">{{ placeOptions[placeIndex].label }}　⌄</view></picker></view>
+            <view class="room-image" v-if="roomImagePreview">
+              <image class="room-image-preview" :src="roomImagePreview" mode="aspectFill" />
+              <view class="room-image-controls"><button class="room-button" :disabled="roomSaving || roomImageBusy" @click="chooseRoomImage">更换照片</button><button class="room-button remove-image" :disabled="roomSaving || roomImageBusy" @click="removeRoomImage">移除</button></view>
+            </view>
+            <button v-else class="room-button image-picker" :disabled="roomSaving || roomImageBusy" @click="chooseRoomImage">{{ roomImageBusy ? "正在处理照片…" : "选择教室照片" }}</button>
+            <view v-if="roomImageBusy" class="room-note image-status">{{ roomImageLocalPath || roomForm.pic_url ? "正在上传照片…" : "正在处理照片…" }}</view>
+            <view class="room-note">可从相册选择或拍照，图片最大 5MB。照片只会在点击“保存”后关联到教室。</view>
+            <view v-if="roomImageError" class="room-error">{{ roomImageError }} <text @click="chooseRoomImage">重试</text></view>
+            <view class="room-field"><text>功能标签（选填）</text><input v-model="roomForm.func_tag" :disabled="roomSaving || roomImageBusy" placeholder="填写已有标签代码，逗号分隔" /></view>
+            <view class="room-field"><text>允许预约</text><switch :disabled="roomSaving || roomImageBusy" :checked="roomForm.available" color="#82007e" @change="roomForm.available = $event.detail.value" /></view>
             <view class="room-note">标签代码须使用系统已有值。开放状态只控制教室是否可预约；用户仍须具备现有权限。新增教室不会自动授予预约权限。</view>
             <view v-if="roomFormError" class="room-error">{{ roomFormError }}</view>
-            <view class="room-form-actions"><button class="room-button" :disabled="roomSaving" @click="roomFormOpen = false">取消</button><button class="room-button primary" :disabled="roomSaving" @click="saveRoom">{{ roomSaving ? "保存中…" : "保存" }}</button></view>
+            <view class="room-form-actions"><button class="room-button" :disabled="roomSaving || roomImageBusy" @click="closeRoomForm">取消</button><button class="room-button primary" :disabled="roomSaving || roomImageBusy" @click="saveRoom">{{ roomSaving ? "保存中…" : "保存" }}</button></view>
           </view>
         </view>
       </view>
@@ -190,7 +196,11 @@ export default {
       roomActionError: "",
       roomSearch: "",
       roomFormOpen: false,
-      roomSaving: false,
+       roomSaving: false,
+       roomImageBusy: false,
+       roomImageError: "",
+       roomImageLocalPath: "",
+       roomImageOperation: 0,
       roomFormError: "",
       roomEditing: false,
       roomForm: { id: "", display: "", place: "south", pic_url: "", func_tag: "", available: true },
@@ -216,7 +226,8 @@ export default {
       const q = (this.roomSearch || "").toLowerCase();
       return this.classrooms.filter(room => String(room.id || "").toLowerCase().includes(q) || String(room.display || "").toLowerCase().includes(q));
     },
-    placeIndex() { const i = this.placeOptions.findIndex(x => x.key === this.roomForm.place); return i < 0 ? 0 : i; }
+     placeIndex() { const i = this.placeOptions.findIndex(x => x.key === this.roomForm.place); return i < 0 ? 0 : i; },
+     roomImagePreview() { return this.roomImageLocalPath || this.roomImageUrl(this.roomForm.pic_url); }
   },
   onLoad() {
     this.loadClassrooms();
@@ -238,6 +249,7 @@ export default {
       }
     })
   },
+  onUnload() { this.resetRoomImageOperation(); },
   onShow() {
     wx.request({
       url: "https://nkapi.ememememem.space/query/user",
@@ -271,21 +283,65 @@ export default {
         else this.roomError = "教室列表暂时无法读取，请稍后重试。";
       }, fail: () => { this.roomError = "网络连接失败，教室列表未能加载。"; }, complete: () => { this.roomLoading = false; } });
     },
-    newRoom() { if (this.roomSaving) return; this.roomActionError = ""; this.roomEditing = false; this.roomFormError = ""; this.roomForm = {id:"", display:"", place:"south", pic_url:"", func_tag:"", available:true}; this.roomFormOpen = true; },
-    editRoom(room) { if (this.roomSaving) return; this.roomActionError = ""; this.roomEditing = true; this.roomFormError = ""; this.roomForm = Object.assign({available:true, pic_url:"", func_tag:""}, room); if (!this.placeOptions.some(x => x.key === this.roomForm.place)) this.roomForm.place = "south"; this.roomFormOpen = true; },
-    errorMessage(code) { const messages = {unauthorized:"管理员身份验证失败，请重新登录。", forbidden:"当前账号无权管理教室。", duplicate_id:"该教室编号已存在。", unknown_classroom:"教室不存在，列表可能已更新。", invalid_place:"请选择有效地点。", invalid_id:"教室编号格式无效。", invalid_display:"请填写有效的显示名称。", invalid_pic_url:"图片 ID 无效，请确认资源已存在。", invalid_func_tag:"功能标签无效，请使用系统已有标签代码。", invalid_available:"开放状态无效，请重新选择。", database_error:"服务器暂时无法保存，请稍后重试。"}; return messages[code] || "保存失败，请检查填写内容后重试。"; },
+    roomImageUrl(id) { return id ? "https://nkapi.ememememem.space/img/" + encodeURIComponent(id) : ""; },
+    resetRoomImageOperation() { this.roomImageOperation += 1; this.roomImageBusy = false; this.roomImageError = ""; this.roomImageLocalPath = ""; },
+    newRoom() { if (this.roomSaving || this.roomImageBusy) return; this.resetRoomImageOperation(); this.roomActionError = ""; this.roomEditing = false; this.roomFormError = ""; this.roomForm = {id:"", display:"", place:"south", pic_url:"", func_tag:"", available:true}; this.roomFormOpen = true; },
+    editRoom(room) { if (this.roomSaving || this.roomImageBusy) return; this.resetRoomImageOperation(); this.roomActionError = ""; this.roomEditing = true; this.roomFormError = ""; this.roomForm = Object.assign({available:true, pic_url:"", func_tag:""}, room); if (!this.placeOptions.some(x => x.key === this.roomForm.place)) this.roomForm.place = "south"; this.roomFormOpen = true; },
+    closeRoomForm() { if (this.roomSaving || this.roomImageBusy) return; this.resetRoomImageOperation(); this.roomFormOpen = false; },
+    removeRoomImage() { if (this.roomSaving || this.roomImageBusy) return; this.roomImageOperation += 1; this.roomImageLocalPath = ""; this.roomImageError = ""; this.roomForm.pic_url = ""; },
+    chooseRoomImage() {
+      if (this.roomSaving || this.roomImageBusy || !this.roomFormOpen) return;
+      this.roomImageBusy = true; this.roomImageError = "";
+      const operation = ++this.roomImageOperation;
+      const fail = message => { if (operation !== this.roomImageOperation) return; this.roomImageBusy = false; this.roomImageError = message; };
+      wx.chooseImage({count:1, sizeType:["compressed"], sourceType:["album", "camera"],
+        success: result => {
+          if (operation !== this.roomImageOperation) return;
+          const path = result && result.tempFilePaths && result.tempFilePaths[0];
+          if (!path) { fail("未能读取所选照片，请重试。"); return; }
+          wx.getFileSystemManager().readFile({filePath:path, success: file => {
+            if (operation !== this.roomImageOperation) return;
+            const bytes = file && file.data;
+            if (!bytes || typeof bytes.byteLength !== "number") { fail("照片读取失败，请重新选择。"); return; }
+            if (bytes.byteLength > 5 * 1024 * 1024) { fail("照片不能超过 5MB，请选择较小的图片。"); return; }
+            wx.login({success: login => {
+              if (operation !== this.roomImageOperation) return;
+              if (!login || !login.code) { fail("无法取得登录凭证，请重新选择照片重试。"); return; }
+              wx.request({url:"https://nkapi.ememememem.space/upload/classroom-image", method:"POST", data:bytes, header:{"X-Wechat-Code":login.code,"content-type":"application/octet-stream"},
+                success: response => {
+                  if (operation !== this.roomImageOperation) return;
+                  const body = response && response.data;
+                  if (body && body.success === true && typeof body.pic_url === "string" && body.pic_url) {
+                    this.roomForm.pic_url = body.pic_url; this.roomImageLocalPath = path; this.roomImageBusy = false; this.roomImageError = "";
+                  } else {
+                    const messages = {unauthorized:"身份验证失败，请重新选择照片重试。", image_too_large:"照片不能超过 5MB，请选择较小的图片。", invalid_image:"图片格式无效，请选择 JPEG、PNG 或 WebP 图片。", image_storage_error:"照片暂时无法保存到服务器，请重试。"};
+                    fail(messages[body && body.error] || "照片上传失败，请重试。");
+                  }
+                }, fail: () => fail("网络连接失败，照片尚未上传，请重试。")
+              });
+            }, fail: () => fail("无法取得登录凭证，请重新选择照片重试。")});
+          }, fail: () => fail("照片读取失败，请重新选择后重试。")});
+        }, fail: error => {
+          if (operation !== this.roomImageOperation) return;
+          if (error && (error.errMsg || "").indexOf("cancel") >= 0) { this.roomImageBusy = false; this.roomImageError = ""; }
+          else fail("无法打开相册或相机，请重试。");
+        }
+      });
+    },
+    errorMessage(code) { const messages = {unauthorized:"管理员身份验证失败，请重新登录。", forbidden:"当前账号无权管理教室。", duplicate_id:"该教室编号已存在。", unknown_classroom:"教室不存在，列表可能已更新。", invalid_place:"请选择有效地点。", invalid_id:"教室编号格式无效。", invalid_display:"请填写有效的显示名称。", invalid_pic_url:"教室照片无效，请重新选择照片。", invalid_func_tag:"功能标签无效，请使用系统已有标签代码。", invalid_available:"开放状态无效，请重新选择。", database_error:"服务器暂时无法保存，请稍后重试。"}; return messages[code] || "保存失败，请检查填写内容后重试。"; },
     confirmRoomAvailability(room) {
+      if (this.roomSaving || this.roomImageBusy) return;
       const enabling = room.available === false;
       uni.showModal({title: enabling ? "重新开放教室？" : "停用教室？", content: enabling ? "重新开放后，符合现有权限的用户可以预约。" : "停用后将不能新建预约；已有预约会保留，不会被删除。", success: res => { if (res.confirm) this.mutateRoom(room, enabling, true, false); }});
     },
     saveRoom() {
-      if (this.roomSaving) return;
+      if (this.roomSaving || this.roomImageBusy) return;
       if (!this.roomForm.id.trim() || !this.roomForm.display.trim()) { this.roomFormError = "请填写教室编号和显示名称。"; return; }
       if (!this.placeOptions.some(x => x.key === this.roomForm.place)) { this.roomFormError = "请选择有效地点。"; return; }
       this.mutateRoom(this.roomForm, this.roomForm.available, this.roomEditing, true);
     },
     mutateRoom(room, available, editing, fromForm) {
-      if (this.roomSaving) return;
+      if (this.roomSaving || this.roomImageBusy) return;
       this.roomSaving = true; this.roomFormError = ""; this.roomActionError = "";
       const setFailure = message => { if (fromForm && this.roomFormOpen) this.roomFormError = message; else this.roomActionError = message; };
       wx.login({ success: login => {
@@ -588,6 +644,11 @@ export default {
   .room-button { width: auto; min-height: 54rpx; line-height: 54rpx; padding: 0 18rpx; font-size: 23rpx; margin: 0; }
   .room-add { margin-top: 18rpx; width: 100%; }
   .room-form { margin-top: 20rpx; padding: 22rpx; background: #f8f5f9; border-radius: 12rpx; }
+  .room-image { display: flex; align-items: center; gap: 18rpx; margin: 14rpx 0; }
+  .room-image-preview { width: 190rpx; height: 140rpx; border-radius: 10rpx; background: #eee8f0; }
+  .room-image-controls { display: flex; gap: 12rpx; flex-wrap: wrap; }
+  .room-button.remove-image { background: #fff; color: #82007e; border: 1px solid #d8c6d8; }
+  .image-picker { width: 100%; margin: 10rpx 0; }
   .room-form-title { font-weight: bold; margin-bottom: 14rpx; }
   .room-field { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; padding: 10rpx 0; }
   .room-field > text:first-child { flex-shrink: 0; font-size: 25rpx; }
